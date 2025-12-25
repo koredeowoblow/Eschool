@@ -1,0 +1,299 @@
+/*
+ * Master Prompt: Admin Dashboard Custom CSS
+ * Design Tokens & Bootstrap Overrides
+ */
+
+:root {
+  /* Brand Colors - Premium Gradient Base */
+  --brand-primary: #667eea;
+  --brand-secondary: #764ba2;
+  --brand-accent: #00cdac;
+  --brand-danger: #e03131;
+  --brand-warning: #f08c00;
+  --brand-success: #2f9e44;
+  --brand-dark: #1a202c;
+  --brand-light: #f8f9fa;
+
+  /* UI Colors */
+  --ui-bg: #f3f4f6;
+  --ui-card-bg: #ffffff;
+  --ui-border: #e9ecef;
+  --ui-text-primary: #2d3748;
+  --ui-text-secondary: #718096;
+
+  /* Dimensions */
+  --sidebar-width: 260px;
+  --header-height: 70px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  background-color: var(--ui-bg);
+  color: var(--ui-text-primary);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/*
+ * Layout Structure
+ */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background: linear-gradient(180deg, #ffffff 0%, #f7f8fc 40%, #f3f4f6 100%);
+  border-right: 1px solid var(--ui-border);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+  box-shadow: var(--shadow-md);
+}
+
+/* Collapsed sidebar (desktop) */
+body.sidebar-collapsed .admin-sidebar {
+  width: 80px;
+}
+
+body.sidebar-collapsed .admin-main {
+  margin-left: 80px;
+}
+
+body.sidebar-collapsed .sidebar-link span {
+  display: none;
+}
+
+body.sidebar-collapsed .sidebar-link {
+  justify-content: center;
+}
+
+.admin-sidebar .sidebar-brand {
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  height: var(--header-height);
+  background: white;
+  border-bottom: 1px solid var(--ui-border);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.admin-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+/*
+ * Components
+ */
+.card-premium {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-premium:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary-premium {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  border: none;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-premium:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
+  color: white;
+}
+
+.sidebar-nav {
+  padding: 1.25rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.sidebar-header {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ui-text-secondary);
+  font-weight: 600;
+  padding: 0.75rem 1rem 0.25rem;
+}
+
+.sidebar-divider {
+  border-color: var(--ui-border);
+  margin: 0.5rem 0 0.75rem;
+}
+
+.sidebar-link {
+  color: var(--ui-text-secondary);
+  padding: 0.7rem 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.sidebar-link i {
+  font-size: 1.1rem;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: var(--brand-primary);
+}
+
+.nav-link-premium {
+  color: var(--ui-text-secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-link-premium:hover,
+.nav-link-premium.active {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: var(--brand-primary);
+}
+
+.nav-link-premium i {
+  font-size: 1.1rem;
+}
+
+/*
+ * Tables & Responsiveness
+ */
+.table-premium th {
+  background-color: var(--ui-bg);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--ui-text-secondary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--ui-border);
+  padding: 1rem;
+}
+
+.table-premium td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+/* Mobile Table Cards */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  /* Turn tables into cards on mobile */
+  .table-mobile-cards thead {
+    display: none;
+  }
+
+  .table-mobile-cards tbody,
+  .table-mobile-cards tr,
+  .table-mobile-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-mobile-cards tr {
+    margin-bottom: 1rem;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--ui-border);
+  }
+
+  .table-mobile-cards td {
+    padding: 0.5rem 0;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ui-bg);
+  }
+
+  .table-mobile-cards td:last-child {
+    border-bottom: none;
+  }
+
+  .table-mobile-cards td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--ui-text-secondary);
+  }
+}
+
+/* Utilities */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

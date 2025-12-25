@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers\Library;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Library\LibraryBorrowingService;
+
+use App\Http\Requests\Library\LibraryBorrowingRequest;
+use App\Helpers\ResponseHelper;
+
+class LibraryBorrowingController extends Controller
+{
+    public function __construct(private LibraryBorrowingService $service)
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show']);
+        $this->middleware('role:super_admin|school_admin|student')->only(['store']);
+        $this->middleware('role:super_admin|school_admin')->only(['update', 'destroy']);
+    }
+
+    public function index(Request $request)
+    {
+        $data = $this->service->list($request->query());
+        return ResponseHelper::success($data, 'Borrowings fetched successfully');
+    }
+
+    public function store(LibraryBorrowingRequest $request)
+    {
+        try {
+            $model = $this->service->create($request->validated());
+            return ResponseHelper::success($model, 'Borrowing created successfully', 201);
+        } catch (\RuntimeException $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
+    }
+
+    public function show(string $id)
+    {
+        try {
+            $model = $this->service->get($id);
+            return ResponseHelper::success($model, 'Borrowing fetched successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+
+    public function update(LibraryBorrowingRequest $request, string $id)
+    {
+        try {
+            $updated = $this->service->update($id, $request->validated());
+            return ResponseHelper::success($updated, 'Borrowing updated successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $this->service->delete($id);
+            return ResponseHelper::success(null, 'Borrowing deleted successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+}

@@ -1,0 +1,10 @@
+version: "2"
+authtoken: "2rGYsYpeRakWk5PT9H1qHutWG7D_UufHm13qTBkM37se75Tu"
+tunnels:
+  eschool:
+    addr: 8000
+    proto: http
+    host_header: rewrite
+  reverb:
+    addr: 8080
+    proto: http

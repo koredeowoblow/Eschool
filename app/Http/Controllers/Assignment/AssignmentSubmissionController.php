@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers\Assignment;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Assignments\AssignmentSubmissionService;
+use App\Http\Requests\Academic\AssignmentSubmissionRequest;
+use App\Helpers\ResponseHelper;
+
+class AssignmentSubmissionController extends Controller
+{
+    public function __construct(private AssignmentSubmissionService $service)
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show', 'store', 'update', 'destroy']);
+        $this->middleware('check.session')->only(['store', 'update', 'destroy']);
+    }
+
+    public function index(Request $request)
+    {
+        $data = $this->service->list($request->query());
+        return ResponseHelper::success($data, 'Submissions fetched successfully');
+    }
+
+    public function store(AssignmentSubmissionRequest $request)
+    {
+        $model = $this->service->create($request->validated());
+        return ResponseHelper::success($model, 'Submission created successfully', 201);
+    }
+
+    public function show(string $id)
+    {
+        try {
+            $model = $this->service->get($id);
+            return ResponseHelper::success($model, 'Submission fetched successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+
+    public function update(AssignmentSubmissionRequest $request, string $id)
+    {
+        try {
+            $updated = $this->service->update($id, $request->validated());
+            return ResponseHelper::success($updated, 'Submission updated successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $this->service->delete($id);
+            return ResponseHelper::success(null, 'Submission deleted successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseHelper::notFound($e->getMessage());
+        }
+    }
+}

@@ -1,0 +1,51 @@
+
+  Migration name  Batch / Status  
+  0001_01_01_000000_create_users_table  [1] Ran  
+  0001_01_01_000001_create_cache_table  [1] Ran  
+  0001_01_01_000002_create_jobs_table  [1] Ran  
+  2025_09_11_173630_create_sessions_table  [1] Ran  
+  2025_09_11_173631_create_grades_table  [1] Ran  
+  2025_09_11_173631_create_sections_table  [1] Ran  
+  2025_09_11_173631_create_teacher_profiles_table  [1] Ran  
+  2025_09_11_173631_create_terms_table  [1] Ran  
+  2025_09_11_173632_create_classes_table  [1] Ran  
+  2025_09_11_173653_create_students_table  [1] Ran  
+  2025_09_11_173654_create_student_guardians_table  [1] Ran  
+  2025_09_11_173655_create_enrollments_table  [1] Ran  
+  2025_09_11_173719_create_subjects_table  [1] Ran  
+  2025_09_11_173720_create_teacher_subjects_table  [1] Ran  
+  2025_09_11_173720_create_timetables_table  [1] Ran  
+  2025_09_11_173721_create_attendance_table  [1] Ran  
+  2025_09_11_173738_create_assessments_table  [1] Ran  
+  2025_09_11_173738_create_results_table  [1] Ran  
+  2025_09_11_173741_create_assignments_table  [1] Ran  
+  2025_09_11_173742_create_assignment_submissions_table  [1] Ran  
+  2025_09_11_173839_create_library_books_table  [1] Ran  
+  2025_09_11_173839_create_library_borrowings_table  [1] Ran  
+  2025_09_11_173855_create_contact_messages_table  [1] Ran  
+  2025_09_11_173857_create_chats_table  [1] Ran  
+  2025_09_11_173945_create_lesson_notes_table  [1] Ran  
+  2025_09_11_173946_create_attachments_table  [1] Ran  
+  2025_09_11_174804_create_fee_types_table  [1] Ran  
+  2025_09_11_174805_create_invoices_table  [1] Ran  
+  2025_09_11_174806_create_invoice_items_table  [1] Ran  
+  2025_09_11_174806_create_payments_table  [1] Ran  
+  2025_09_12_151935_creae_otp  [1] Ran  
+  2025_09_15_202245_create_permission_tables  [1] Ran  
+  2025_09_15_214749_create_personal_access_tokens_table  [1] Ran  
+  2025_09_25_000001_update_multitenant_schema  [1] Ran  
+  2025_12_14_999999_fix_sessions_user_id  [1] Ran  
+  2025_12_17_174500_add_plan_to_schools_table  [1] Ran  
+  2025_12_17_174501_add_status_to_schools_table  [1] Ran  
+  2025_12_17_181524_add_deleted_at_to_invoices_table  [1] Ran  
+  2025_12_17_181700_add_deleted_at_to_invoices_table  [1] Ran  
+  2025_12_17_183000_add_status_to_payments_table  [1] Ran  
+  2025_12_17_194534_add_assignment_fields_to_fee_types_table  [1] Ran  
+  2025_12_22_214500_add_status_to_users_table  [2] Ran  
+  2025_12_22_225506_add_performance_indexes_to_tables  [3] Ran  
+  2025_12_24_184821_restructure_classes_and_remove_grades_table  [4] Ran  
+  2025_12_24_191847_cleanup_fee_types_grade_id  [5] Ran  
+  2025_12_24_202542_add_is_approved_to_assessments_table  [6] Ran  
+  2025_12_24_202545_create_grading_scales_table  Pending  
+  2025_12_24_202548_create_subject_results_table  Pending  
+

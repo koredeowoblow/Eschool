@@ -1,0 +1,120 @@
+<?php
+
+namespace App\Services\SuperAdmin;
+
+use App\Repositories\SchoolRepository;
+use App\Repositories\Users\UserRepository;
+use App\Models\School;
+use App\Models\User;
+use App\Mail\SchoolAdminCreated;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Exception;
+
+class SchoolService
+{
+    public function __construct(
+        protected SchoolRepository $schoolRepo,
+        protected UserRepository $userRepo
+    ) {}
+
+    /**
+     * Get all schools with basic stats.
+     */
+    public function getAllSchools()
+    {
+        return $this->schoolRepo->list();
+    }
+
+    /**
+     * Find a single school by ID.
+     */
+    public function findSchool($id)
+    {
+        $school = $this->schoolRepo->findById($id);
+        if (!$school) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
+        }
+        return $school->loadCount(['users', 'students']);
+    }
+
+    /**
+     * Create a new school with an initial admin user.
+     */
+    public function createSchool(array $data): School
+    {
+        return DB::transaction(function () use ($data) {
+            // Security: Force status=pending for public/non-superadmin registrations
+            $status = $data['status'] ?? 'pending';
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if (!$user || !$user->hasRole('super_admin')) {
+                $status = 'pending';
+            }
+
+            // 1. Create School
+            $school = $this->schoolRepo->create([
+                'name'      => $data['name'],
+                'slug'      => $data['slug'],
+                'address'   => $data['address'],
+                'email'     => $data['email'],
+                'phone'     => $data['phone'],
+                'state'     => $data['state'],
+                'area'      => $data['area'],
+                'city'      => $data['city'],
+                'website'   => $data['website'] ?? null,
+                'plan'      => $data['plan'],
+                'status'    => $status,
+                'contact_person' => $data['contact_person'] ?? null,
+                'contact_person_phone' => $data['contact_person_phone'] ?? null,
+                'is_active' => ($status === 'active'),
+            ]);
+
+            // 2. Generate Password
+            $rawPassword = Str::random(10);
+
+            // 3. Create Admin User for this School
+            $adminUser = $this->userRepo->create([
+                'name'      => $data['admin_name'],
+                'email'     => $data['admin_email'],
+                'password'  => Hash::make($rawPassword),
+                'school_id' => $school->id,
+                'status'    => $status, // Sync user status with school status
+            ]);
+
+            // 4. Assign Role
+            $adminUser->assignRole('school_admin');
+
+            // 5. Send Email
+            try {
+                Mail::to($adminUser->email)->send(new SchoolAdminCreated($rawPassword, $school->name));
+            } catch (Exception $e) {
+                Log::error('Failed to send school admin email: ' . $e->getMessage());
+            }
+
+            return $school;
+        });
+    }
+
+    /**
+     * Update an existing school.
+     */
+    public function updateSchool($id, array $data): School
+    {
+        $school = $this->schoolRepo->update($id, $data);
+        if (!$school) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
+        }
+        return $school;
+    }
+
+    /**
+     * Delete a school.
+     */
+    public function deleteSchool($id): bool
+    {
+        return $this->schoolRepo->delete($id);
+    }
+}
