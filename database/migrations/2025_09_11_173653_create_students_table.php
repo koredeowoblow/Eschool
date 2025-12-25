@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('admission_number')->unique();
             $table->date('admission_date');
-            $table->foreignId('grade_id')->constrained('grades')->onDelete('cascade');
             $table->foreignId('section_id')->nullable()->constrained('sections')->nullOnDelete();
             $table->foreignId('school_session_id')->constrained('school_sessions')->onDelete('cascade');
             $table->enum('status', ['active', 'graduated', 'withdrawn'])->default('active');

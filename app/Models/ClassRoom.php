@@ -54,7 +54,7 @@ class ClassRoom extends Model
         return $this->hasMany(Assignment::class, 'class_id');
     }
 
-    public function getNameAttribute()
+    public function getFullNameAttribute()
     {
         $baseName = $this->attributes['name'] ?? 'N/A';
         $sectionName = $this->section ? $this->section->name : 'Main';
@@ -62,5 +62,5 @@ class ClassRoom extends Model
     }
 
 
-    protected $appends = ['name'];
+    protected $appends = ['full_name'];
 }

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fee_types', function (Blueprint $table) {
-            $table->foreignId('grade_id')->nullable()->constrained('grades')->nullOnDelete();
+            // Removed grade_id foreign key since grades table was removed in later migration
+            // Only add session_id and term_id foreign keys
             $table->foreignId('session_id')->nullable()->constrained('school_sessions')->nullOnDelete();
             $table->foreignId('term_id')->nullable()->constrained('terms')->nullOnDelete();
         });
@@ -24,10 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('fee_types', function (Blueprint $table) {
-            $table->dropForeign(['grade_id']);
             $table->dropForeign(['session_id']);
             $table->dropForeign(['term_id']);
-            $table->dropColumn(['grade_id', 'session_id', 'term_id']);
+            $table->dropColumn(['session_id', 'term_id']);
         });
     }
 };

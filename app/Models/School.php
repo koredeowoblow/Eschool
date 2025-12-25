@@ -19,7 +19,7 @@ class School extends Model
         'city',
         'website',
         'contact_person',
-        'plan',
+        'plan_id',
         'contact_person_phone',
         'status',
         'is_active'

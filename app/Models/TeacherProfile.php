@@ -15,6 +15,11 @@ class TeacherProfile extends Model
         'department',
         'bio',
     ];
+
+    protected $casts = [
+        'hire_date' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

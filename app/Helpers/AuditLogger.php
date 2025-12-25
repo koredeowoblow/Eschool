@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AuditLog;
 
 class AuditLogger
 {
@@ -12,7 +13,7 @@ class AuditLogger
      */
     public static function logCreate(string $entity, $model, array $additionalData = []): void
     {
-        Log::info("Created {$entity}", array_merge([
+        $logData = array_merge([
             'action' => 'create',
             'entity' => $entity,
             'entity_id' => $model->id ?? null,
@@ -23,7 +24,13 @@ class AuditLogger
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
             'timestamp' => now()->toDateTimeString(),
-        ], $additionalData));
+        ], $additionalData);
+
+        // Log to file
+        Log::info("Created {$entity}", $logData);
+
+        // Log to database
+        self::storeInDatabase($logData);
     }
 
     /**
@@ -31,7 +38,7 @@ class AuditLogger
      */
     public static function logUpdate(string $entity, $model, array $changes = []): void
     {
-        Log::info("Updated {$entity}", [
+        $logData = [
             'action' => 'update',
             'entity' => $entity,
             'entity_id' => $model->id ?? null,
@@ -42,7 +49,13 @@ class AuditLogger
             'school_id' => Auth::user()?->school_id,
             'ip_address' => request()->ip(),
             'timestamp' => now()->toDateTimeString(),
-        ]);
+        ];
+
+        // Log to file
+        Log::info("Updated {$entity}", $logData);
+
+        // Log to database
+        self::storeInDatabase($logData);
     }
 
     /**
@@ -50,7 +63,7 @@ class AuditLogger
      */
     public static function logDelete(string $entity, $id, array $additionalData = []): void
     {
-        Log::warning("Deleted {$entity}", array_merge([
+        $logData = array_merge([
             'action' => 'delete',
             'entity' => $entity,
             'entity_id' => $id,
@@ -60,7 +73,13 @@ class AuditLogger
             'school_id' => Auth::user()?->school_id,
             'ip_address' => request()->ip(),
             'timestamp' => now()->toDateTimeString(),
-        ], $additionalData));
+        ], $additionalData);
+
+        // Log to file
+        Log::warning("Deleted {$entity}", $logData);
+
+        // Log to database
+        self::storeInDatabase($logData);
     }
 
     /**
@@ -68,7 +87,7 @@ class AuditLogger
      */
     public static function logUnauthorized(string $action, string $entity, $id = null): void
     {
-        Log::warning("Unauthorized {$action} attempt on {$entity}", [
+        $logData = [
             'action' => 'unauthorized',
             'attempted_action' => $action,
             'entity' => $entity,
@@ -79,6 +98,50 @@ class AuditLogger
             'school_id' => Auth::user()?->school_id,
             'ip_address' => request()->ip(),
             'timestamp' => now()->toDateTimeString(),
-        ]);
+        ];
+
+        // Log to file
+        Log::warning("Unauthorized {$action} attempt on {$entity}", $logData);
+
+        // Log to database
+        self::storeInDatabase($logData);
+    }
+
+    /**
+     * Store audit log in database
+     */
+    private static function storeInDatabase(array $logData): void
+    {
+        try {
+            // Extract metadata (everything except the main fields)
+            $metadata = array_diff_key($logData, array_flip([
+                'action',
+                'entity',
+                'entity_id',
+                'user_id',
+                'user_email',
+                'user_role',
+                'school_id',
+                'ip_address',
+                'user_agent',
+                'timestamp'
+            ]));
+
+            AuditLog::create([
+                'action' => $logData['action'],
+                'entity' => $logData['entity'],
+                'entity_id' => $logData['entity_id'] ?? null,
+                'user_id' => $logData['user_id'] ?? null,
+                'user_email' => $logData['user_email'] ?? null,
+                'user_role' => $logData['user_role'] ?? null,
+                'school_id' => $logData['school_id'] ?? null,
+                'ip_address' => $logData['ip_address'] ?? null,
+                'user_agent' => $logData['user_agent'] ?? null,
+                'metadata' => !empty($metadata) ? $metadata : null,
+            ]);
+        } catch (\Exception $e) {
+            // If database logging fails, log the error but don't break the application
+            Log::error("Failed to store audit log in database: " . $e->getMessage());
+        }
     }
 }

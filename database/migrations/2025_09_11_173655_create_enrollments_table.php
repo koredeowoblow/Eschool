@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('school_id');
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->foreignId('grade_id')->constrained('grades')->onDelete('cascade');
+            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
             $table->foreignId('session_id')->constrained(table: 'school_sessions')->onDelete('cascade');
             $table->foreignId('term_id')->constrained('terms')->onDelete('cascade');
             $table->date('enrollment_date')->nullable();

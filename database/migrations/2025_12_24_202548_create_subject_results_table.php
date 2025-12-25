@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
             $table->foreignId('class_id')->constrained()->onDelete('cascade');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->foreignId('session_id')->constrained()->onDelete('cascade');
+            $table->foreignId('session_id')->constrained('school_sessions')->onDelete('cascade');
             $table->foreignId('term_id')->constrained()->onDelete('cascade');
 
             $table->decimal('ca_score', 5, 2)->default(0);
@@ -29,7 +29,8 @@ return new class extends Migration
 
             $table->boolean('is_collated')->default(false);
             $table->timestamp('locked_at')->nullable();
-            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->uuid('school_id');
+            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
             $table->timestamps();
 
             $table->unique(['student_id', 'subject_id', 'class_id', 'term_id', 'session_id'], 'unique_subject_result_entry');
