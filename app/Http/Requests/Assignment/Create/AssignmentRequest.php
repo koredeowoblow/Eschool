@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Assignment\Create;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AssignmentRequest extends FormRequest
 {
@@ -14,10 +15,11 @@ class AssignmentRequest extends FormRequest
     public function rules(): array
     {
         $user = auth()->user();
+        $schoolId = $user->school_id;
 
         $rules = [
-            'class_id' => 'required|integer|exists:classes,id',
-            'subject_id' => 'required|integer|exists:subjects,id',
+            'class_id' => ['required', 'integer', Rule::exists('classes', 'id')->where('school_id', $schoolId)],
+            'subject_id' => ['required', 'integer', Rule::exists('subjects', 'id')->where('school_id', $schoolId)],
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date',
@@ -25,10 +27,9 @@ class AssignmentRequest extends FormRequest
 
         // If teacher, don't allow teacher_id in the request
         if ($user->hasRole('teacher')) {
-
         } else {
             // super_admin / school_admin must pass teacher_id
-            $rules['teacher_id'] = 'required|integer|exists:teacher_profiles,id';
+            $rules['teacher_id'] = ['required', 'integer', Rule::exists('teacher_profiles', 'id')->where('school_id', $schoolId)];
         }
 
         return $rules;

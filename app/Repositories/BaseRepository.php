@@ -78,7 +78,7 @@ abstract class BaseRepository implements IRepository
     public function findById(int|string $id, array $relations = []): ?Model
     {
         $query = $this->withRelations($this->query(), $relations);
-        return $query->where('id', $id)->first();
+        return $query->find($id);
     }
 
     /**

@@ -16,6 +16,9 @@ class TeacherController extends Controller
         $this->middleware('auth:sanctum');
         $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show']);
         $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy']);
+
+        // Rate limiting: 60 requests per minute for create operations
+        $this->middleware('throttle:60,1')->only(['store']);
     }
 
     public function index(Request $request)

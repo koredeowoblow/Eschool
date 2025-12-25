@@ -197,13 +197,25 @@
 
         function editTeacher(data) {
             const form = document.getElementById('editTeacherForm');
-            // For API, we likely update user or teacher resource. Assuming /api/v1/teachers/{id}
-            // Note: The form submission logic in premium-app.js handles the method spoofing or we can set it here.
             form.action = `/api/v1/teachers/${data.id}`;
 
-            // Populate form
-            // Data might need flattening if it comes nested.
-            App.populateForm(form, data);
+            // Flatten nested user data for form population
+            const formData = {
+                ...data,
+                user_id: data.user_id || data.user?.id || '',
+                name: data.user?.name || data.name || '',
+                email: data.user?.email || data.email || '',
+                phone: data.user?.phone || data.phone || '',
+                status: data.user?.status ?? data.status ?? 1,
+                employee_number: data.employee_number || '',
+                hire_date: data.hire_date ?
+                    (data.hire_date.includes('T') ? data.hire_date.split('T')[0] : data.hire_date) : '',
+                qualification: data.qualification || '',
+                department: data.department || '',
+                bio: data.bio || ''
+            };
+
+            App.populateForm(form, formData);
             const modal = new bootstrap.Modal(document.getElementById('editTeacherModal'));
             modal.show();
         }

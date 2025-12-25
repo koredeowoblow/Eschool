@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Assignment\Create;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AssessmentRequest extends FormRequest
 {
@@ -14,10 +15,11 @@ class AssessmentRequest extends FormRequest
     public function rules(): array
     {
         $user = auth()->user();
+        $schoolId = $user->school_id;
 
         $rules = [
-            'class_id' => 'required|integer|exists:classes,id',
-            'subject_id' => 'required|integer|exists:subjects,id',
+            'class_id' => ['required', 'integer', Rule::exists('classes', 'id')->where('school_id', $schoolId)],
+            'subject_id' => ['required', 'integer', Rule::exists('subjects', 'id')->where('school_id', $schoolId)],
             'type' => 'required|in:exam,test,project',
             'total_marks' => 'required|integer|min:1',
             'date' => 'required|date',
@@ -28,7 +30,7 @@ class AssessmentRequest extends FormRequest
             // teacher_id will be injected later
         } else {
             // super_admin / school_admin must pass teacher_id
-            $rules['teacher_id'] = 'required|integer|exists:teacher_profiles,id';
+            $rules['teacher_id'] = ['required', 'integer', Rule::exists('teacher_profiles', 'id')->where('school_id', $schoolId)];
         }
 
         return $rules;

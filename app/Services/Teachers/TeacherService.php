@@ -5,6 +5,7 @@ namespace App\Services\Teachers;
 use App\Repositories\Teachers\TeacherRepository;
 use App\Models\TeacherProfile;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\AuditLogger;
 
 class TeacherService
 {
@@ -46,6 +47,12 @@ class TeacherService
 
             \Illuminate\Support\Facades\Log::info("Teacher created successfully: {$user->email} (ID: {$teacher->id})");
 
+            // Audit log
+            AuditLogger::logCreate('teacher', $teacher, [
+                'user_email' => $user->email,
+                'employee_number' => $teacher->employee_number ?? null,
+            ]);
+
             return $teacher;
         });
     }
@@ -68,6 +75,12 @@ class TeacherService
             }
 
             $this->repo->update($id, $data);
+
+            // Audit log
+            AuditLogger::logUpdate('teacher', $model, [
+                'updated_fields' => array_keys($data),
+            ]);
+
             return $model->fresh(['user']);
         });
     }

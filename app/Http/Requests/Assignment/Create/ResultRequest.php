@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Assignment\Create;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ResultRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class ResultRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check() && auth()->user()->hasAnyRole(['teacher', 'school_admin', 'super_admin']);
     }
 
     /**
@@ -21,9 +22,11 @@ class ResultRequest extends FormRequest
      */
     public function rules(): array
     {
+        $schoolId = auth()->user()->school_id;
+
         return [
-            'assessment_id' => 'required|integer|exists:assessments,id',
-            'student_id' => 'required|integer|exists:students,id',
+            'assessment_id' => ['required', 'integer', Rule::exists('assessments', 'id')->where('school_id', $schoolId)],
+            'student_id' => ['required', 'integer', Rule::exists('students', 'id')->where('school_id', $schoolId)],
             'marks_obtained' => 'required|integer|min:0',
             'grade' => 'required|in:A,B,C,D,F',
             'remark' => 'nullable|string',

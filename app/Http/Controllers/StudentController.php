@@ -17,6 +17,9 @@ class StudentController extends Controller
         $this->middleware('auth:sanctum');
         $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy']);
         $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show']);
+
+        // Rate limiting: 60 requests per minute for create operations
+        $this->middleware('throttle:60,1')->only(['store']);
     }
 
     /**

@@ -25,7 +25,7 @@ class StudentRepository extends BaseRepository
      */
     public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
     {
-        $query = $this->query();
+        $query = $this->model->query();
 
         if (!empty($filters['admission_number'])) {
             $query->where('admission_number', 'like', '%' . $filters['admission_number'] . '%');

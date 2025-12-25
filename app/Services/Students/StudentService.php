@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\AuditLogger;
 
 class StudentService
 {
@@ -69,6 +70,13 @@ class StudentService
 
             Log::info("Student created successfully: {$student->admission_number}");
 
+            // Audit log
+            AuditLogger::logCreate('student', $student, [
+                'admission_number' => $student->admission_number,
+                'class_id' => $data['class_id'] ?? null,
+                'user_email' => $user->email,
+            ]);
+
             return $student;
         });
     }
@@ -104,6 +112,11 @@ class StudentService
 
             // Update Student model
             $this->studentRepository->update($id, $data);
+
+            // Audit log
+            AuditLogger::logUpdate('student', $student, [
+                'updated_fields' => array_keys($data),
+            ]);
 
             return $student->fresh(['user', 'classRoom']);
         });
