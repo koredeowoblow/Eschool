@@ -18,7 +18,7 @@ use App\Http\Controllers\ProfileController;
 
 // Public Routes
 Route::get('/', [AuthController::class, 'loginForm'])->name('login');
-Route::get('/logins', [AuthController::class, 'loginForm'])->name('login');
+// Route::get('/logins', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -112,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['permission:finance.view.reports'])->group(function () {
             Route::get('/finance', [App\Http\Controllers\Finance\FinanceController::class, 'index'])->name('web.finance.index');
             // Add view routes if creating separate pages, e.g.
-            // Route::get('/finance/invoices/create', ...)->name('web.finance.invoices.create'); 
+            // Route::get('/finance/invoices/create', ...)->name('web.finance.invoices.create');
         });
 
         Route::middleware(['role:super_admin|school_admin|student'])->group(function () {
