@@ -18,7 +18,8 @@ class SchoolService
 {
     public function __construct(
         protected SchoolRepository $schoolRepo,
-        protected UserRepository $userRepo
+        protected UserRepository $userRepo,
+        protected \App\Services\Plans\PlanService $planService
     ) {}
 
     /**
@@ -65,12 +66,17 @@ class SchoolService
                 'area'      => $data['area'],
                 'city'      => $data['city'],
                 'website'   => $data['website'] ?? null,
-                'plan'      => $data['plan'],
+                // 'plan' field removed/ignored as we use relation
                 'status'    => $status,
                 'contact_person' => $data['contact_person'] ?? null,
                 'contact_person_phone' => $data['contact_person_phone'] ?? null,
                 'is_active' => ($status === 'active'),
             ]);
+
+            // 1b. Assign Plan
+            if (isset($data['plan'])) {
+                $this->planService->assignPlanToSchool($school->id, $data['plan']);
+            }
 
             // 2. Generate Password
             $rawPassword = Str::random(10);
@@ -85,7 +91,7 @@ class SchoolService
             ]);
 
             // 4. Assign Role
-            $adminUser->assignRole('school_admin');
+            $adminUser->assignRole('School Admin');
 
             // 5. Send Email
             try {

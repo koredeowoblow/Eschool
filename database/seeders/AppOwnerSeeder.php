@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
 
 class AppOwnerSeeder extends Seeder
 {
@@ -18,13 +18,41 @@ class AppOwnerSeeder extends Seeder
             ['email' => $ownerEmail],
             [
                 'name' => 'Application Owner',
-                'password' => Hash::make('password123'), // default password
+                'password' => Hash::make('password123'),
+                'school_id' => null  // Super admin has no school
             ]
         );
 
-        // Assign super_admin role
-        $role = Role::findByName('super_admin', 'api');
-        $owner->assignRole($role);
-        echo "✅ Application owner created and assigned super_admin role.\n";
+        // Get super_admin role
+        $superAdminRole = Role::where('name', 'super_admin')
+            ->where('guard_name', 'api')
+            ->first();
+
+        if (!$superAdminRole) {
+            echo "❌ super_admin role not found. Please run RolesAndPermissionsSeeder first.\n";
+            return;
+        }
+
+        // Check if already assigned
+        $alreadyAssigned = DB::table('model_has_roles')
+            ->where('model_id', $owner->id)
+            ->where('model_type', User::class)
+            ->where('role_id', $superAdminRole->id)
+            ->exists();
+
+        if (!$alreadyAssigned) {
+            // Manually insert with null school_id for global super_admin
+            DB::table('model_has_roles')->insert([
+                'role_id' => $superAdminRole->id,
+                'model_type' => User::class,
+                'model_id' => $owner->id,
+                'school_id' => null  // Global role - no school
+            ]);
+
+            // Clear permission cache
+            app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        }
+
+        echo "✅ Application owner created and assigned super_admin role (global, no school).\n";
     }
 }

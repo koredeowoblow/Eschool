@@ -30,7 +30,7 @@ class LibraryBorrowingService
     {
         return DB::transaction(function () use ($data) {
             $user = Auth::user();
-            $isStudent = $user->hasRole('student');
+            $isStudent = $user->hasRole('Student');
             $data['status'] = $isStudent ? 'pending' : ($data['status'] ?? 'borrowed');
             $data['borrowed_at'] = $data['borrowed_at'] ?? now();
 

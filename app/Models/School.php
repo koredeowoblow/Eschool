@@ -19,7 +19,7 @@ class School extends Model
         'city',
         'website',
         'contact_person',
-        'plan_id',
+        'school_plan_id',
         'contact_person_phone',
         'status',
         'is_active'
@@ -68,8 +68,14 @@ class School extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function plan()
+    public function schoolPlan()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(SchoolPlan::class);
+    }
+
+    // Helper to get limit
+    public function getLimit($type)
+    {
+        return $this->schoolPlan ? $this->schoolPlan->{'no_of_' . $type} : 0;
     }
 }

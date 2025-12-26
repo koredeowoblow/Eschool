@@ -145,15 +145,15 @@ class User extends Authenticatable
     */
     public function myStudents()
     {
-        if ($this->hasRole('student')) {
+        if ($this->hasRole('Student')) {
             return Student::where('user_id', $this->id)->get();
         }
 
-        if ($this->hasRole('guardian')) {
+        if ($this->hasRole('Guardian')) {
             return $this->guardianStudents();
         }
 
-        if ($this->hasRole('teacher') || $this->hasRole('admin')) {
+        if ($this->hasRole('Teacher') || $this->hasRole('School Admin')) {
             return $this->schoolStudents()->get();
         }
 
@@ -167,11 +167,11 @@ class User extends Authenticatable
 
     public function myTeachers()
     {
-        if ($this->hasRole('teacher')) {
+        if ($this->hasRole('Teacher')) {
             return $this->teacher()->get();
         }
 
-        if ($this->hasRole('admin')) {
+        if ($this->hasRole('School Admin')) {
             return $this->schoolTeachers()->get();
         }
 
@@ -185,15 +185,15 @@ class User extends Authenticatable
 
     public function myGuardians()
     {
-        if ($this->hasRole('guardian')) {
+        if ($this->hasRole('Guardian')) {
             return $this->guardian()->get();
         }
 
-        if ($this->hasRole('student')) {
+        if ($this->hasRole('Student')) {
             return $this->student()->first()?->guardians ?? collect();
         }
 
-        if ($this->hasRole('admin')) {
+        if ($this->hasRole('School Admin')) {
             return $this->schoolGuardians()->get();
         }
 

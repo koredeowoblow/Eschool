@@ -21,7 +21,7 @@ class AssessmentRepository extends BaseRepository
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
 
-        if ($user && $user->hasRole('student')) {
+        if ($user && $user->hasRole('Student')) {
             $student = $user->student()->first();
             if ($student) {
                 $classIds = $this->getStudentClassIds($student);
@@ -29,7 +29,7 @@ class AssessmentRepository extends BaseRepository
             } else {
                 $query->where('id', 0); // Safe failure for orphaned users
             }
-        } elseif ($user && $user->hasRole('guardian')) {
+        } elseif ($user && $user->hasRole('Guardian')) {
             // Security: Enforce child's class-scoping for parents
             $students = $user->guardianStudents();
             if ($students->isNotEmpty()) {
@@ -41,7 +41,7 @@ class AssessmentRepository extends BaseRepository
             } else {
                 $query->where('id', 0); // Safe failure for orphaned guardians
             }
-        } elseif ($user && $user->hasRole('teacher')) {
+        } elseif ($user && $user->hasRole('Teacher')) {
             // Teachers see assessments for classes they are assigned to
             $classIds = \App\Models\TeacherSubject::where('teacher_id', $user->teacherProfile?->id ?? 0)
                 ->pluck('class_id')

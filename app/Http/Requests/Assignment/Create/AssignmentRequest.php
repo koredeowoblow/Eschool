@@ -26,7 +26,7 @@ class AssignmentRequest extends FormRequest
         ];
 
         // If teacher, don't allow teacher_id in the request
-        if ($user->hasRole('teacher')) {
+        if ($user->hasRole('Teacher')) {
         } else {
             // super_admin / school_admin must pass teacher_id
             $rules['teacher_id'] = ['required', 'integer', Rule::exists('teacher_profiles', 'id')->where('school_id', $schoolId)];
@@ -40,7 +40,7 @@ class AssignmentRequest extends FormRequest
         $data = parent::validated($key, $default);
         $user = auth()->user();
 
-        if ($user->hasRole('teacher')) {
+        if ($user->hasRole('Teacher')) {
             $teacherId = $user->teacherProfile->id ?? null;
             if (!$teacherId) {
                 abort(403, 'Teacher profile not found.');

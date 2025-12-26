@@ -53,7 +53,7 @@ class UserRequest extends BaseRequest
                         $existingUser = \App\Models\User::where('email', $value)->first();
                         if ($existingUser) {
                             // 1. Must be a guardian
-                            if (!$existingUser->hasRole('guardian')) {
+                            if (!$existingUser->hasRole('Guardian')) {
                                 $fail('This email is already registered to a ' . ($existingUser->getRoleNames()->first() ?? 'user') . ' account.');
                             }
                             // 2. Must belong to the same school

@@ -5,6 +5,7 @@ namespace App\Services\Users;
 use App\Repositories\Users\GuardianRepository;
 use App\Models\Guardian;
 use Illuminate\Support\Facades\Auth;
+use App\Models\School;
 
 class GuardianService
 {
@@ -33,6 +34,18 @@ class GuardianService
     {
         $user = Auth::user();
         $schoolId = $user->school_id;
+
+        // Check Plan Limit
+        $school = School::find($schoolId);
+        if ($school) {
+            $limit = $school->getLimit('guardians');
+            if ($limit > 0) {
+                $currentCount = Guardian::where('school_id', $schoolId)->count();
+                if ($currentCount >= $limit) {
+                    throw new \Exception("Guardian limit reached for this school plan ({$limit}). Upgrade your plan to add more guardians.");
+                }
+            }
+        }
 
         // Security: Filter student IDs to ensure they belong to the same school
         if (!empty($studentIds) && !$user->hasRole('super_admin')) {

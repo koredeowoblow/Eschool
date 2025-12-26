@@ -24,7 +24,7 @@ class AssessmentRequest extends FormRequest
         ];
 
         // If teacher, don't allow teacher_id in the request
-        if ($user->hasRole('teacher')) {
+        if ($user->hasRole('Teacher')) {
             // teacher_id will be injected later
         } else {
             // super_admin / school_admin must pass teacher_id
@@ -39,7 +39,7 @@ class AssessmentRequest extends FormRequest
         $data = parent::validated($key, $default);
         $user = auth()->user();
 
-        if ($user->hasRole('teacher')) {
+        if ($user->hasRole('Teacher')) {
             $teacherId = $user->teacherProfile->id ?? null;
             if (!$teacherId) {
                 abort(403, 'Teacher profile not found.');

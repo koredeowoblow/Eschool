@@ -146,7 +146,7 @@ class UserService
             $user->update(array_intersect_key($data, array_flip($safeFields)));
 
             // Update related profiles (Teacher self-update)
-            if ($user->hasRole('teacher') && $user->teacher()->exists()) {
+            if ($user->hasRole('Teacher') && $user->teacher()->exists()) {
                 $user->teacher()->update(array_intersect_key($data, array_flip([
                     'qualification',
                     'department',
@@ -215,7 +215,7 @@ class UserService
             // 2. Fallback to finding by email if no ID or ID lookup failed
             if (!$guardianUser) {
                 $existingUser = $this->userRepo->findByEmail($guardianData['email']);
-                if ($existingUser && $existingUser->hasRole('guardian')) {
+                if ($existingUser && $existingUser->hasRole('Guardian')) {
                     $guardianUser = $existingUser;
                     $guardianProfile = $existingUser->guardian;
                     $isNewGuardian = false;
@@ -235,7 +235,7 @@ class UserService
                 $guardianData['role'] = 'guardian';
 
                 $guardianUser = $this->userRepo->create($guardianData);
-                $guardianUser->assignRole('guardian');
+                $guardianUser->assignRole('Guardian');
 
                 $guardianProfile = $this->guardianRepo->create([
                     'school_id'  => $guardianUser->school_id,
@@ -285,7 +285,7 @@ class UserService
     {
         $guardian = $this->userRepo->single($guardianData['email'] ?? '');
 
-        if ($guardian && $guardian->hasRole('guardian')) {
+        if ($guardian && $guardian->hasRole('Guardian')) {
             $guardianFields = array_intersect_key($guardianData, array_flip(['name', 'email', 'phone']));
             if (!empty($guardianData['password'])) {
                 $guardianFields['password'] = bcrypt($guardianData['password']);

@@ -65,13 +65,13 @@
                         <h6 class="fw-bold mb-3">Student Information</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">First Name *</label>
-                                <input type="text" name="first_name" class="form-control" placeholder="John" required>
+                                <label class="form-label">FULLNAME *</label>
+                                <input type="text" name="name" class="form-control" placeholder="John" required>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <label class="form-label">Last Name *</label>
                                 <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <label class="form-label">Email *</label>
                                 <input type="email" name="email" class="form-control" placeholder="student@example.com"
@@ -200,14 +200,13 @@
                         <h6 class="fw-bold mb-3">Student Information</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">First Name *</label>
-                                <input type="text" name="first_name" class="form-control" placeholder="John"
-                                    required>
+                                <label class="form-label">fullName *</label>
+                                <input type="text" name="name" class="form-control" placeholder="John" required>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <label class="form-label">Last Name *</label>
                                 <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <label class="form-label">Email *</label>
                                 <input type="email" name="email" class="form-control"
@@ -442,7 +441,7 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.full_name)}&background=2563eb&color=fff" 
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.full_name)}&background=2563eb&color=fff"
                                      class="avatar-sm rounded-circle me-3 shadow-sm" alt="${item.full_name}">
                                 <div>
                                     <div class="fw-bold text-dark">${item.full_name}</div>
@@ -456,11 +455,11 @@
                         <td><span class="badge rounded-pill bg-${statusClass}-subtle text-${statusClass} px-3">${statusText}</span></td>
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <button class="btn btn-light shadow-sm btn-sm" 
+                                <button class="btn btn-light shadow-sm btn-sm"
                                     data-action="edit" data-entity="student" data-id="${item.id}" title="Edit">
                                     <i class="bi bi-pencil-fill text-primary"></i>
                                 </button>
-                                <button class="btn btn-light shadow-sm btn-sm" 
+                                <button class="btn btn-light shadow-sm btn-sm"
                                     data-action="delete" data-entity="student" data-id="${item.id}" title="Delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </button>

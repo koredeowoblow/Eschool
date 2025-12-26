@@ -106,8 +106,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/payments', 'paymentsIndex')->name('web.payments.index');
             Route::get('/fee-types', 'feeTypesIndex')->name('web.fee_types.index');
             Route::get('/invoices', 'invoicesIndex')->name('web.invoices.index');
+        });
 
-            // New Fee Module Routes
+        // New Finance Module (Bursar / Admin)
+        Route::middleware(['permission:finance.view.reports'])->group(function () {
+            Route::get('/finance', [App\Http\Controllers\Finance\FinanceController::class, 'index'])->name('web.finance.index');
+            // Add view routes if creating separate pages, e.g.
+            // Route::get('/finance/invoices/create', ...)->name('web.finance.invoices.create'); 
+        });
+
+        Route::middleware(['role:super_admin|school_admin|student'])->group(function () {
+            // New Fee Module Routes (Legacy/Existing?)
             Route::get('/fees', 'feesIndex')->name('web.fees.index');
             Route::get('/fees/assign', 'feesAssignIndex')->name('web.fees.assign');
             Route::get('/fees/students/{id}', 'studentFeesOverview')->name('web.fees.student-overview');
@@ -115,7 +124,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Student Specific Fees
-        Route::middleware(['role:student'])->group(function () {
+        Route::middleware(['role:Student'])->group(function () {
             Route::get('/my-fees', 'myFeesIndex')->name('web.fees.my-fees');
         });
 
@@ -143,6 +152,25 @@ Route::middleware(['auth'])->group(function () {
 
         // Settings
         Route::get('/settings', 'settingsIndex')->name('web.settings.index');
+
+        // Audit Logs (Admin only or super_admin)
+        Route::get('/audit', function () {
+            return view('audit.index');
+        })->middleware('role:super_admin|School Admin')->name('web.audit.index');
+
+        // Guardian Dashboard
+        Route::middleware(['role:Guardian'])->group(function () {
+            Route::get('/my-children', function () {
+                return view('guardian.dashboard');
+            })->name('web.guardian.dashboard');
+        });
+
+        // Role Management (Admin only)
+        Route::middleware(['role:School Admin|super_admin'])->group(function () {
+            Route::get('/roles', function () {
+                return view('roles.index');
+            })->name('web.roles.index');
+        });
     });
 
     // Super Admin View Routes
@@ -156,6 +184,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payments', function () {
             return view('super_admin.payments.index');
         })->name('super_admin.payments.index');
+        Route::get('/plans', function () {
+            return view('super_admin.plans.index');
+        })->name('super_admin.plans.index');
         Route::get('/settings', function () {
             return view('super_admin.settings.index');
         })->name('super_admin.settings.index');

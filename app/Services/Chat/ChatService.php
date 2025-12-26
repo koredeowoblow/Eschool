@@ -7,6 +7,7 @@ use App\Repositories\Chat\ChatRepository;
 use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ChatService
 {
@@ -55,14 +56,14 @@ class ChatService
 
         // Broadcast the event to both sender and receiver
         try {
-            \Illuminate\Support\Facades\Log::info('Broadcasting MessageSent event', [
+            Log::info('Broadcasting MessageSent event', [
                 'sender_id' => $chat->sender_id,
                 'receiver_id' => $chat->receiver_id,
                 'chat_id' => $chat->id
             ]);
             broadcast(new \App\Events\MessageSent($chat))->toOthers();
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed', ['error' => $e->getMessage()]);
+            Log::error('Broadcast failed', ['error' => $e->getMessage()]);
         }
 
         return $chat;

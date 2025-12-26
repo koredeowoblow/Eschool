@@ -65,27 +65,50 @@ export const sidebarConfig = [
     },
     {
         type: 'header',
-        label: 'Finance & More'
+        label: 'Finance'
     },
     {
         type: 'link',
-        key: 'payments',
-        label: 'Payments',
-        icon: 'bi bi-credit-card',
-        roles: ['super_admin', 'school_admin', 'student']
+        key: 'finance-overview',
+        label: 'Financial Overview',
+        icon: 'bi bi-cash-stack',
+        path: '/finance',
+        permissions: ['finance.view.reports']
     },
     {
         type: 'link',
-        key: 'library',
-        label: 'Library',
-        icon: 'bi bi-book',
-        roles: ['*']
+        key: 'manage-invoices',
+        label: 'Invoices',
+        icon: 'bi bi-receipt',
+        path: '/invoices',
+        permissions: ['finance.generate.invoices']
+    },
+    {
+        type: 'header',
+        label: 'System'
     },
     {
         type: 'link',
-        key: 'reports',
-        label: 'Reports',
-        icon: 'bi bi-graph-up',
-        roles: ['super_admin', 'school_admin', 'teacher']
+        key: 'audit-logs',
+        label: 'Audit Logs',
+        icon: 'bi bi-shield-check',
+        path: '/audit',
+        permissions: ['audit.view.logs']
+    },
+    {
+        type: 'link',
+        key: 'my-children',
+        label: 'My Children',
+        icon: 'bi bi-people-fill',
+        path: '/my-children',
+        roles: ['Guardian']
+    },
+    {
+        type: 'link',
+        key: 'role-management',
+        label: 'Role Management',
+        icon: 'bi bi-person-badge',
+        path: '/roles',
+        roles: ['School Admin', 'super_admin']
     }
 ];

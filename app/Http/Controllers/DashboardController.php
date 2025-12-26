@@ -28,9 +28,9 @@ class DashboardController extends Controller
 
         if ($user->hasRole('super_admin')) {
             $stats = $this->dashboardService->getPlatformStats();
-        } elseif ($user->hasRole('student')) {
+        } elseif ($user->hasRole('Student')) {
             $stats = $this->dashboardService->getStudentStats($user->id);
-        } elseif ($user->hasRole('teacher')) {
+        } elseif ($user->hasRole('Teacher')) {
             $stats = $this->dashboardService->getTeacherStats($user->id);
         } else {
             $stats = $this->dashboardService->getSchoolStats($user->school_id);

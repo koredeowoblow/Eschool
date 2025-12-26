@@ -33,6 +33,6 @@ class SchoolRepository extends BaseRepository
             $query->where('status', $filters['status']);
         }
 
-        return $query->withCount(['users', 'students'])->latest()->get();
+        return $query->with(['schoolPlan'])->withCount(['users', 'students'])->latest()->get();
     }
 }

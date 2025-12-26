@@ -223,7 +223,7 @@
     </script>
 
     <!-- MAIN MODULE -->
-    <script type="module" src="/js/premium-app.min.js" defer></script>
+    <script type="module" src="/js/premium-app.js" defer></script>
 
     @yield('scripts')
 

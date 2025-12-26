@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Str;
+use App\Helpers\ResponseHelper;
 
 if (!function_exists('get_success_response')) {
     function get_success_response($data = null, string $message = 'Operation successful', int $statusCode = 200, array $meta = [])
     {
-        return \App\Helpers\ResponseHelper::success($data, $message, $statusCode, $meta);
+        return ResponseHelper::success($data, $message, $statusCode, $meta);
     }
 }
 
@@ -19,7 +20,7 @@ if (!function_exists("pageCount")) {
 if (!function_exists('get_error_response')) {
     function get_error_response($message = 'Error', int $statusCode = 400, $errors = null, array $meta = [])
     {
-        return \App\Helpers\ResponseHelper::error($message, $statusCode, $errors, $meta);
+        return ResponseHelper::error($message, $statusCode, $errors, $meta);
     }
 }
 

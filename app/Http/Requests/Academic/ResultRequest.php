@@ -12,9 +12,9 @@ class ResultRequest extends BaseRequest
     public function authorize(): bool
     {
         return \Illuminate\Support\Facades\Auth::user()->hasRole('super_admin') ||
-            \Illuminate\Support\Facades\Auth::user()->hasRole('school_admin') ||
-            \Illuminate\Support\Facades\Auth::user()->hasRole('teacher') ||
-            \Illuminate\Support\Facades\Auth::user()->hasRole('student');
+            \Illuminate\Support\Facades\Auth::user()->hasRole('School Admin') ||
+            \Illuminate\Support\Facades\Auth::user()->hasRole('Teacher') ||
+            \Illuminate\Support\Facades\Auth::user()->hasRole('Student');
     }
 
     /**

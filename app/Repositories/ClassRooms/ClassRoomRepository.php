@@ -21,7 +21,7 @@ class ClassRoomRepository extends BaseRepository
         $user = Auth::user();
 
         // Teachers can only see classes they are assigned to (via TeacherSubject)
-        if ($user && $user->hasRole('teacher')) {
+        if ($user && $user->hasRole('Teacher')) {
             $query->whereIn('id', function ($q) use ($user) {
                 $q->select('class_id')
                     ->from('teacher_subjects')

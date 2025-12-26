@@ -217,10 +217,10 @@ class DashboardService
                 'user_role_distribution' => [
                     'labels' => ['Admins', 'Teachers', 'Students', 'Guardians'],
                     'data' => [
-                        User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count(),
-                        User::whereHas('roles', fn($q) => $q->where('name', 'teacher'))->count(),
-                        User::whereHas('roles', fn($q) => $q->where('name', 'student'))->count(),
-                        User::whereHas('roles', fn($q) => $q->where('name', 'guardian'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'School Admin'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'Teacher'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'Student'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'Guardian'))->count(),
                     ]
                 ],
                 'engagement_metrics' => [
@@ -236,9 +236,9 @@ class DashboardService
                 'school_distribution' => [
                     'labels' => ['Premium', 'Pro', 'Basic'],
                     'data' => [
-                        School::whereHas('plan', fn($q) => $q->where('name', 'Premium'))->count(),
-                        School::whereHas('plan', fn($q) => $q->where('name', 'Pro'))->count(),
-                        School::whereHas('plan', fn($q) => $q->where('name', 'Basic'))->count(),
+                        School::whereHas('schoolPlan', fn($q) => $q->where('name', 'Premium'))->count(),
+                        School::whereHas('schoolPlan', fn($q) => $q->where('name', 'Pro'))->count(),
+                        School::whereHas('schoolPlan', fn($q) => $q->where('name', 'Basic'))->count(),
                     ]
                 ]
             ]

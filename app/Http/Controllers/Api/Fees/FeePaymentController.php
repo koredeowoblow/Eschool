@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Services\Fees\FeePaymentService;
 use App\Models\FeePayment;
 use Illuminate\Http\Request;
+use App\Http\Resources\FeePaymentResource;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Fees\FeePaymentRequest;
+use App\Http\Resources\StudentFeeResource;
+use App\Helpers\ResponseHelper;
 
 class FeePaymentController extends Controller
 {
@@ -34,8 +38,8 @@ class FeePaymentController extends Controller
 
         $payments = $query->latest()->paginate($request->per_page ?? 15);
 
-        return \App\Helpers\ResponseHelper::success(
-            \App\Http\Resources\FeePaymentResource::collection($payments->items()),
+        return ResponseHelper::success(
+            FeePaymentResource::collection($payments->items()),
             'Payments retrieved successfully',
             200,
             [
@@ -49,18 +53,18 @@ class FeePaymentController extends Controller
     /**
      * Process a fee payment
      */
-    public function store(\App\Http\Requests\Fees\FeePaymentRequest $request)
+    public function store(FeePaymentRequest $request)
     {
         try {
             $payment = $this->paymentService->processPayment($request->validated());
 
-            return \App\Helpers\ResponseHelper::success(
-                new \App\Http\Resources\FeePaymentResource($payment),
+            return ResponseHelper::success(
+                new FeePaymentResource($payment),
                 'Payment processed successfully',
                 201
             );
         } catch (\Exception $e) {
-            return \App\Helpers\ResponseHelper::error($e->getMessage(), 400);
+            return ResponseHelper::error($e->getMessage(), 400);
         }
     }
 
@@ -71,8 +75,8 @@ class FeePaymentController extends Controller
     {
         $fees = $this->paymentService->getOutstandingFees($studentId);
 
-        return \App\Helpers\ResponseHelper::success(
-            \App\Http\Resources\StudentFeeResource::collection($fees),
+        return ResponseHelper::success(
+            StudentFeeResource::collection($fees),
             'Outstanding fees retrieved successfully'
         );
     }

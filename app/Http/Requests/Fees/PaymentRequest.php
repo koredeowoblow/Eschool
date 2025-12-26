@@ -13,8 +13,8 @@ class PaymentRequest extends BaseRequest
     {
         $user = \Illuminate\Support\Facades\Auth::user();
         return $user->hasRole('super_admin') ||
-            $user->hasRole('school_admin') ||
-            ($this->isMethod('POST') && $user->hasRole('student'));
+            $user->hasRole('School Admin') ||
+            ($this->isMethod('POST') && $user->hasRole('Student'));
     }
 
     /**
@@ -23,7 +23,7 @@ class PaymentRequest extends BaseRequest
     public function rules(): array
     {
         $user = \Illuminate\Support\Facades\Auth::user();
-        $isStudent = $user->hasRole('student');
+        $isStudent = $user->hasRole('Student');
 
         if ($this->isMethod('POST')) {
             return [

@@ -21,9 +21,9 @@ class LibraryBorrowingRepository extends BaseRepository
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
 
-        if ($user && $user->hasRole('student')) {
+        if ($user && $user->hasRole('Student')) {
             $query->where('user_id', $user->id);
-        } elseif ($user && $user->hasRole('guardian')) {
+        } elseif ($user && $user->hasRole('Guardian')) {
             // Security: Enforce child-scoping for parents
             $studentUserIds = $user->guardianStudents()->pluck('user_id');
             if ($studentUserIds->isNotEmpty()) {

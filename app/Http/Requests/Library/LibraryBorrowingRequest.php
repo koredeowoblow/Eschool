@@ -13,9 +13,9 @@ class LibraryBorrowingRequest extends BaseRequest
     {
         $user = \Illuminate\Support\Facades\Auth::user();
         return $user->hasRole('super_admin') ||
-            $user->hasRole('school_admin') ||
-            $user->hasRole('teacher') ||
-            $user->hasRole('student');
+            $user->hasRole('School Admin') ||
+            $user->hasRole('Teacher') ||
+            $user->hasRole('Student');
     }
 
     /**
@@ -24,7 +24,7 @@ class LibraryBorrowingRequest extends BaseRequest
     public function rules(): array
     {
         $user = \Illuminate\Support\Facades\Auth::user();
-        $isStudent = $user->hasRole('student');
+        $isStudent = $user->hasRole('Student');
 
         if ($this->isMethod('POST')) {
             return [

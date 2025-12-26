@@ -86,10 +86,22 @@ export class SidebarManager {
     filterByPermission(items, userRoles, isSuperAdmin) {
         if (isSuperAdmin) return items;
 
+        const userPermissions = this.config.user?.permissions || [];
+
         return items.filter(item => {
+            // Check Roles first (if defined)
             if (item.roles && item.roles.length > 0) {
-                const hasRole = item.roles.some(r => userRoles.includes(r.toLowerCase()));
-                if (!hasRole) return false;
+                // Skip role check if it's '*', otherwise check match
+                if (!item.roles.includes('*')) {
+                    const hasRole = item.roles.some(r => userRoles.includes(r.toLowerCase()));
+                    if (!hasRole) return false;
+                }
+            }
+
+            // Check Permissions
+            if (item.permissions && item.permissions.length > 0) {
+                const hasPermission = item.permissions.some(p => userPermissions.includes(p));
+                if (!hasPermission) return false;
             }
 
             if (item.children && item.children.length > 0) {

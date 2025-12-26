@@ -35,7 +35,7 @@ class InvoiceService
         }
 
         // Security: Force Student Scoping
-        if (Auth::user()->hasRole('student')) {
+        if (Auth::user()->hasRole('Student')) {
             $query->where('student_id', Auth::user()->student()->value('id'));
         }
 

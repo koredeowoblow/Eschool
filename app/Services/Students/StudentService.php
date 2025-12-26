@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\AuditLogger;
+use App\Models\School;
+use App\Models\Student;
 
 class StudentService
 {
@@ -42,6 +44,22 @@ class StudentService
             // 1. Create User
             $schoolId = $data['school_id'] ?? Auth::user()->school_id;
 
+            // Check Plan Limit
+            $school = School::find($schoolId);
+            if ($school) {
+                $limit = $school->getLimit('students');
+                if ($limit > 0) {
+                    // Count existing students
+                    // Ideally we should use a cached count or direct query. 
+                    // For now, count matches via repository or user count with role 'student' if that's more accurate?
+                    // StudentService::getAllStudents is scoped, but we need raw count.
+                    $currentCount = Student::where('school_id', $schoolId)->count();
+                    if ($currentCount >= $limit) {
+                        throw new \Exception("Student limit reached for this school plan ({$limit}). Upgrade your plan to add more students.");
+                    }
+                }
+            }
+
             $userData = [
                 'name' => $data['first_name'] . ' ' . $data['last_name'],
                 'email' => $data['email'],
@@ -52,7 +70,7 @@ class StudentService
             ];
 
             $user = $this->userRepo->create($userData);
-            $user->assignRole('student');
+            $user->assignRole('Student');
 
             // 2. Create Student Profile
             $studentData = array_merge($data, ['user_id' => $user->id]);

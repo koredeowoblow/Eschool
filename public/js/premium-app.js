@@ -710,7 +710,7 @@ const App = (() => {
             const planTd = document.createElement('td');
             const planBadge = document.createElement('span');
             planBadge.className = 'badge bg-info-subtle text-info text-uppercase';
-            planBadge.textContent = item.plan || 'Basic';
+            planBadge.textContent = item.school_plan?.name || item.plan || 'N/A';
             planTd.appendChild(planBadge);
             tr.appendChild(planTd);
 
@@ -772,6 +772,55 @@ const App = (() => {
             const dateTd = document.createElement('td');
             dateTd.textContent = item.hire_date ? new Date(item.hire_date).toLocaleDateString() : 'N/A';
             tr.appendChild(dateTd);
+        } else if (type === 'plan') {
+            const nameTd = document.createElement('td');
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'fw-bold text-dark';
+            nameDiv.textContent = item.name;
+            if (item.description) {
+                const descDiv = document.createElement('div');
+                descDiv.className = 'small text-muted text-truncate';
+                descDiv.style.maxWidth = '200px';
+                descDiv.textContent = item.description;
+                nameTd.appendChild(descDiv);
+            }
+            nameTd.prepend(nameDiv);
+            tr.appendChild(nameTd);
+
+            const formatLimit = (v) => {
+                if (v === undefined || v === null) return 'Unlimited';
+                const num = parseFloat(v);
+                return num === 0 ? 'Unlimited' : (Number.isInteger(num) ? num : num.toFixed(0));
+            };
+
+            const priceTd = document.createElement('td');
+            priceTd.textContent = formatCurrency(item.price);
+            tr.appendChild(priceTd);
+
+            const stdTd = document.createElement('td');
+            stdTd.textContent = formatLimit(item.no_of_students);
+            tr.appendChild(stdTd);
+
+            const tchTd = document.createElement('td');
+            tchTd.textContent = formatLimit(item.no_of_teachers);
+            tr.appendChild(tchTd);
+
+            const grdTd = document.createElement('td');
+            grdTd.textContent = formatLimit(item.no_of_guardians);
+            tr.appendChild(grdTd);
+
+            const stfTd = document.createElement('td');
+            stfTd.textContent = formatLimit(item.no_of_staff);
+            tr.appendChild(stfTd);
+
+            const actionTd = document.createElement('td');
+            actionTd.className = 'text-end';
+            actionTd.append(
+                actionButton('bi-pencil-square', 'edit', type, item.id),
+                actionButton('bi-trash', 'delete', type, item.id)
+            );
+            tr.appendChild(actionTd);
+            return tr;
         } else {
             // Generic fallback
             const nameTd = document.createElement('td');
@@ -905,6 +954,7 @@ const App = (() => {
             'library': 'library/books',
             'session': 'school-sessions',
             'feeType': 'fee-types',
+            'plan': 'plans',
             'invoiceItem': 'invoice-items',
             'lessonNote': 'lesson-notes',
             'assignmentSubmission': 'assignment-submissions',

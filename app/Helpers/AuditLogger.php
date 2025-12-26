@@ -108,6 +108,80 @@ class AuditLogger
     }
 
     /**
+     * Log a state change with before/after snapshots
+     */
+    public static function logStateChange(string $entity, $model, array $beforeState, array $afterState, ?string $reason = null): void
+    {
+        $logData = [
+            'action' => 'state_change',
+            'entity' => $entity,
+            'entity_id' => $model->id ?? null,
+            'before_state' => $beforeState,
+            'after_state' => $afterState,
+            'reason' => $reason,
+            'user_id' => Auth::id(),
+            'user_email' => Auth::user()?->email,
+            'user_role' => Auth::user()?->getRoleNames()->first(),
+            'school_id' => Auth::user()?->school_id,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'timestamp' => now()->toDateTimeString(),
+        ];
+
+        Log::info("State changed for {$entity}", $logData);
+        self::storeInDatabase($logData);
+    }
+
+    /**
+     * Log role assignment/removal
+     */
+    public static function logRoleChange(string $userId, string $action, string $roleName, ?string $schoolId = null): void
+    {
+        $logData = [
+            'action' => 'role_change',
+            'entity' => 'user_role',
+            'entity_id' => $userId,
+            'role_action' => $action, // 'assigned' or 'removed'
+            'role_name' => $roleName,
+            'target_school_id' => $schoolId,
+            'user_id' => Auth::id(),
+            'user_email' => Auth::user()?->email,
+            'user_role' => Auth::user()?->getRoleNames()->first(),
+            'school_id' => Auth::user()?->school_id,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'timestamp' => now()->toDateTimeString(),
+        ];
+
+        Log::warning("Role {$action}: {$roleName} for user {$userId}", $logData);
+        self::storeInDatabase($logData);
+    }
+
+    /**
+     * Log student promotion
+     */
+    public static function logPromotion(string $studentId, array $fromClass, array $toClass): void
+    {
+        $logData = [
+            'action' => 'promotion',
+            'entity' => 'student',
+            'entity_id' => $studentId,
+            'from_class' => $fromClass,
+            'to_class' => $toClass,
+            'user_id' => Auth::id(),
+            'user_email' => Auth::user()?->email,
+            'user_role' => Auth::user()?->getRoleNames()->first(),
+            'school_id' => Auth::user()?->school_id,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'timestamp' => now()->toDateTimeString(),
+        ];
+
+        Log::info("Student promoted: {$studentId}", $logData);
+        self::storeInDatabase($logData);
+    }
+
+    /**
      * Store audit log in database
      */
     private static function storeInDatabase(array $logData): void

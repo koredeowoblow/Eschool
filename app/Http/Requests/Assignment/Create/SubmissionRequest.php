@@ -25,7 +25,7 @@ class SubmissionRequest extends FormRequest
         ];
 
         // If student, student_id is auto-filled. If not student, required.
-        if (!$user->hasRole('student')) {
+        if (!$user->hasRole('Student')) {
             // super_admin / school_admin / teacher must pass student_id
             // Ensure it checks 'students' table, not teacher_profiles
             $rules['student_id'] = 'required|integer|exists:students,id';
@@ -39,7 +39,7 @@ class SubmissionRequest extends FormRequest
         $data = parent::validated($key, $default);
         $user = auth()->user();
 
-        if ($user->hasRole('student')) {
+        if ($user->hasRole('Student')) {
             $student = $user->student->first();
             if (!$student) {
                 abort(403, 'Student profile not found.');

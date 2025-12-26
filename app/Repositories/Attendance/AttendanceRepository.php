@@ -21,14 +21,14 @@ class AttendanceRepository extends BaseRepository
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
 
-        if ($user && $user->hasRole('student')) {
+        if ($user && $user->hasRole('Student')) {
             $student = $user->student()->first();
             if ($student) {
                 $query->where('student_id', $student->id);
             } else {
                 $query->where('id', 0); // Safe failure for orphaned users
             }
-        } elseif ($user && $user->hasRole('guardian')) {
+        } elseif ($user && $user->hasRole('Guardian')) {
             // Security: Enforce child-scoping for parents
             $studentIds = $user->guardianStudents()->pluck('id');
             if ($studentIds->isNotEmpty()) {
@@ -36,7 +36,7 @@ class AttendanceRepository extends BaseRepository
             } else {
                 $query->where('id', 0); // Safe failure for orphaned guardians
             }
-        } elseif ($user && $user->hasRole('teacher')) {
+        } elseif ($user && $user->hasRole('Teacher')) {
             // Security: Enforce class-scoping for teachers
             $query->whereIn('class_id', function ($q) use ($user) {
                 $q->select('class_id')

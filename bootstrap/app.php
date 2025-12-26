@@ -36,6 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/api/student.php');
                     require base_path('routes/api/user.php');
                     require base_path('routes/api/settings.php');
+                    require base_path('routes/api/plan.php');
                 });
         }
     )

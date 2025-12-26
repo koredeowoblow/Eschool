@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +11,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // 1. Run Roles and Permissions Seeder (Global & Preset Roles)
+        $this->call(RolesAndPermissionsSeeder::class);
+        echo "✅ Roles and permissions seeded (Global).\n";
+
+        // 2. Run App Owner Seeder (Super Admin)
+        $this->call(AppOwnerSeeder::class);
+        echo "✅ Super Admin user seeded.\n";
     }
 }

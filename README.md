@@ -1,61 +1,151 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Eschool - Advanced Education Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Eschool is a high-performance, multi-tenant Education Management System (EMS) architected for scalability, security, and administrative efficiency. It provides a centralized platform for managing multiple educational institutions with complete data isolation and granular role-based control.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📖 Table of Contents
+- [🚀 Key Features](#-key-features)
+- [🏗 Architecture & Design Patterns](#-architecture--design-patterns)
+- [👥 User Role & Access Model](#-user-role--access-model)
+- [📦 Core Modules](#-core-modules)
+- [📂 Project Structure](#-project-structure)
+- [⚙️ Setup & Installation](#-setup--installation)
+- [📝 Developer Guidelines](#-developer-guidelines)
+- [🔐 Security & Compliance](#-security--compliance)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Key Features
 
-## Learning Laravel
+### 🏢 Enterprise Multi-Tenancy
+- **Strict Isolation**: Model-level scoping using `school_id` ensures no data "leakage" between institutions.
+- **Dynamic Resource Limits**: Enforce student, teacher, and staff limits based on school subscription plans.
+- **Custom Branding**: Configuration hooks for school-specific settings and identity.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### � Academic Excellence
+- **3-Step Result Workflow**: `Draft` -> `Submitted` -> `Reviewed/Published`. Results only reach parents/students after administrative sign-off.
+- **Automated Grading**: Dynamic grade calculation based on school-defined grading scales.
+- **Attendance & Engagement**: Real-time digital registers and interactive assignment tracking.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### � Financial Integrity
+- **Intelligent Billing**: Automated fee generation based on student class/category.
+- **Payment Verification**: Secured payment gateway integration with manual override for cash/bank transfers.
+- **System-Wide Auditing**: Every modification to financial or academic data is timestamped and attributed.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🏗 Architecture & Design Patterns
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Service-Repository Pattern
+We strictly separate data access from business logic:
+- **Repositories**: Standardize database queries and enforce tenancy scoping.
+- **Services**: Coordinate business workflows, handle external events, and manage transactions.
+- **Controllers**: Thin wrappers that handle request validation and response delivery.
 
-### Premium Partners
+### 2. Tenancy Scoping (Automated)
+Most repositories extend `BaseRepository`, which implements a global query scope using the authenticated user's `school_id`.
+> [!IMPORTANT]
+> Always use Repository methods instead of direct Eloquent queries in Services or Controllers to ensure tenancy is never bypassed.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. API Response Standardization
+All endpoints must use the `ResponseHelper` to maintain consistency:
+- **Success**: `{"success": true, "data": {...}, "message": "..."}`
+- **Error**: `{"success": false, "errors": {...}, "message": "..."}`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 👥 User Role & Access Model
 
-## Code of Conduct
+The system uses [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) with the **Teams** feature enabled.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Role | Responsibility | Scope Access |
+| :--- | :--- | :--- |
+| **Super Admin** | Platform maintenance, school onboarding, global plan management. | **Global** (No Scoping) |
+| **School Admin** | Daily operations, staff management, financial approval, settings. | **Tenant** (`school_id`) |
+| **Teacher** | Classroom management, attendance, mark entry, lesson notes. | **Resource-Scoped** |
+| **Student** | Viewing materials, taking assignments, tracking progress. | **Owner-Scoped** |
+| **Guardian** | Monitoring ward performance, chatting with teachers, paying fees. | **Relationship-Scoped** |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📦 Core Modules
 
-## License
+### Result System (`Model\Result.php`)
+The result system moves through defined states:
+1. **Draft**: Initial entry by Teacher.
+2. **Submitted**: Sent for review (locked for Teacher).
+3. **Reviewed**: Verified by Exam Officer/Admin.
+4. **Published**: Visible to Student/Guardian.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Finance System (`Services\Finance\FinanceService.php`)
+Handles complex fee logic:
+- Multi-student discounts (linked via Guardian).
+- Part-payment support with outstanding balance tracking.
+- Automated invoice aging (Overdue notifications).
+
+---
+
+## 📂 Project Structure
+
+```text
+app/
+├── Helpers/        # AuditLogger, ResponseHelper, and generic global helpers.
+├── Http/
+│   ├── Controllers/ # Thin controllers, delegated to Services.
+│   ├── Requests/    # Validation logic (FormRequests).
+│   └── Middleware/  # Tenancy verification, Session checking.
+├── Models/         # UUID models (Traits: HasUuids, HasRoles, HasTenancy).
+├── Repositories/   # Scoped data access logic.
+└── Services/       # The "Brain" of the application (Business Logic).
+database/
+├── migrations/     # Ordered migrations with UUID support.
+└── seeders/        # Environment-aware seeding (Global Roles & Admin).
+```
+
+---
+
+## ⚙️ Setup & Installation
+
+### Requirements
+- PHP 8.2+
+- MySQL 8.0+ / PostgreSQL 15+
+- Node.js 18+
+
+### Steps
+1. **Clone**: `git clone <repo>`
+2. **PHP Dependencies**: `composer install`
+3. **JS Dependencies**: `npm install && npm run build`
+4. **Environment**: `cp .env.example .env && php artisan key:generate`
+5. **Database**: `php artisan migrate:fresh --seed`
+6. **Serve**: `php artisan serve`
+
+---
+
+## 📝 Developer Guidelines
+
+### 1. Naming Conventions
+- **Controllers**: `[Domain]Controller.php` (e.g., `StudentController`)
+- **Services**: `[Domain]Service.php` (e.g., `FinanceService`)
+- **Repositories**: `[Domain]Repository.php`
+- **Database**: Use UUIDs for all `id` columns.
+
+### 2. Transaction Safety
+Always use `DB::transaction()` in Services when modifying multiple tables (e.g., creating a Student + User + Enrollment).
+
+### 3. Auditing
+Include `AuditLogger::log(...)` for all state-changing actions. This is critical for the Accountability log visible to Super Admins.
+
+---
+
+## 🔐 Security & Compliance
+- **Authentication**: Laravel Sanctum with 24-hour token expiration.
+- **Authorization**: Mandatory `middleware(['role:name'])` or `can('permission')` on all routes.
+- **Data Protection**: Sensitive data (passwords, specific student PII) is never exposed in API responses without explicit intent.
+- **Rate Limiting**: Configured per endpoint based on sensitivity (Login/Payment).
+
+---
+
+## 📄 Documentation Links
+- [Internal Codebase Flow](file:///c:/Users/pc/.gemini/antigravity/brain/032af03b-9877-4d62-aa71-d779b1cac7f9/codebase_flow.md)
+- [Verification Guide](file:///c:/Users/pc/.gemini/antigravity/brain/032af03b-9877-4d62-aa71-d779b1cac7f9/walkthrough.md)

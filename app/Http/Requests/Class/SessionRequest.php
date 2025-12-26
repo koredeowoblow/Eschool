@@ -11,7 +11,7 @@ class SessionRequest extends BaseRequest
      */
     public function authorize(): bool
     {
-        return \Illuminate\Support\Facades\Auth::user()->hasRole('super_admin') || \Illuminate\Support\Facades\Auth::user()->hasRole('school_admin');
+        return \Illuminate\Support\Facades\Auth::user()->hasRole('super_admin') || \Illuminate\Support\Facades\Auth::user()->hasRole('School Admin');
     }
 
     /**

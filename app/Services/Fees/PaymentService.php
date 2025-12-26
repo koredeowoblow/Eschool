@@ -66,7 +66,7 @@ class PaymentService
                 $data['school_id'] = Auth::user()->school_id;
             }
 
-            if ($user->hasRole('student')) {
+            if ($user->hasRole('Student')) {
                 // Fix: Resolve the actual Student ID from the User relationship
                 $studentProfile = $user->student()->first();
                 $data['student_id'] = $studentProfile?->id;

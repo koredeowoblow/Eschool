@@ -19,7 +19,7 @@ class TeacherSubjectRepository extends BaseRepository
         $user = Auth::user();
 
         // Scope to teacher if role is teacher
-        if ($user && $user->hasRole('teacher')) {
+        if ($user && $user->hasRole('Teacher')) {
             $query->where('teacher_id', $user->teacherProfile?->id ?? 0);
         }
 

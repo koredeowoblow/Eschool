@@ -35,7 +35,7 @@ class CreateRequest extends FormRequest
             'contact_person_phone' => 'required|string|max:20',
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|string|email|max:255|unique:users,email',
-            'plan' => 'required|string|in:basic,standard,premium',
+            'plan' => 'required|exists:plans,id',
             'status' => 'required|string|in:active,pending,suspended',
         ];
     }

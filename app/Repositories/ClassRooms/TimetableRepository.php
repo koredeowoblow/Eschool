@@ -21,7 +21,7 @@ class TimetableRepository extends BaseRepository
         $query = $this->query();
         $user = \Illuminate\Support\Facades\Auth::user();
 
-        if ($user && $user->hasRole('student')) {
+        if ($user && $user->hasRole('Student')) {
             $student = $user->student()->first();
             if ($student && $student->class_id) {
                 $query->where('class_id', $student->class_id);

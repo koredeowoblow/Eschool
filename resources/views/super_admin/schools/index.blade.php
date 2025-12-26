@@ -113,9 +113,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">Plan *</label>
                                 <select class="form-select" id="create_plan" name="plan" required>
-                                    <option value="basic">Basic</option>
-                                    <option value="standard">Standard</option>
-                                    <option value="premium">Premium</option>
+                                    <option value="">Loading...</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -199,9 +197,7 @@
                             <div class="col-md-6">
                                 <label class="form-label">Plan *</label>
                                 <select class="form-select" id="edit_plan" name="plan" required>
-                                    <option value="basic">Basic</option>
-                                    <option value="standard">Standard</option>
-                                    <option value="premium">Premium</option>
+                                    <option value="">Loading...</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -231,6 +227,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadSchools();
+            App.loadOptions('/api/v1/plans', 'create_plan', null, 'id', 'name', 'Select Plan');
+            App.loadOptions('/api/v1/plans', 'edit_plan', null, 'id', 'name', 'Select Plan');
         });
 
         // Expose to window for global access
@@ -291,11 +289,12 @@
             document.getElementById('edit_contact_person').value = school.contact_person;
             document.getElementById('edit_contact_phone').value = school.contact_person_phone;
 
-            let planValue = 'basic';
-            if (school.plan_id == 2) planValue = 'standard';
-            if (school.plan_id == 3) planValue = 'premium';
-            if (school.plan) planValue = school.plan;
-            document.getElementById('edit_plan').value = planValue;
+            // Plan is now an ID
+            if (school.school_plan_id) {
+                document.getElementById('edit_plan').value = school.school_plan_id;
+            } else if (school.plan_id) {
+                document.getElementById('edit_plan').value = school.plan_id;
+            }
 
             const statusValue = school.is_active == 1 ? 'active' : (school.status || 'pending');
             document.getElementById('edit_status').value = statusValue;

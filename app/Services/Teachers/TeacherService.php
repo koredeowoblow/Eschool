@@ -37,6 +37,18 @@ class TeacherService
         return DB::transaction(function () use ($data) {
             $schoolId = $data['school_id'] ?? Auth::user()->school_id;
 
+            // Check Plan Limit
+            $school = \App\Models\School::find($schoolId);
+            if ($school) {
+                $limit = $school->getLimit('teachers');
+                if ($limit > 0) {
+                    $currentCount = \App\Models\TeacherProfile::where('school_id', $schoolId)->count();
+                    if ($currentCount >= $limit) {
+                        throw new \Exception("Teacher limit reached for this school plan ({$limit}). Upgrade your plan to add more teachers.");
+                    }
+                }
+            }
+
             // 1. Create User
             $user = $this->userRepo->create([
                 'name'      => $data['name'],
@@ -45,7 +57,7 @@ class TeacherService
                 'school_id' => $schoolId,
                 'status'    => 1, // Active by default
             ]);
-            $user->assignRole('teacher');
+            $user->assignRole('Teacher');
 
             // 2. Create Teacher Profile
             $data['user_id'] = $user->id;

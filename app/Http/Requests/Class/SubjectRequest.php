@@ -12,7 +12,7 @@ class SubjectRequest extends BaseRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()?->hasRole('super_admin') || Auth::user()?->hasRole('school_admin');
+        return Auth::user()?->hasRole('super_admin') || Auth::user()?->hasRole('School Admin');
     }
 
     /**
