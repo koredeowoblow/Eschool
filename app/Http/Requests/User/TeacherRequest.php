@@ -30,6 +30,7 @@ class TeacherRequest extends BaseRequest
                 'qualification' => 'nullable|string|max:255',
                 'department' => 'nullable|string|max:255',
                 'bio' => 'nullable|string',
+                'school_id' => \Illuminate\Support\Facades\Auth::user()->hasRole('super_admin') ? 'required|uuid|exists:schools,id' : 'nullable',
             ];
         }
 

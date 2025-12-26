@@ -22,6 +22,12 @@ export default [
         roles: ['super_admin', 'school_admin', 'teacher']
     },
     {
+        key: 'subject-assignments',
+        label: 'My Subjects',
+        icon: 'bi bi-book-half',
+        roles: ['teacher']
+    },
+    {
         key: 'lesson-notes',
         label: 'Lesson Notes',
         icon: 'bi bi-journal-bookmark',

@@ -25,10 +25,19 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(\App\Http\Requests\Student\StudentIndexRequest $request)
     {
-        $students = $this->studentService->getAllStudents();
-        return ResponseHelper::success($students, 'Students retrieved successfully.');
+        $students = $this->studentService->getAllStudents($request->validated());
+        return ResponseHelper::success(
+            \App\Http\Resources\StudentResource::collection($students->items()),
+            'Students retrieved successfully.',
+            200,
+            [
+                'current_page' => $students->currentPage(),
+                'last_page' => $students->lastPage(),
+                'total' => $students->total(),
+            ]
+        );
     }
 
     /**
@@ -38,7 +47,7 @@ class StudentController extends Controller
     {
         try {
             $student = $this->studentService->createStudent($request->validated());
-            return ResponseHelper::success($student, 'Student created successfully.', 201);
+            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student created successfully.', 201);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 422);
         }
@@ -54,7 +63,7 @@ class StudentController extends Controller
             if (!$student) {
                 return ResponseHelper::notFound('Student not found.');
             }
-            return ResponseHelper::success($student, 'Student retrieved successfully.');
+            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student retrieved successfully.');
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage());
         }
@@ -67,7 +76,7 @@ class StudentController extends Controller
     {
         try {
             $student = $this->studentService->updateStudent($id, $request->validated());
-            return ResponseHelper::success($student, 'Student updated successfully.');
+            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student updated successfully.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return ResponseHelper::notFound($e->getMessage());
         } catch (\Exception $e) {

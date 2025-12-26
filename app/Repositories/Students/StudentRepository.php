@@ -23,7 +23,7 @@ class StudentRepository extends BaseRepository
     /**
      * List all students with filters.
      */
-    public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
+    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = $this->model->query();
 
@@ -41,7 +41,7 @@ class StudentRepository extends BaseRepository
 
         return $query->with(['user', 'classRoom', 'section'])
             ->latest()
-            ->get();
+            ->paginate(pageCount());
     }
 
     public function findByAdmissionNumber(string $admissionNumber): ?Student

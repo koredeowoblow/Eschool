@@ -25,6 +25,11 @@ class ResponseHelper
      */
     public static function error(string $message = 'Error encountered', int $statusCode = 400, $errors = null, array $meta = []): JsonResponse
     {
+        // Sanitize message for production if it's a 500 error
+        if ($statusCode >= 500 && !config('app.debug')) {
+            $message = 'An internal server error occurred. Please contact support.';
+        }
+
         // Convert errors to MessageBag for consistency if needed
         if ($errors && !$errors instanceof MessageBag) {
             if (is_array($errors)) {

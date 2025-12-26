@@ -55,7 +55,7 @@ class ResultRepository extends BaseRepository
     /**
      * List results with filters.
      */
-    public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
+    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = $this->query(); // Automatically scoped
 
@@ -98,6 +98,6 @@ class ResultRepository extends BaseRepository
         return $query
             ->with(['student.user', 'assessment.classRoom', 'assessment.term'])
             ->latest()
-            ->get();
+            ->paginate(pageCount());
     }
 }

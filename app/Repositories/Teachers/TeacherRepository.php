@@ -15,9 +15,9 @@ class TeacherRepository extends BaseRepository
     /**
      * List teachers with filters.
      */
-    public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
+    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $query = $this->query()->with('user');
+        $query = $this->query()->with('user')->withCount('assignments');
 
         if (!empty($filters['user_id'])) {
             $query->where('user_id', $filters['user_id']);
@@ -35,6 +35,6 @@ class TeacherRepository extends BaseRepository
             $query->where('employee_number', $filters['employee_number']);
         }
 
-        return $query->orderByDesc('hire_date')->get();
+        return $query->orderByDesc('hire_date')->paginate(pageCount());
     }
 }

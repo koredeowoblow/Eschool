@@ -67,6 +67,8 @@ class AttendanceRepository extends BaseRepository
             $query->whereDate('date', $filters['date']);
         }
 
-        return $query->latest('date')->paginate(pageCount());
+        return $query->with(['student.user', 'classRoom'])
+            ->latest('date')
+            ->paginate($filters['per_page'] ?? 15);
     }
 }

@@ -35,7 +35,7 @@ class ClassRoomRepository extends BaseRepository
     /**
      * List classes with filters.
      */
-    public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
+    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = $this->query();
 
@@ -59,6 +59,6 @@ class ClassRoomRepository extends BaseRepository
             ->with(['section', 'session', 'term', 'classTeacher.user'])
             ->withCount(['students', 'subjects', 'assignments'])
             ->latest('id')
-            ->get();
+            ->paginate(pageCount());
     }
 }

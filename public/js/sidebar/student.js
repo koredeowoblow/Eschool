@@ -44,15 +44,15 @@ export default [
     },
     {
         type: 'link',
-        key: 'invoices',
-        label: 'Invoices',
+        key: 'my-fees',
+        label: 'My Fees',
         icon: 'bi bi-receipt',
         roles: ['student']
     },
     {
         type: 'link',
         key: 'payments',
-        label: 'Payments',
+        label: 'Payment History',
         icon: 'bi bi-credit-card',
         roles: ['student']
     }

@@ -173,26 +173,52 @@
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js" defer></script>
 
     <script>
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     // Initialize Echo after scripts are loaded
+        //     if (window.Pusher && window.Echo) {
+        //         window.Pusher = Pusher;
+        //         console.log('Echo Init:', {
+        //             host: "{{ config('broadcasting.connections.reverb.options.host') }}",
+        //             port: {{ config('broadcasting.connections.reverb.options.port', 8080) }},
+        //             key: "{{ config('broadcasting.connections.reverb.key') }}"
+        //         });
+        //         window.Echo = new Echo({
+        //             broadcaster: 'reverb',
+        //             key: "{{ config('broadcasting.connections.reverb.key') }}",
+        //             wsHost: "{{ config('broadcasting.connections.reverb.options.host') }}",
+        //             wsPort: {{ config('broadcasting.connections.reverb.options.port') ?? 443 }},
+        //             wssPort: {{ config('broadcasting.connections.reverb.options.port') ?? 443 }},
+        //             forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
+        //             enabledTransports: ['ws', 'wss'],
+        //             disableStats: true,
+        //         });
+        //     }
+        // });
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Echo after scripts are loaded
-            if (window.Pusher && window.Echo) {
-                window.Pusher = Pusher;
-                console.log('Echo Init:', {
-                    host: "{{ config('broadcasting.connections.reverb.options.host') }}",
-                    port: {{ config('broadcasting.connections.reverb.options.port', 8080) }},
-                    key: "{{ config('broadcasting.connections.reverb.key') }}"
-                });
-                window.Echo = new Echo({
-                    broadcaster: 'reverb',
-                    key: "{{ config('broadcasting.connections.reverb.key') }}",
-                    wsHost: "{{ config('broadcasting.connections.reverb.options.host') }}",
-                    wsPort: {{ config('broadcasting.connections.reverb.options.port') ?? 443 }},
-                    wssPort: {{ config('broadcasting.connections.reverb.options.port') ?? 443 }},
-                    forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
-                    enabledTransports: ['ws', 'wss'],
-                    disableStats: true,
-                });
-            }
+            if (!window.Pusher) return;
+
+            const host = "{{ config('broadcasting.connections.reverb.options.host') }}";
+            const port = {{ config('broadcasting.connections.reverb.options.port', 6001) }};
+            const key = "{{ config('broadcasting.connections.reverb.key') }}";
+            const useTLS = {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }};
+
+            console.log('Echo Init:', {
+                host,
+                port,
+                key,
+                useTLS
+            });
+
+            window.Echo = new Echo({
+                broadcaster: 'reverb',
+                key: key,
+                wsHost: host,
+                wsPort: port,
+                wssPort: port,
+                forceTLS: useTLS === 'true',
+                enabledTransports: ['ws', 'wss'],
+                disableStats: true,
+            });
         });
     </script>
 
@@ -232,16 +258,16 @@
                 }
 
                 if (userId && window.Echo) {
-                    console.log('Global: Registering listener on chat.' + userId);
+                    // console.log('Global: Registering listener on chat.' + userId);
                     window.Echo.private(`chat.${userId}`)
                         .subscribed(() => {
-                            console.log('Global: Successfully subscribed to chat.' + userId);
+                            // console.log('Global: Successfully subscribed to chat.' + userId);
                         })
                         .error((err) => {
-                            console.error('Global: Subscription error on chat.' + userId, err);
+                            // console.error('Global: Subscription error on chat.' + userId, err);
                         })
                         .listen('.MessageSent', (e) => {
-                            console.log('Global: Real-time message received:', e);
+                            // console.log('Global: Real-time message received:', e);
 
                             // Show badge
                             if (notificationBadge) {
@@ -265,7 +291,7 @@
                                     `https://ui-avatars.com/api/?name=${encodeURIComponent(e.sender.name)}&background=random`;
 
                                 item.innerHTML = `
-                                    <img src="${safeAvatar}" 
+                                    <img src="${safeAvatar}"
                                          class="rounded-circle" width="32" height="32" alt="">
                                     <div class="flex-fill">
                                         <div class="d-flex justify-content-between align-items-center mb-1">

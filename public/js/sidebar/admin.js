@@ -16,16 +16,16 @@ export default [
                 icon: 'bi bi-calendar3',
                 roles: ['super_admin', 'school_admin', 'teacher']
             },
-            {
-                key: 'classes',
-                label: 'Classes',
-                icon: 'bi bi-grid',
-                roles: ['super_admin', 'school_admin', 'teacher']
-            },
+
             {
                 key: 'sections',
                 label: 'Sections',
                 icon: 'bi bi-collection',
+                roles: ['super_admin', 'school_admin', 'teacher']
+            }, {
+                key: 'classes',
+                label: 'Classes',
+                icon: 'bi bi-grid',
                 roles: ['super_admin', 'school_admin', 'teacher']
             },
             {
@@ -33,8 +33,20 @@ export default [
                 label: 'Subjects',
                 icon: 'bi bi-book-half',
                 roles: ['super_admin', 'school_admin', 'teacher']
+            },
+            {
+                key: 'subject-assignments',
+                label: 'Assign Subjects',
+                icon: 'bi bi-link-45deg',
+                roles: ['super_admin', 'school_admin']
             }
         ]
+    },
+    {
+        key: 'teachers',
+        label: 'Teachers',
+        icon: 'bi bi-person-badge',
+        roles: ['super_admin', 'school_admin']
     },
     {
         key: 'students',
@@ -52,9 +64,16 @@ export default [
                 label: 'Guardians',
                 icon: 'bi bi-person-heart',
                 roles: ['super_admin', 'school_admin', 'teacher']
+            },
+            {
+                key: 'promotions',
+                label: 'Student Promotions',
+                icon: 'bi bi-arrow-up-circle',
+                roles: ['super_admin', 'school_admin', 'teacher']
             }
         ]
     },
+
     {
         key: 'assessment',
         label: 'Assessment',
@@ -98,20 +117,26 @@ export default [
         icon: 'bi bi-cash-coin',
         children: [
             {
-                key: 'fee-types',
-                label: 'Fee Types',
-                icon: 'bi bi-tag',
-                roles: ['super_admin', 'school_admin', 'student']
+                key: 'fees',
+                label: 'Fees List',
+                icon: 'bi bi-list-check',
+                roles: ['super_admin', 'school_admin']
             },
             {
-                key: 'class-fees',
-                label: 'Class Fees',
-                icon: 'bi bi-wallet2',
+                key: 'fees/assign',
+                label: 'Assign Fees',
+                icon: 'bi bi-person-plus',
+                roles: ['super_admin', 'school_admin']
+            },
+            {
+                key: 'fees/payments',
+                label: 'Payment History',
+                icon: 'bi bi-clock-history',
                 roles: ['super_admin', 'school_admin']
             },
             {
                 key: 'payments',
-                label: 'Payments',
+                label: 'General Payments',
                 icon: 'bi bi-credit-card',
                 roles: ['super_admin', 'school_admin', 'student']
             },
@@ -120,6 +145,12 @@ export default [
                 label: 'Invoices',
                 icon: 'bi bi-receipt',
                 roles: ['super_admin', 'school_admin', 'student']
+            },
+            {
+                key: 'fee-types',
+                label: 'Fee Categories',
+                icon: 'bi bi-tag',
+                roles: ['super_admin', 'school_admin']
             }
         ]
     },
@@ -134,12 +165,7 @@ export default [
                 icon: 'bi bi-building',
                 roles: ['super_admin', 'school_admin']
             },
-            {
-                key: 'teachers',
-                label: 'Staff & Roles',
-                icon: 'bi bi-person-badge',
-                roles: ['super_admin', 'school_admin']
-            }
+
         ]
     }
 ];

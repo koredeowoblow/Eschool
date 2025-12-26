@@ -20,9 +20,9 @@ class StudentService
     /**
      * Get all students for the current school.
      */
-    public function getAllStudents()
+    public function getAllStudents(array $filters = [])
     {
-        return $this->studentRepository->list([]);
+        return $this->studentRepository->list($filters);
     }
 
     /**
@@ -40,13 +40,15 @@ class StudentService
     {
         return DB::transaction(function () use ($data) {
             // 1. Create User
+            $schoolId = $data['school_id'] ?? Auth::user()->school_id;
+
             $userData = [
                 'name' => $data['first_name'] . ' ' . $data['last_name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password'] ?? 'password'),
                 'gender' => $data['gender'] ?? null,
                 'date_of_birth' => $data['date_of_birth'] ?? null,
-                'school_id' => $data['school_id'] ?? (Auth::user()->school_id ?? null),
+                'school_id' => $schoolId,
             ];
 
             $user = $this->userRepo->create($userData);

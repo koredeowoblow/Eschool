@@ -25,13 +25,8 @@ export class SidebarManager {
             this.items = cached;
             this.render();
         } else {
-            // Show loading state only if no cache
-            this.root.innerHTML = `
-                <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5">
-                    <div class="spinner-border text-primary-premium mb-2" role="status"></div>
-                    <div class="small text-muted italic">Building menu...</div>
-                </div>
-            `;
+            // Show skeleton loading state
+            this.showSkeleton();
         }
 
         // 2. Build fresh items
@@ -126,18 +121,53 @@ export class SidebarManager {
         } catch (e) { }
     }
 
-    render() {
-        this.root.innerHTML = '';
+    showSkeleton() {
+        this.root.replaceChildren();
 
         const brand = document.createElement('div');
         brand.className = 'sidebar-brand p-4 border-bottom';
-        const dashUrl = '/dashboard';
-        brand.innerHTML = `
-            <a href="${dashUrl}" class="d-flex align-items-center gap-2 text-decoration-none">
-                <i class="bi bi-mortarboard-fill text-primary fs-3"></i>
-                <span class="fs-4 fw-bold text-gradient">${this.config.appName || 'eSchool'}</span>
-            </a>
-        `;
+        const brandIcon = document.createElement('div');
+        brandIcon.className = 'sidebar-skeleton-icon';
+        const brandName = document.createElement('div');
+        brandName.className = 'sidebar-skeleton-text';
+        brand.append(brandIcon, brandName);
+        this.root.appendChild(brand);
+
+        const nav = document.createElement('nav');
+        nav.className = 'sidebar-nav p-2';
+
+        for (let i = 0; i < 8; i++) {
+            const item = document.createElement('div');
+            item.className = 'sidebar-skeleton';
+            const icon = document.createElement('div');
+            icon.className = 'sidebar-skeleton-icon';
+            const text = document.createElement('div');
+            text.className = 'sidebar-skeleton-text';
+            if (i % 3 === 0) text.style.width = '60%';
+            item.append(icon, text);
+            nav.appendChild(item);
+        }
+        this.root.appendChild(nav);
+    }
+
+    render() {
+        this.root.replaceChildren();
+
+        const brand = document.createElement('div');
+        brand.className = 'sidebar-brand p-4 border-bottom';
+        const brandLink = document.createElement('a');
+        brandLink.href = '/dashboard';
+        brandLink.className = 'd-flex align-items-center gap-2 text-decoration-none';
+
+        const brandIcon = document.createElement('i');
+        brandIcon.className = 'bi bi-mortarboard-fill text-primary fs-3';
+
+        const brandName = document.createElement('span');
+        brandName.className = 'fs-4 fw-bold text-gradient';
+        brandName.textContent = this.config.appName || 'eSchool';
+
+        brandLink.append(brandIcon, brandName);
+        brand.appendChild(brandLink);
         this.root.appendChild(brand);
 
         const nav = document.createElement('nav');
@@ -159,15 +189,20 @@ export class SidebarManager {
                 const parent = document.createElement('a');
                 parent.href = '#';
                 parent.className = 'sidebar-link d-flex align-items-center justify-content-between';
-                parent.dataset.bsToggle = 'collapse';
                 parent.dataset.action = 'toggle-submenu';
-                parent.innerHTML = `
-                    <div class="d-flex align-items-center gap-2 pointer-none-all">
-                        <i class="${item.icon}"></i>
-                        <span>${item.label}</span>
-                    </div>
-                    <i class="bi bi-chevron-down small transition-transform pointer-none-all"></i>
-                `;
+
+                const leftPart = document.createElement('div');
+                leftPart.className = 'd-flex align-items-center gap-2';
+                const parentIcon = document.createElement('i');
+                parentIcon.className = item.icon || 'bi bi-circle';
+                const parentLabel = document.createElement('span');
+                parentLabel.textContent = item.label;
+                leftPart.append(parentIcon, parentLabel);
+
+                const chevron = document.createElement('i');
+                chevron.className = 'bi bi-chevron-down small transition-transform-gpu';
+
+                parent.append(leftPart, chevron);
 
                 const submenu = document.createElement('div');
                 submenu.className = 'collapse sidebar-submenu ps-3';
@@ -196,7 +231,13 @@ export class SidebarManager {
         logout.href = '#';
         logout.className = 'sidebar-link text-danger mt-auto mb-3';
         logout.dataset.action = 'logout';
-        logout.innerHTML = `<i class="bi bi-box-arrow-left"></i><span>Logout</span>`;
+
+        const logoutIcon = document.createElement('i');
+        logoutIcon.className = 'bi bi-box-arrow-left';
+        const logoutLabel = document.createElement('span');
+        logoutLabel.textContent = 'Logout';
+
+        logout.append(logoutIcon, logoutLabel);
         nav.appendChild(logout);
 
         this.root.appendChild(nav);
@@ -221,14 +262,18 @@ export class SidebarManager {
             const group = trigger.closest('.sidebar-item-group');
             const submenu = group?.querySelector('.sidebar-submenu');
             if (submenu) {
+                // Check if already animating to prevent jank
+                if (submenu.classList.contains('collapsing')) return;
+
                 const bsCollapse = bootstrap.Collapse.getInstance(submenu) || new bootstrap.Collapse(submenu);
                 bsCollapse.toggle();
 
                 // Track state for chevron/link
-                const isExpanded = trigger.classList.toggle('expanded');
+                const isExpanding = !submenu.classList.contains('show');
+                trigger.classList.toggle('expanded', isExpanding);
                 const chevron = trigger.querySelector('.bi-chevron-down');
                 if (chevron) {
-                    chevron.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+                    chevron.style.transform = isExpanding ? 'rotate(180deg)' : 'rotate(0deg)';
                 }
             }
         } else if (action === 'logout') {
@@ -279,7 +324,11 @@ export class SidebarManager {
         }
 
         a.className = 'sidebar-link';
-        a.innerHTML = `<i class="${item.icon}"></i><span>${item.label}</span>`;
+        const i = document.createElement('i');
+        i.className = item.icon || 'bi bi-circle';
+        const span = document.createElement('span');
+        span.textContent = item.label;
+        a.append(i, span);
 
         try {
             const currentPath = window.location.pathname;

@@ -213,6 +213,7 @@
                                 </select>
                             </div>
                             <input type="hidden" name="slug" id="edit_slug">
+                            <input type="hidden" name="is_active" id="edit_is_active">
                         </div>
 
                         <div class="modal-footer mt-3">
@@ -296,9 +297,10 @@
             if (school.plan) planValue = school.plan;
             document.getElementById('edit_plan').value = planValue;
 
-            const statusValue = school.is_active == 1 ? 'active' : 'suspended';
+            const statusValue = school.is_active == 1 ? 'active' : (school.status || 'pending');
             document.getElementById('edit_status').value = statusValue;
             document.getElementById('edit_slug').value = school.slug || '';
+            document.getElementById('edit_is_active').value = school.is_active == 1 ? '1' : '0';
 
             // **Set form action dynamically**
             document.getElementById('editSchoolForm').action = `/api/v1/schools/${school.id}`;
@@ -306,6 +308,12 @@
             const modal = new bootstrap.Modal(document.getElementById('editSchoolModal'));
             modal.show();
         };
+
+        // Sync is_active with status dropdown
+        document.getElementById('edit_status').addEventListener('change', e => {
+            const isActive = e.target.value === 'active' ? '1' : '0';
+            document.getElementById('edit_is_active').value = isActive;
+        });
 
         // Slug auto-generation
         document.getElementById('create_name').addEventListener('input', e => {

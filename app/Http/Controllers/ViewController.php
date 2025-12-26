@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 /**
  * ViewController - Handles VIEW RENDERING ONLY
@@ -15,6 +16,11 @@ class ViewController extends Controller
     public function studentsIndex()
     {
         return view('students.index');
+    }
+
+    public function promotionsIndex()
+    {
+        return view('promotions.index');
     }
 
     // Teachers
@@ -38,6 +44,11 @@ class ViewController extends Controller
     public function subjectsIndex()
     {
         return view('subjects.index');
+    }
+
+    public function subjectAssignmentsIndex()
+    {
+        return view('subjects.assignments');
     }
 
     public function sessionsIndex()
@@ -105,6 +116,38 @@ class ViewController extends Controller
     public function feeTypesIndex()
     {
         return view('fee-types.index');
+    }
+
+    // New Fee Module
+    public function feesIndex()
+    {
+        return view('fees.index');
+    }
+
+    public function feesAssignIndex()
+    {
+        return view('fees.assign');
+    }
+
+    public function studentFeesOverview($id)
+    {
+        return view('fees.student-overview', ['student_id' => $id]);
+    }
+
+    public function feePaymentsHistory()
+    {
+        return view('fees.payments');
+    }
+
+    public function myFeesIndex()
+    {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $student = $user->student;
+        if (!$student) {
+            return redirect()->route('dashboard')->with('error', 'Student record not found.');
+        }
+        return view('fees.student-overview', ['student_id' => $student->id]);
     }
 
     // Chats

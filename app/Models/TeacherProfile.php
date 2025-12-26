@@ -24,4 +24,15 @@ class TeacherProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(TeacherSubject::class, 'teacher_id');
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'teacher_subjects', 'teacher_id', 'subject_id')
+            ->withPivot('class_id');
+    }
 }

@@ -12,25 +12,7 @@ class GuardianService
 
     public function list(array $filters = [])
     {
-        $query = Guardian::query();
-
-        if (!Auth::user()->hasRole('super_admin')) {
-            $query->whereHas('user', function ($q) {
-                $q->where('school_id', Auth::user()->school_id ?? null);
-            });
-        }
-        if (!empty($filters['user_id'])) {
-            $query->where('user_id', $filters['user_id']);
-        }
-        if (!empty($filters['email'])) {
-            $query->whereHas('user', function ($q) use ($filters) {
-                $q->where('email', $filters['email']);
-            });
-        }
-        if (!empty($filters['relation'])) {
-            $query->where('relation', 'like', '%' . $filters['relation'] . '%');
-        }
-        return $query->with(['user', 'students'])->latest('id')->get();
+        return $this->repo->list($filters);
     }
 
     public function get(int|string $id): Guardian

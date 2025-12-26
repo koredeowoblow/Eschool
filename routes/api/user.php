@@ -27,4 +27,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('schools/{id}', SchoolController::class . '@show');
     Route::put('schools/{id}', SchoolController::class . '@update');
     Route::delete('schools/{id}', SchoolController::class . '@destroy');
+
+    // Teacher Subjects
+    Route::get('teacher-subjects', [\App\Http\Controllers\User\TeacherSubjectController::class, 'index']);
+    Route::post('teacher-subjects', [\App\Http\Controllers\User\TeacherSubjectController::class, 'store']);
+    Route::get('teacher-subjects/{id}', [\App\Http\Controllers\User\TeacherSubjectController::class, 'show']);
+    Route::put('teacher-subjects/{id}', [\App\Http\Controllers\User\TeacherSubjectController::class, 'update']);
+    Route::delete('teacher-subjects/{id}', [\App\Http\Controllers\User\TeacherSubjectController::class, 'destroy']);
+
+    // Account Linking
+    Route::post('account/link/initiate', [\App\Http\Controllers\Api\AccountLinkingController::class, 'initiate']);
+    Route::post('account/link/verify', [\App\Http\Controllers\Api\AccountLinkingController::class, 'verify']);
 });

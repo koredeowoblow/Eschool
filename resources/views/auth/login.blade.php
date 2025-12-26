@@ -8,8 +8,11 @@
     <title>eSchool - Login</title>
     <meta name="description"
         content="Login to eSchool Management System. Secure access for students, teachers, and guardians.">
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.jsdelivr.net/npm; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self';">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,63 +20,161 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--slate-900);
             min-height: 100vh;
+            color: var(--slate-50);
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.08) 0px, transparent 50%);
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            /* Subdued noise */
+            pointer-events: none;
+            z-index: -1;
         }
 
         .login-card {
             background: rgba(255, 255, 255, 0.98);
-            border: none;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
         .login-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+        }
+
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .login-logo-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .card-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--slate-600);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 2px solid var(--slate-200);
+            transition: all 0.2s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .input-group-text {
+            background: var(--slate-50);
+            border: none;
+            color: var(--slate-400);
+            padding-left: 1rem;
+        }
+
+        .form-control {
+            border: none !important;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            background: white !important;
         }
 
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-
-        .form-control.is-invalid {
-            border-color: #dc3545;
-        }
-
-        .invalid-feedback {
-            display: none;
-            width: 100%;
-            margin-top: 0.25rem;
-            font-size: 0.875em;
-            color: #dc3545;
+            box-shadow: none;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary);
             border: none;
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            background: var(--primary-hover);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
-        .alert {
-            animation: slideDown 0.3s ease-out;
+        .footer-links {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-links a:hover {
+            text-decoration: underline;
         }
 
         @keyframes spin {
@@ -89,106 +190,71 @@
 </head>
 
 <body>
-    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100">
-        <div class="row w-100 justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card login-card">
-                    <div class="card-body p-5">
-                        <!-- Logo/Title -->
-                        <div class="text-center mb-4">
-                            <i class="bi bi-mortarboard-fill text-primary" style="font-size: 3rem;"></i>
-                            <h2 class="mt-3 mb-1">eSchool</h2>
-                            <p class="text-muted">Management System</p>
-                        </div>
+    <div class="login-card animate-in">
+        <div class="card-header-gradient">
+            <i class="bi bi-mortarboard-fill login-logo-icon"></i>
+            <h2 class="mb-0 fw-bold">eSchool</h2>
+            <p class="mb-0 opacity-75">Smart Education Management</p>
+        </div>
 
-                        <!-- Login Form -->
-                        <form id="loginForm" autocomplete="on">
+        <div class="card-body">
+            <form id="loginForm">
+                <div id="loginError" class="alert alert-danger d-none" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <span id="errorMessage"></span>
+                </div>
 
-                            <!-- Error Messages -->
-                            <div id="loginError" class="alert alert-danger d-none" role="alert">
-                                <i class="bi bi-exclamation-circle me-2"></i>
-                                <span id="errorMessage"></span>
-                            </div>
-
-                            <!-- Email -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi bi-envelope"></i>
-                                    </span>
-                                    <input type="email" class="form-control" id="email" name="email" required
-                                        autofocus placeholder="Enter your email">
-                                </div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <!-- Password -->
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi bi-lock"></i>
-                                    </span>
-                                    <input type="password" class="form-control" id="password" name="password" required
-                                        placeholder="Enter your password">
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                        <i class="bi bi-eye" id="passwordToggleIcon"></i>
-                                    </button>
-                                </div>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <!-- Remember Me -->
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                <label class="form-check-label" for="remember">
-                                    Remember me
-                                </label>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg" id="loginButton">
-                                    <i class="bi bi-box-arrow-in-right me-2" id="loginIcon"></i>
-                                    <span id="loginText">Sign In</span>
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Additional Links -->
-                        <div class="text-center mt-4">
-                            <p class="mb-0">
-                                <a href="{{ route('password.request') }}" class="text-decoration-none">Forgot your
-                                    password?</a>
-                            </p>
-                            <hr class="my-3">
-                            <p class="mb-0 text-muted">
-                                Don't have an account?
-                                <a href="{{ route('school.register') }}" class="text-decoration-none">Register
-                                    School</a>
-                            </p>
-                        </div>
+                <div class="mb-4">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" required autofocus
+                            placeholder="name@school.com">
                     </div>
+                    <div class="invalid-feedback"></div>
                 </div>
 
-                <!-- Footer -->
-                <div class="text-center mt-4">
-                    <p class="text-white-50 small">
-                        &copy; <span id="copyrightYear"></span> eSchool Management System. All rights reserved.
-                    </p>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label mb-0">Password</label>
+                        <a href="{{ route('password.request') }}" class="small text-decoration-none">Forgot?</a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" required
+                            placeholder="Enter password">
+                        <button class="btn btn-link text-slate-400 pe-3 text-decoration-none" type="button"
+                            id="togglePassword">
+                            <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback"></div>
                 </div>
+
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label text-muted small" for="remember">Keep me signed in</label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" id="loginButton">
+                        <span id="loginText">Sign In</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="footer-links">
+                <p class="text-muted mb-0">New here? <a href="{{ route('school.register') }}">Register your school</a>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 for notifications -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.5.0/dist/axios.min.js"></script>
 
-    <!-- App Logic -->
     <script>
         class LoginManager {
             constructor() {
@@ -197,7 +263,6 @@
                 this.passwordInput = document.getElementById('password');
                 this.rememberInput = document.getElementById('remember');
                 this.loginButton = document.getElementById('loginButton');
-                this.loginIcon = document.getElementById('loginIcon');
                 this.loginText = document.getElementById('loginText');
                 this.errorDiv = document.getElementById('loginError');
                 this.errorMessage = document.getElementById('errorMessage');
@@ -207,93 +272,60 @@
             }
 
             initializeEventListeners() {
-                // Form submission
                 this.form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     this.handleLogin();
                 });
-
-                // Clear errors on input
                 this.emailInput.addEventListener('input', () => this.clearFieldError('email'));
                 this.passwordInput.addEventListener('input', () => this.clearFieldError('password'));
-
-                // Enter key handling
-                this.passwordInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.handleLogin();
-                    }
-                });
             }
 
             initializePasswordToggle() {
                 const toggleButton = document.getElementById('togglePassword');
                 const toggleIcon = document.getElementById('passwordToggleIcon');
-
                 toggleButton.addEventListener('click', () => {
-                    const type = this.passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    this.passwordInput.setAttribute('type', type);
-
-                    // Toggle icon
-                    if (type === 'text') {
-                        toggleIcon.classList.remove('bi-eye');
-                        toggleIcon.classList.add('bi-eye-slash');
-                    } else {
-                        toggleIcon.classList.remove('bi-eye-slash');
-                        toggleIcon.classList.add('bi-eye');
-                    }
+                    const isPassword = this.passwordInput.type === 'password';
+                    this.passwordInput.type = isPassword ? 'text' : 'password';
+                    toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
                 });
             }
 
             async handleLogin() {
-                // Clear previous errors
                 this.hideError();
                 this.clearAllFieldErrors();
 
-                // Basic validation
                 const email = this.emailInput.value.trim();
                 const password = this.passwordInput.value;
 
-                if (!email) {
-                    this.showFieldError('email', 'Email is required');
+                if (!email || !password) {
+                    if (!email) this.showFieldError('email', 'Email is required');
+                    if (!password) this.showFieldError('password', 'Password is required');
                     return;
                 }
 
-                if (!password) {
-                    this.showFieldError('password', 'Password is required');
-                    return;
-                }
-
-                if (!this.isValidEmail(email)) {
-                    this.showFieldError('email', 'Please enter a valid email address');
-                    return;
-                }
-
-                // Show loading state
                 this.setLoadingState(true);
 
                 try {
-                    const remember = this.rememberInput.checked;
-
-                    // Call the web login route
                     const response = await axios.post('/login', {
                         email,
                         password,
-                        remember
+                        remember: this.rememberInput.checked
                     });
 
-                    // Extract user and token
                     const data = response.data.data || response.data;
-                    const user = data.user;
-                    const token = data.token;
+                    if (data.token) localStorage.setItem('auth_token', data.token);
 
-                    // IMPORTANT: Save token for API requests
-                    if (token) {
-                        localStorage.setItem('auth_token', token);
-                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Redirecting to your dashboard...',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
 
-                    // Show success message and redirect
-                    await this.showSuccessMessage(user?.name || 'User');
-                    this.redirectToDashboard();
+                    setTimeout(() => window.location.href = '/dashboard', 1000);
                 } catch (err) {
                     this.handleLoginError(err);
                 } finally {
@@ -302,69 +334,24 @@
             }
 
             handleLoginError(error) {
-                console.error('Login error:', error);
-
-                if (error.response) {
-                    const {
-                        status,
-                        data
-                    } = error.response;
-
-                    if (status === 422 && data.errors) {
-                        // Validation errors
-                        Object.keys(data.errors).forEach(field => {
-                            this.showFieldError(field, data.errors[field][0]);
-                        });
-                    } else if (status === 401) {
-                        this.showError('Invalid email or password. Please try again.');
-                    } else if (status === 429) {
-                        this.showError('Too many login attempts. Please try again later.');
-                    } else {
-                        this.showError(data.message || 'Login failed. Please try again.');
-                    }
-                } else if (error.request) {
-                    this.showError('Connection error. Please check your internet connection and try again.');
-                } else {
-                    this.showError(error.message || 'An unexpected error occurred. Please try again.');
-                }
-            }
-
-            async showSuccessMessage(userName) {
-                return new Promise((resolve) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Welcome back!',
-                        text: `Hello ${userName}, you've been logged in successfully.`,
-                        timer: 2000,
-                        showConfirmButton: false,
-                        position: 'top-end',
-                        toast: true
-                    }).then(() => {
-                        resolve();
+                if (error.response?.status === 422) {
+                    const errors = error.response.data.errors;
+                    Object.keys(errors).forEach(field => {
+                        this.showFieldError(field, errors[field][0]);
                     });
-                });
+                } else {
+                    this.showError(error.response?.data?.message || 'Login failed. Please check your credentials.');
+                }
             }
 
             setLoadingState(loading) {
-                if (loading) {
-                    this.loginButton.disabled = true;
-                    this.loginIcon.classList.remove('bi-box-arrow-in-right');
-                    this.loginIcon.classList.add('bi-arrow-clockwise');
-                    this.loginIcon.style.animation = 'spin 1s linear infinite';
-                    this.loginText.textContent = 'Signing In...';
-                } else {
-                    this.loginButton.disabled = false;
-                    this.loginIcon.classList.remove('bi-arrow-clockwise');
-                    this.loginIcon.classList.add('bi-box-arrow-in-right');
-                    this.loginIcon.style.animation = '';
-                    this.loginText.textContent = 'Sign In';
-                }
+                this.loginButton.disabled = loading;
+                this.loginText.textContent = loading ? 'Checking...' : 'Sign In';
             }
 
             showError(message) {
                 this.errorMessage.textContent = message;
                 this.errorDiv.classList.remove('d-none');
-                setTimeout(() => this.hideError(), 10000);
             }
 
             hideError() {
@@ -374,9 +361,10 @@
             showFieldError(field, message) {
                 const input = document.getElementById(field);
                 if (input) {
-                    input.classList.add('is-invalid');
-                    const feedback = input.parentNode.nextElementSibling;
-                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                    const group = input.closest('.input-group');
+                    group.classList.add('border-danger');
+                    const feedback = group.nextElementSibling;
+                    if (feedback) {
                         feedback.textContent = message;
                         feedback.style.display = 'block';
                     }
@@ -386,66 +374,26 @@
             clearFieldError(field) {
                 const input = document.getElementById(field);
                 if (input) {
-                    input.classList.remove('is-invalid');
-                    const feedback = input.parentNode.nextElementSibling;
-                    if (feedback && feedback.classList.contains('invalid-feedback')) {
-                        feedback.style.display = 'none';
-                    }
+                    const group = input.closest('.input-group');
+                    group.classList.remove('border-danger');
+                    const feedback = group.nextElementSibling;
+                    if (feedback) feedback.style.display = 'none';
                 }
             }
 
             clearAllFieldErrors() {
-                ['email', 'password'].forEach(field => this.clearFieldError(field));
-            }
-
-            isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
-            }
-
-            redirectToDashboard() {
-                window.location.href = '/dashboard';
+                ['email', 'password'].forEach(f => this.clearFieldError(f));
             }
         }
 
-        const initApp = () => {
-            // 1. Copyright Year
-            const yEl = document.getElementById('copyrightYear');
-            if (yEl) yEl.textContent = String(new Date().getFullYear());
-
-            // 2. Setup Axios
+        document.addEventListener('DOMContentLoaded', () => {
             if (window.axios) {
                 window.axios.defaults.withCredentials = true;
                 const token = document.querySelector('meta[name="csrf-token"]');
-                if (token) {
-                    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-                }
-
-                // Global interceptor for 401/419
-                window.axios.interceptors.response.use(
-                    response => response,
-                    error => {
-                        const status = error.response ? error.response.status : null;
-                        if (status === 401 || status === 419) {
-                            console.warn('Session expired or unauthorized. Clearing auth.');
-                            localStorage.removeItem('auth_token');
-                            sessionStorage.removeItem('auth_token');
-
-                            // Prevent redirect loops on login page
-                            if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
-                                window.location.href = '/';
-                            }
-                        }
-                        return Promise.reject(error);
-                    }
-                );
+                if (token) window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
             }
-
-            // 3. Initialize Login Manager
             new LoginManager();
-        };
-
-        document.addEventListener('DOMContentLoaded', initApp);
+        });
     </script>
 </body>
 

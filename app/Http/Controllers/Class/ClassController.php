@@ -19,10 +19,19 @@ class ClassController extends Controller
         $this->middleware('check.session')->only(['store', 'update', 'destroy']);
     }
 
-    public function index(Request $request)
+    public function index(\App\Http\Requests\Class\ClassIndexRequest $request)
     {
-        $data = $this->service->list($request->query());
-        return ResponseHelper::success($data, 'Classes fetched successfully');
+        $data = $this->service->list($request->validated());
+        return ResponseHelper::success(
+            $data->items(),
+            'Classes fetched successfully',
+            200,
+            [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total(),
+            ]
+        );
     }
 
     public function store(ClassRequest $request)

@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ViewController;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,7 @@ use App\Http\Controllers\ViewController;
 
 // Public Routes
 Route::get('/', [AuthController::class, 'loginForm'])->name('login');
+Route::get('/logins', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -37,9 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile (accessible to all authenticated users)
-    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
-    Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // View Routes (ViewController - returns views only, all CRUD via API + modals)
     Route::controller(ViewController::class)->group(function () {
@@ -47,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
         // Students
         Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
             Route::get('/students', 'studentsIndex')->name('web.students.index');
+            Route::get('/promotions', 'promotionsIndex')->name('web.promotions.index');
         });
 
         // Teachers
@@ -63,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
             Route::get('/classes', 'classesIndex')->name('web.classes.index');
             Route::get('/subjects', 'subjectsIndex')->name('web.subjects.index');
+            Route::get('/subject-assignments', 'subjectAssignmentsIndex')->name('web.subject_assignments.index');
             Route::get('/sessions', 'sessionsIndex')->name('web.sessions.index');
             Route::get('/terms', 'termsIndex')->name('web.terms.index');
             Route::get('/sections', 'sectionsIndex')->name('web.sections.index');
@@ -97,11 +101,22 @@ Route::middleware(['auth'])->group(function () {
         // Library
         Route::get('/library', 'libraryIndex')->name('web.library.index');
 
-        // Payments
+        // Payments & Fees
         Route::middleware(['role:super_admin|school_admin|student'])->group(function () {
             Route::get('/payments', 'paymentsIndex')->name('web.payments.index');
             Route::get('/fee-types', 'feeTypesIndex')->name('web.fee_types.index');
             Route::get('/invoices', 'invoicesIndex')->name('web.invoices.index');
+
+            // New Fee Module Routes
+            Route::get('/fees', 'feesIndex')->name('web.fees.index');
+            Route::get('/fees/assign', 'feesAssignIndex')->name('web.fees.assign');
+            Route::get('/fees/students/{id}', 'studentFeesOverview')->name('web.fees.student-overview');
+            Route::get('/fees/payments', 'feePaymentsHistory')->name('web.fee_payments.history');
+        });
+
+        // Student Specific Fees
+        Route::middleware(['role:student'])->group(function () {
+            Route::get('/my-fees', 'myFeesIndex')->name('web.fees.my-fees');
         });
 
         // Chats

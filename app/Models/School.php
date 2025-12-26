@@ -31,6 +31,21 @@ class School extends Model
 
     protected $appends = ['status_label'];
 
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically sync status field with is_active
+        static::saving(function ($school) {
+            if (isset($school->is_active)) {
+                $school->status = $school->is_active ? 'active' : 'inactive';
+            }
+        });
+    }
+
     public function getStatusAttribute($value)
     {
         // Source of Truth is is_active
@@ -51,5 +66,10 @@ class School extends Model
     public function students()
     {
         return $this->hasMany(Student::class);
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
     }
 }

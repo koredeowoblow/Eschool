@@ -1,163 +1,357 @@
-// No static import for sidebarConfig
-// Dynamic imports will be used
-
 export class SidebarManager {
     constructor() {
         this.root = document.getElementById('sidebar-root');
-        this.config = window.AppConfig;
-        this.menuItems = [];
+        this.config = window.AppConfig || {};
+        this.items = [];
     }
 
     async init() {
-        if (!this.root || !this.config) return;
+        if (!this.root) return;
 
-        // Load common config
-        try {
-            const commonModule = await import('../config/roles/common.js');
-            this.menuItems = [...commonModule.default];
-        } catch (e) {
-            console.error('Failed to load common sidebar', e);
-        }
-
-        // Load role specific configs
-        // Normalize roles to avoid case sensitivity issues
-        const rawRoles = this.config.user.roles || [];
-        this.userRoles = rawRoles.map(r => String(r).toLowerCase());
-
-        console.log('SidebarManager: User Roles detected:', this.userRoles);
-
-        const roles = this.userRoles;
-
-        // Map roles to config files (simplified mapping)
-        if (roles.includes('super_admin') || roles.includes('school_admin')) {
+        // Try to fetch user context first if not provided in config
+        if (!this.config.user) {
             try {
-                const module = await import('../config/roles/admin.js');
-                this.menuItems = [...this.menuItems, ...module.default];
+                const res = await axios.get('/api/v1/user');
+                this.config.user = res.data?.data || res.data;
             } catch (e) {
-                console.error('Failed to load admin sidebar', e);
+                console.warn('Sidebar: Failed to fetch user context', e);
             }
         }
 
-        if (roles.includes('teacher')) {
-            try {
-                const module = await import('../config/roles/teacher.js');
-                this.menuItems = [...this.menuItems, ...module.default];
-            } catch (e) {
-                console.error('Failed to load teacher sidebar', e);
-            }
-        }
-
-        if (roles.includes('student')) {
-            console.log('SidebarManager: Attempting to load student sidebar...');
-            try {
-                const module = await import('../config/roles/student.js');
-                console.log('SidebarManager: Student module loaded', module.default);
-                this.menuItems = [...this.menuItems, ...module.default];
-            } catch (e) {
-                console.error('Failed to load student sidebar', e);
-            }
+        // 1. Try to load from cache first for immediate rendering
+        const cached = this.loadFromCache();
+        if (cached) {
+            // console.log('Sidebar: Loaded from cache');
+            this.items = cached;
+            this.render();
         } else {
-            console.log('SidebarManager: Role "student" not found in user roles:', roles);
+            // Show skeleton loading state
+            this.showSkeleton();
         }
 
-        console.log('SidebarManager: Final menu items:', this.menuItems);
-        this.render();
-        this.attachEvents();
+        // 2. Build fresh items
+        try {
+            const freshItems = await this.buildItems();
+
+            // 3. Compare and update if different
+            if (JSON.stringify(freshItems) !== JSON.stringify(this.items)) {
+                // console.log('Sidebar: Update detected, re-rendering');
+                this.items = freshItems;
+                this.render();
+                this.saveToCache(freshItems);
+            }
+        } catch (e) {
+            console.error('Sidebar: Build failed', e);
+        }
+    }
+
+    async buildItems() {
+        let items = [];
+        try {
+            const common = await import('../sidebar/common.js');
+            items = [...common.default];
+
+            const roles = (this.config.user?.roles || []).map(r => String(r).toLowerCase());
+            const isSuperAdmin = roles.includes('super_admin');
+
+            if (isSuperAdmin) {
+                const superAdmin = await import('../sidebar/super_admin.js');
+                items.push(...superAdmin.default);
+            }
+
+            if (roles.includes('school_admin') || isSuperAdmin) {
+                const admin = await import('../sidebar/admin.js');
+                items.push(...admin.default);
+            }
+
+            if (roles.includes('teacher')) {
+                const teacher = await import('../sidebar/teacher.js');
+                items.push(...teacher.default);
+            }
+
+            if (roles.includes('student')) {
+                const student = await import('../sidebar/student.js');
+                items.push(...student.default);
+            }
+
+            // Filter items based on permissions
+            items = this.filterByPermission(items, roles, isSuperAdmin);
+
+        } catch (e) {
+            console.error('Sidebar: Error building items', e);
+        }
+        return items;
+    }
+
+    filterByPermission(items, userRoles, isSuperAdmin) {
+        if (isSuperAdmin) return items;
+
+        return items.filter(item => {
+            if (item.roles && item.roles.length > 0) {
+                const hasRole = item.roles.some(r => userRoles.includes(r.toLowerCase()));
+                if (!hasRole) return false;
+            }
+
+            if (item.children && item.children.length > 0) {
+                item.children = this.filterByPermission(item.children, userRoles, isSuperAdmin);
+                return item.children.length > 0;
+            }
+
+            return true;
+        });
+    }
+
+    getCacheKey() {
+        const userId = this.config.user?.id || 'guest';
+        return `sidebar_v2_${userId}`;
+    }
+
+    loadFromCache() {
+        try {
+            const json = localStorage.getItem(this.getCacheKey());
+            return json ? JSON.parse(json) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    saveToCache(items) {
+        try {
+            localStorage.setItem(this.getCacheKey(), JSON.stringify(items));
+        } catch (e) { }
+    }
+
+    showSkeleton() {
+        this.root.replaceChildren();
+
+        const brand = document.createElement('div');
+        brand.className = 'sidebar-brand p-4 border-bottom';
+        const brandIcon = document.createElement('div');
+        brandIcon.className = 'sidebar-skeleton-icon';
+        const brandName = document.createElement('div');
+        brandName.className = 'sidebar-skeleton-text';
+        brand.append(brandIcon, brandName);
+        this.root.appendChild(brand);
+
+        const nav = document.createElement('nav');
+        nav.className = 'sidebar-nav p-2';
+
+        for (let i = 0; i < 8; i++) {
+            const item = document.createElement('div');
+            item.className = 'sidebar-skeleton';
+            const icon = document.createElement('div');
+            icon.className = 'sidebar-skeleton-icon';
+            const text = document.createElement('div');
+            text.className = 'sidebar-skeleton-text';
+            if (i % 3 === 0) text.style.width = '60%';
+            item.append(icon, text);
+            nav.appendChild(item);
+        }
+        this.root.appendChild(nav);
     }
 
     render() {
-        // Wrapper
-        const sidebarHtml = document.createElement('div');
-        sidebarHtml.className = 'd-flex flex-column h-100';
+        this.root.replaceChildren();
 
-        // Brand
-        const brandHtml = `
-            <div class="p-4 border-bottom">
-                <a href="${this.config.routes.dashboard}" class="d-flex align-items-center gap-2 text-decoration-none">
-                    <i class="bi bi-mortarboard-fill text-primary fs-3"></i>
-                    <span class="fs-4 fw-bold text-gradient">eSchool</span>
-                </a>
-            </div>
-        `;
-        sidebarHtml.innerHTML = brandHtml;
+        const brand = document.createElement('div');
+        brand.className = 'sidebar-brand p-4 border-bottom';
+        const brandLink = document.createElement('a');
+        brandLink.href = '/dashboard';
+        brandLink.className = 'd-flex align-items-center gap-2 text-decoration-none';
 
-        // Nav
+        const brandIcon = document.createElement('i');
+        brandIcon.className = 'bi bi-mortarboard-fill text-primary fs-3';
+
+        const brandName = document.createElement('span');
+        brandName.className = 'fs-4 fw-bold text-gradient';
+        brandName.textContent = this.config.appName || 'eSchool';
+
+        brandLink.append(brandIcon, brandName);
+        brand.appendChild(brandLink);
+        this.root.appendChild(brand);
+
         const nav = document.createElement('nav');
-        nav.className = 'p-3 flex-grow-1 overflow-auto';
+        nav.className = 'sidebar-nav';
 
-        this.menuItems.forEach(item => {
+        this.items.forEach(item => {
             if (item.type === 'header') {
-                const header = document.createElement('small');
-                header.className = 'text-uppercase text-muted fw-bold px-3 mt-4 mb-2 d-block';
-                header.style.fontSize = '0.7rem';
+                const header = document.createElement('div');
+                header.className = 'sidebar-header text-muted fw-bold small px-3 mt-3 mb-2 text-uppercase';
                 header.textContent = item.label;
-                if (item.label === 'Main') header.classList.remove('mt-4');
                 nav.appendChild(header);
-            } else if (item.type === 'link') {
-                const hasPermission = item.roles.includes('*') || this.hasRole(item.roles);
-                console.log(`SidebarManager: Rendering "${item.label}"? ${hasPermission} (Roles: ${item.roles.join(',')})`);
+                return;
+            }
 
-                if (hasPermission) {
-                    const link = document.createElement('a');
-                    link.href = this.config.routes[item.key] || '#';
-                    link.className = 'nav-link-premium';
+            if (item.children && item.children.length > 0) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'sidebar-item-group mb-1';
 
-                    if (link.href !== '#' && window.location.href.includes(link.href)) {
-                        link.classList.add('active');
-                    }
+                const parent = document.createElement('a');
+                parent.href = '#';
+                parent.className = 'sidebar-link d-flex align-items-center justify-content-between';
+                parent.dataset.action = 'toggle-submenu';
 
-                    link.innerHTML = `<i class="${item.icon}"></i> ${item.label}`;
-                    nav.appendChild(link);
+                const leftPart = document.createElement('div');
+                leftPart.className = 'd-flex align-items-center gap-2';
+                const parentIcon = document.createElement('i');
+                parentIcon.className = item.icon || 'bi bi-circle';
+                const parentLabel = document.createElement('span');
+                parentLabel.textContent = item.label;
+                leftPart.append(parentIcon, parentLabel);
+
+                const chevron = document.createElement('i');
+                chevron.className = 'bi bi-chevron-down small transition-transform-gpu';
+
+                parent.append(leftPart, chevron);
+
+                const submenu = document.createElement('div');
+                submenu.className = 'collapse sidebar-submenu ps-3';
+
+                item.children.forEach(child => {
+                    submenu.appendChild(this.createLink(child));
+                });
+
+                if (submenu.querySelector('.active')) {
+                    submenu.classList.add('show');
+                    parent.classList.add('expanded');
+                    const chevron = parent.querySelector('.bi-chevron-down');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
                 }
+
+                wrapper.appendChild(parent);
+                wrapper.appendChild(submenu);
+                nav.appendChild(wrapper);
+            } else {
+                nav.appendChild(this.createLink(item));
             }
         });
 
-        // Logout
-        const logoutDiv = document.createElement('div');
-        logoutDiv.className = 'mt-5 border-top pt-3';
-        logoutDiv.innerHTML = `
-            <a href="#" id="logoutBtnJS" class="nav-link-premium text-danger">
-                <i class="bi bi-box-arrow-left"></i> Logout
-            </a>
-        `;
-        nav.appendChild(logoutDiv);
+        // Logout Link
+        const logout = document.createElement('a');
+        logout.href = '#';
+        logout.className = 'sidebar-link text-danger mt-auto mb-3';
+        logout.dataset.action = 'logout';
 
-        sidebarHtml.appendChild(nav);
-        this.root.appendChild(sidebarHtml);
+        const logoutIcon = document.createElement('i');
+        logoutIcon.className = 'bi bi-box-arrow-left';
+        const logoutLabel = document.createElement('span');
+        logoutLabel.textContent = 'Logout';
+
+        logout.append(logoutIcon, logoutLabel);
+        nav.appendChild(logout);
+
+        this.root.appendChild(nav);
+
+        // Use single delegated listener on the root if not already attached
+        if (!this.delegatedListenerAttached) {
+            this.root.addEventListener('click', (e) => this.handleDelegatedClick(e));
+            this.delegatedListenerAttached = true;
+        }
+
+        this.applyActiveState();
     }
 
-    hasRole(allowedRoles) {
-        if (allowedRoles.includes('*')) return true;
-        // Use the normalized userRoles stored in init
-        const userRoles = this.userRoles || [];
-        // Ensure allowedRoles are also lowercased for comparison? 
-        // Ideally the config files are already lowercase, but safety first not strictly needed if we trust our config.
-        // But comparing lowercase to lowercase is safest.
-        return allowedRoles.some(role => userRoles.includes(String(role).toLowerCase()));
-    }
+    handleDelegatedClick(e) {
+        const trigger = e.target.closest('[data-action]');
+        if (!trigger) return;
 
-    attachEvents() {
-        const logoutBtn = document.getElementById('logoutBtnJS');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.logout();
-            });
+        const action = trigger.dataset.action;
+
+        if (action === 'toggle-submenu') {
+            e.preventDefault();
+            const group = trigger.closest('.sidebar-item-group');
+            const submenu = group?.querySelector('.sidebar-submenu');
+            if (submenu) {
+                // Check if already animating to prevent jank
+                if (submenu.classList.contains('collapsing')) return;
+
+                const bsCollapse = bootstrap.Collapse.getInstance(submenu) || new bootstrap.Collapse(submenu);
+                bsCollapse.toggle();
+
+                // Track state for chevron/link
+                const isExpanding = !submenu.classList.contains('show');
+                trigger.classList.toggle('expanded', isExpanding);
+                const chevron = trigger.querySelector('.bi-chevron-down');
+                if (chevron) {
+                    chevron.style.transform = isExpanding ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            }
+        } else if (action === 'logout') {
+            e.preventDefault();
+            this.logout();
         }
     }
 
+    applyActiveState() {
+        const activeLinks = this.root.querySelectorAll('.sidebar-link.active');
+        activeLinks.forEach(link => {
+            const group = link.closest('.sidebar-item-group');
+            if (group) {
+                const collapse = group.querySelector('.collapse');
+                const trigger = group.querySelector('[data-bs-toggle="collapse"]');
+                if (collapse && !collapse.classList.contains('show')) {
+                    // Use Bootstrap's own collapse for smooth entry
+                    const bsCollapse = bootstrap.Collapse.getInstance(collapse) || new bootstrap.Collapse(collapse, { toggle: false });
+                    bsCollapse.show();
+
+                    if (trigger) {
+                        trigger.classList.add('expanded');
+                        const chevron = trigger.querySelector('.bi-chevron-down');
+                        if (chevron) chevron.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+        });
+    }
+
+    createLink(item) {
+        const a = document.createElement('a');
+
+        if (item.action === 'logout') {
+            a.href = '#';
+            a.dataset.action = 'logout';
+        } else {
+            let href = '#';
+            if (item.path) {
+                href = item.path;
+            } else if (item.key) {
+                const slug = item.key
+                    .replace(/[A-Z]/g, m => '-' + m.toLowerCase())
+                    .replace(/_/g, '-');
+                href = `/${slug}`;
+            }
+            a.href = href;
+        }
+
+        a.className = 'sidebar-link';
+        const i = document.createElement('i');
+        i.className = item.icon || 'bi bi-circle';
+        const span = document.createElement('span');
+        span.textContent = item.label;
+        a.append(i, span);
+
+        try {
+            const currentPath = window.location.pathname;
+            const targetPath = new URL(a.href, window.location.href).pathname;
+            if (currentPath === targetPath || (currentPath === '/' && targetPath === '/dashboard')) {
+                a.classList.add('active');
+            }
+        } catch (e) { }
+
+        return a;
+    }
+
     logout() {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = this.config.routes.logout;
+        try {
+            localStorage.removeItem(this.getCacheKey());
+        } catch (e) { }
 
-        const csrf = document.createElement('input');
-        csrf.type = 'hidden';
-        csrf.name = '_token';
-        csrf.value = this.config.csrf;
-        form.appendChild(csrf);
-
-        document.body.appendChild(form);
-        form.submit();
+        if (window.App && typeof window.App.logout === 'function') {
+            window.App.logout();
+        } else {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
     }
 }

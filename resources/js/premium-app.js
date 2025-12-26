@@ -37,38 +37,76 @@ const App = (() => {
             .replace(/'/g, '&#039;');
     };
 
+    const safeHTML = (strings, ...values) => {
+        // Hardened: We no longer trust any string value as markup starting with '<'
+        // Every dynamic value is escaped unless it's an instance of an HTMLElement we created ourselves
+        const html = strings.reduce((acc, str, i) => {
+            const val = values[i] !== undefined ? values[i] : '';
+            let escaped;
+            if (val instanceof HTMLElement) {
+                escaped = val.outerHTML;
+            } else {
+                escaped = escapeText(val);
+            }
+            return acc + str + escaped;
+        }, '');
+        const template = document.createElement('template');
+        template.innerHTML = html.trim();
+        return template.content.firstChild;
+    };
+
     /* ================= DASHBOARD ================= */
+
+    const parallelLoad = async (configs) => {
+        const entries = Object.entries(configs);
+        const results = await Promise.allSettled(entries.map(([_, fn]) => fn()));
+        const data = {};
+        results.forEach((res, i) => {
+            data[entries[i][0]] = res.status === 'fulfilled' ? res.value : null;
+        });
+        return data;
+    };
 
     const loadDashboard = async () => {
         const root = document.getElementById('dashboard-stats-root');
         if (!root) return;
 
-        root.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-primary" role="status"></div>
-                <div class="mt-2 text-muted italic">Gathering insights...</div>
-            </div>
-        `;
+        // Show individual skeletons
+        root.replaceChildren();
+        for (let i = 0; i < 6; i++) {
+            root.appendChild(createStatSkeleton());
+        }
 
         try {
+            // Parallel load stats and activity if they are separate endpoints (currently one)
+            // But we can still simulate parallelism for future-proofing or if we split them
             const res = await axios.get('/api/v1/dashboard/stats');
             if (!res?.data?.data) throw new Error();
 
-            root.replaceChildren();
-
             const data = res.data.data;
-            if (data.platform) {
-                renderPlatformStats(root, data.platform);
-            } else if (data.student) {
-                renderStudentStats(root, data.student);
-            } else if (data.teacher) {
-                renderTeacherStats(root, data.teacher);
-            } else if (data.general) {
-                renderSchoolStats(root, data);
-            }
+
+            // Staggered fade-in effect: Clear skeletons and render real cards
+            // Use requestAnimationFrame for smooth transition
+            requestAnimationFrame(() => {
+                root.replaceChildren();
+                if (data.platform) {
+                    renderPlatformStats(root, data.platform);
+                } else if (data.student) {
+                    renderStudentStats(root, data.student);
+                } else if (data.teacher) {
+                    renderTeacherStats(root, data.teacher);
+                } else if (data.general) {
+                    renderSchoolStats(root, data);
+                }
+            });
+
         } catch (err) {
             console.error('Dashboard load error:', err);
-            root.textContent = 'Failed to load dashboard data.';
+            root.replaceChildren();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'col-12 text-center py-5 text-danger';
+            errorDiv.textContent = 'Failed to load dashboard data. Please try refreshing.';
+            root.appendChild(errorDiv);
         }
     };
 
@@ -154,31 +192,61 @@ const App = (() => {
 
     const createStatCard = (label, value, icon = 'bi-graph-up') => {
         const col = document.createElement('div');
-        col.className = 'col-md-4';
+        col.className = 'col-md-4 mb-4 animate-in';
 
         const card = document.createElement('div');
-        card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3';
+        card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3 transition-all-premium';
 
         const iconBox = document.createElement('div');
-        iconBox.className = 'avatar-md bg-primary-subtle rounded-circle text-primary d-flex align-items-center justify-content-center';
+        iconBox.className = 'avatar-md bg-primary-subtle rounded-circle text-primary d-flex align-items-center justify-content-center flex-shrink-0';
         iconBox.style.width = '48px';
         iconBox.style.height = '48px';
         iconBox.innerHTML = `<i class="bi ${icon} fs-4"></i>`;
 
         const content = document.createElement('div');
+        content.className = 'overflow-hidden';
 
         const p = document.createElement('p');
-        p.className = 'text-muted text-uppercase small mb-1';
+        p.className = 'text-muted text-uppercase small mb-1 text-truncate';
         p.textContent = label;
 
         const h = document.createElement('h3');
-        h.className = 'h3 mb-0';
+        h.className = 'h3 mb-0 text-truncate';
         h.textContent = value;
 
         content.append(p, h);
         card.append(iconBox, content);
         col.appendChild(card);
 
+        return col;
+    };
+
+    const createStatSkeleton = () => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 mb-4';
+
+        const card = document.createElement('div');
+        card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3';
+
+        const icon = document.createElement('div');
+        icon.className = 'sidebar-skeleton-icon';
+        icon.style.cssText = 'width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;';
+
+        const content = document.createElement('div');
+        content.className = 'flex-grow-1';
+
+        const t1 = document.createElement('div');
+        t1.className = 'sidebar-skeleton-text';
+        t1.style.width = '60%';
+        t1.style.marginBottom = '8px';
+
+        const t2 = document.createElement('div');
+        t2.className = 'sidebar-skeleton-text';
+        t2.style.width = '40%';
+
+        content.append(t1, t2);
+        card.append(icon, content);
+        col.appendChild(card);
         return col;
     };
 
@@ -196,7 +264,10 @@ const App = (() => {
         list.className = 'vstack gap-3';
 
         if (assignments.length === 0) {
-            list.innerHTML = '<div class="text-center py-3 text-muted">No upcoming assignments</div>';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'text-center py-3 text-muted';
+            emptyDiv.textContent = 'No upcoming assignments';
+            list.appendChild(emptyDiv);
         }
 
         assignments.forEach(a => {
@@ -231,22 +302,38 @@ const App = (() => {
 
     /* ================= TABLE ================= */
 
-    const renderTable = async (url, tbodyId, entityType) => {
+    const activeRenders = new Map();
+
+    const renderTable = async (url, tbodyId, rendererOrType) => {
         const tbody = document.getElementById(tbodyId);
         if (!tbody) return;
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="10" class="text-center py-5">
-                    <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-                    <span class="ms-2 text-muted">Loading data...</span>
-                </td>
-            </tr>
-        `;
+        // Cancel previous render for this tbody if it exists
+        if (activeRenders.has(tbodyId)) {
+            activeRenders.set(tbodyId, activeRenders.get(tbodyId) + 1);
+        } else {
+            activeRenders.set(tbodyId, 1);
+        }
+        const currentTaskId = activeRenders.get(tbodyId);
+
+        tbody.replaceChildren();
+        const skeletonCount = 5;
+        for (let i = 0; i < skeletonCount; i++) {
+            tbody.appendChild(createSkeletonRow());
+        }
 
         try {
             const res = await axios.get(url);
-            const items = res?.data?.data;
+
+            // If another render task started, abort this one
+            if (activeRenders.get(tbodyId) !== currentTaskId) return;
+
+            let items = res?.data?.data || res?.data;
+
+            // Handle Laravel Pagination: if items is an object with a 'data' array, use that
+            if (items && !Array.isArray(items) && Array.isArray(items.data)) {
+                items = items.data;
+            }
 
             tbody.replaceChildren();
 
@@ -255,10 +342,49 @@ const App = (() => {
                 return;
             }
 
-            items.forEach(item => {
-                tbody.appendChild(renderTableRow(item, entityType));
-            });
+            // Chunked rendering to prevent UI freeze and enable smooth entry
+            const chunkSize = 8;
+            let index = 0;
+
+            const renderNextChunk = () => {
+                // If another render task started, abort this one
+                if (activeRenders.get(tbodyId) !== currentTaskId) return;
+                const limit = Math.min(index + chunkSize, items.length);
+                const fragment = document.createDocumentFragment();
+
+                for (; index < limit; index++) {
+                    const item = items[index];
+                    let row;
+                    if (typeof rendererOrType === 'function') {
+                        const result = rendererOrType(item);
+                        if (result instanceof HTMLElement) {
+                            row = result;
+                        } else if (typeof result === 'string') {
+                            const template = document.createElement('template');
+                            template.innerHTML = result.trim();
+                            row = template.content.firstChild;
+                        }
+                    } else {
+                        row = renderTableRow(item, rendererOrType);
+                    }
+
+                    if (row) {
+                        row.classList.add('animate-in');
+                        fragment.appendChild(row);
+                    }
+                }
+
+                tbody.appendChild(fragment);
+
+                if (index < items.length) {
+                    requestAnimationFrame(renderNextChunk);
+                }
+            };
+
+            requestAnimationFrame(renderNextChunk);
+
         } catch (err) {
+            if (activeRenders.get(tbodyId) !== currentTaskId) return;
             console.error('Table render error:', err);
             tbody.replaceChildren();
             tbody.appendChild(emptyRow('Error loading data', true));
@@ -290,7 +416,10 @@ const App = (() => {
 
             const statusTd = document.createElement('td');
             const isActive = item.status === 'active';
-            statusTd.innerHTML = `<span class="badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2">${item.status}</span>`;
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
+            statusBadge.textContent = item.status;
+            statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
 
             const actionTd = document.createElement('td');
@@ -302,7 +431,9 @@ const App = (() => {
                 // For now, just show "Submit"
                 const submitBtn = document.createElement('button');
                 submitBtn.className = 'btn btn-sm btn-primary-premium ms-1';
-                submitBtn.innerHTML = '<i class="bi bi-send"></i> Submit';
+                const submitIcon = document.createElement('i');
+                submitIcon.className = 'bi bi-send';
+                submitBtn.append(submitIcon, document.createTextNode(' Submit'));
                 submitBtn.onclick = () => openSubmissionModal(item);
                 actionTd.appendChild(submitBtn);
             } else {
@@ -318,21 +449,33 @@ const App = (() => {
 
         if (type === 'student') {
             const studentTd = document.createElement('td');
-            studentTd.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <div class="avatar-sm me-2 bg-light rounded text-center" style="width:32px; height:32px; line-height:32px;">
-                        <i class="bi bi-person text-primary"></i>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-dark">${escapeText(item.full_name || item.name)}</div>
-                        <div class="small text-muted">${escapeText(item.user?.email || item.email || '')}</div>
-                    </div>
-                </div>
-            `;
+            const studentDiv = document.createElement('div');
+            studentDiv.className = 'd-flex align-items-center';
+
+            const avatarBox = document.createElement('div');
+            avatarBox.className = 'avatar-sm me-2 bg-light rounded text-center';
+            avatarBox.style.cssText = 'width:32px; height:32px; line-height:32px;';
+            avatarBox.innerHTML = '<i class="bi bi-person text-primary"></i>';
+
+            const infoBox = document.createElement('div');
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'fw-bold text-dark';
+            nameDiv.textContent = item.full_name || item.name || 'N/A';
+
+            const emailDiv = document.createElement('div');
+            emailDiv.className = 'small text-muted';
+            emailDiv.textContent = item.user?.email || item.email || '';
+
+            infoBox.append(nameDiv, emailDiv);
+            studentDiv.append(avatarBox, infoBox);
+            studentTd.appendChild(studentDiv);
             tr.appendChild(studentTd);
 
             const admissionTd = document.createElement('td');
-            admissionTd.innerHTML = `<span class="badge bg-light text-dark border">${escapeText(item.admission_number)}</span>`;
+            const admissionBadge = document.createElement('span');
+            admissionBadge.className = 'badge bg-light text-dark border';
+            admissionBadge.textContent = item.admission_number || 'N/A';
+            admissionTd.appendChild(admissionBadge);
             tr.appendChild(admissionTd);
 
             const gradeTd = document.createElement('td');
@@ -340,82 +483,169 @@ const App = (() => {
             tr.appendChild(gradeTd);
 
             const genderTd = document.createElement('td');
-            genderTd.innerHTML = `<span class="text-capitalize">${escapeText(item.gender || item.user?.gender || 'N/A')}</span>`;
+            const genderSpan = document.createElement('span');
+            genderSpan.className = 'text-capitalize';
+            genderSpan.textContent = item.gender || item.user?.gender || 'N/A';
+            genderTd.appendChild(genderSpan);
             tr.appendChild(genderTd);
 
             const statusTd = document.createElement('td');
             const isActive = item.status === true || item.status === 1 || item.status === 'active';
-            statusTd.innerHTML = `<span class="badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2">
-                ${isActive ? 'Active' : 'Inactive'}
-            </span>`;
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
+            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
+        } else if (type === 'class') {
+            const nameTd = document.createElement('td');
+            nameTd.className = 'fw-bold text-dark';
+            nameTd.textContent = item.name;
+            tr.appendChild(nameTd);
+
+            const teacherTd = document.createElement('td');
+            teacherTd.textContent = item.class_teacher?.user?.name || 'N/A';
+            tr.appendChild(teacherTd);
+
+            const studentsTd = document.createElement('td');
+            const studentsBadge = document.createElement('span');
+            studentsBadge.className = 'badge bg-light text-dark border';
+            studentsBadge.textContent = item.students_count || 0;
+            studentsTd.appendChild(studentsBadge);
+            tr.appendChild(studentsTd);
+
+            const subjectsTd = document.createElement('td');
+            const subjectsBadge = document.createElement('span');
+            subjectsBadge.className = 'badge bg-info-subtle text-info';
+            subjectsBadge.textContent = item.subjects_count || 0;
+            subjectsTd.appendChild(subjectsBadge);
+            tr.appendChild(subjectsTd);
+
+            const assignmentsTd = document.createElement('td');
+            const assignmentsBadge = document.createElement('span');
+            assignmentsBadge.className = 'badge bg-warning-subtle text-warning';
+            assignmentsBadge.textContent = item.assignments_count || 0;
+            assignmentsTd.appendChild(assignmentsBadge);
+            tr.appendChild(assignmentsTd);
         } else if (type === 'school') {
             const nameTd = document.createElement('td');
-            nameTd.innerHTML = `
-                <div class="fw-bold text-dark">${item.name}</div>
-                <div class="small text-muted">${item.email || ''}</div>
-                <div class="small text-muted">${item.phone || ''}</div>
-            `;
+            const schoolName = document.createElement('div');
+            schoolName.className = 'fw-bold text-dark';
+            schoolName.textContent = item.name;
+
+            const schoolEmail = document.createElement('div');
+            schoolEmail.className = 'small text-muted';
+            schoolEmail.textContent = item.email || '';
+
+            const schoolPhone = document.createElement('div');
+            schoolPhone.className = 'small text-muted';
+            schoolPhone.textContent = item.phone || '';
+
+            nameTd.append(schoolName, schoolEmail, schoolPhone);
             tr.appendChild(nameTd);
 
             const locTd = document.createElement('td');
-            locTd.innerHTML = `
-                <div class="small text-wrap" style="max-width: 200px;">${item.address || ''}</div>
-                <div class="small text-muted">${item.city || ''}, ${item.state || ''}</div>
-            `;
+            const addressDiv = document.createElement('div');
+            addressDiv.className = 'small text-wrap';
+            addressDiv.style.maxWidth = '200px';
+            addressDiv.textContent = item.address || '';
+
+            const cityDiv = document.createElement('div');
+            cityDiv.className = 'small text-muted';
+            cityDiv.textContent = `${item.city || ''}, ${item.state || ''}`.replace(/^, /, '');
+
+            locTd.append(addressDiv, cityDiv);
             tr.appendChild(locTd);
 
             const personTd = document.createElement('td');
-            personTd.innerHTML = `
-                <div>${item.contact_person || 'N/A'}</div>
-                <div class="small text-muted">${item.contact_person_phone || ''}</div>
-            `;
+            const personName = document.createElement('div');
+            personName.textContent = item.contact_person || 'N/A';
+
+            const personPhone = document.createElement('div');
+            personPhone.className = 'small text-muted';
+            personPhone.textContent = item.contact_person_phone || '';
+
+            personTd.append(personName, personPhone);
             tr.appendChild(personTd);
 
             const statsTd = document.createElement('td');
-            statsTd.innerHTML = `
-                <span class="badge bg-light text-dark border me-1"><i class="bi bi-people"></i> ${item.users_count || 0}</span>
-                <span class="badge bg-light text-dark border"><i class="bi bi-mortarboard"></i> ${item.students_count || 0}</span>
-            `;
+            const usersBadge = document.createElement('span');
+            usersBadge.className = 'badge bg-light text-dark border me-1';
+            usersBadge.innerHTML = `<i class="bi bi-people"></i> `;
+            usersBadge.append(document.createTextNode(item.users_count || 0));
+
+            const studentsBadge = document.createElement('span');
+            studentsBadge.className = 'badge bg-light text-dark border';
+            studentsBadge.innerHTML = `<i class="bi bi-mortarboard"></i> `;
+            studentsBadge.append(document.createTextNode(item.students_count || 0));
+
+            statsTd.append(usersBadge, studentsBadge);
             tr.appendChild(statsTd);
 
             const planTd = document.createElement('td');
-            planTd.innerHTML = `<span class="badge bg-info-subtle text-info text-uppercase">${item.plan || 'Basic'}</span>`;
+            const planBadge = document.createElement('span');
+            planBadge.className = 'badge bg-info-subtle text-info text-uppercase';
+            planBadge.textContent = item.plan || 'Basic';
+            planTd.appendChild(planBadge);
             tr.appendChild(planTd);
 
             const statusTd = document.createElement('td');
             const isActive = item.is_active || item.status === 'active';
-            statusTd.innerHTML = `<span class="badge bg-${isActive ? 'success' : 'danger'}-subtle text-${isActive ? 'success' : 'danger'} px-2">
-                ${item.status_label || (isActive ? 'Active' : 'Inactive')}
-            </span>`;
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `badge bg-${isActive ? 'success' : 'danger'}-subtle text-${isActive ? 'success' : 'danger'} px-2`;
+            statusBadge.textContent = item.status_label || (isActive ? 'Active' : 'Inactive');
+            statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
-
         } else if (type === 'teacher') {
             // ... (keep teacher logic same)
             const teacherTd = document.createElement('td');
-            teacherTd.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <div class="avatar-sm me-2 bg-light rounded text-center" style="width:32px; height:32px; line-height:32px;">
-                        <i class="bi bi-person-workspace text-primary"></i>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-dark">${escapeText(item.name || item.full_name || item.user?.name)}</div>
-                        <div class="small text-muted">${escapeText(item.user?.email || item.email || '')}</div>
-                    </div>
-                </div>
-            `;
+            const teacherDiv = document.createElement('div');
+            teacherDiv.className = 'd-flex align-items-center';
+
+            const teacherAvatar = document.createElement('div');
+            teacherAvatar.className = 'avatar-sm me-2 bg-light rounded text-center';
+            teacherAvatar.style.cssText = 'width:32px; height:32px; line-height:32px;';
+            teacherAvatar.innerHTML = '<i class="bi bi-person-workspace text-primary"></i>';
+
+            const teacherInfo = document.createElement('div');
+            const teacherName = document.createElement('div');
+            teacherName.className = 'fw-bold text-dark';
+            teacherName.textContent = item.name || item.full_name || item.user?.name || 'N/A';
+
+            const teacherEmail = document.createElement('div');
+            teacherEmail.className = 'small text-muted';
+            teacherEmail.textContent = item.user?.email || item.email || '';
+
+            teacherInfo.append(teacherName, teacherEmail);
+            teacherDiv.append(teacherAvatar, teacherInfo);
+            teacherTd.appendChild(teacherDiv);
             tr.appendChild(teacherTd);
 
             const employeeTd = document.createElement('td');
-            employeeTd.innerHTML = `<span class="badge bg-light text-dark border">${escapeText(item.employee_number || 'N/A')}</span>`;
+            const employeeBadge = document.createElement('span');
+            employeeBadge.className = 'badge bg-light text-dark border';
+            employeeBadge.textContent = item.employee_number || 'N/A';
+            employeeTd.appendChild(employeeBadge);
             tr.appendChild(employeeTd);
 
             const statusTd = document.createElement('td');
-            const isActive = item.status === true || item.status === 1 || item.status === 'active';
-            statusTd.innerHTML = `<span class="badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2">
-                ${isActive ? 'Active' : 'Inactive'}
-            </span>`;
+            const isActive = (item.status === 'active' || item.status === 1 || item.user?.status === 'active');
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
+            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
+
+            const subjectsTd = document.createElement('td');
+            subjectsTd.textContent = item.assignments_count !== undefined ? `${item.assignments_count} Subjects` : 'N/A';
+            tr.appendChild(subjectsTd);
+
+            const phoneTd = document.createElement('td');
+            phoneTd.textContent = item.user?.phone || item.phone || 'N/A';
+            tr.appendChild(phoneTd);
+
+            const dateTd = document.createElement('td');
+            dateTd.textContent = item.hire_date ? new Date(item.hire_date).toLocaleDateString() : 'N/A';
+            tr.appendChild(dateTd);
         } else {
             // Generic fallback
             const nameTd = document.createElement('td');
@@ -428,19 +658,32 @@ const App = (() => {
 
         // Actions
         if (userRole !== 'student') {
+            if (type === 'class') {
+                const manageBtn = document.createElement('button');
+                manageBtn.className = 'btn btn-sm btn-outline-primary ms-1';
+                manageBtn.title = 'Manage Subjects';
+                const i = document.createElement('i');
+                i.className = 'bi bi-journal-plus';
+                manageBtn.appendChild(i);
+                manageBtn.onclick = () => window.manageSubjects ? window.manageSubjects(item.id, item.name) : console.warn('manageSubjects missing');
+                actionTd.appendChild(manageBtn);
+            }
+
             if (type === 'school' && !item.is_active) {
                 const approveBtn = document.createElement('button');
                 approveBtn.type = 'button';
                 approveBtn.className = 'btn btn-sm btn-success-subtle text-success me-1';
-                approveBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
+                const approveIcon = document.createElement('i');
+                approveIcon.className = 'bi bi-check-lg';
+                approveBtn.appendChild(approveIcon);
                 approveBtn.title = 'Approve School';
                 approveBtn.onclick = () => window.approveSchool ? window.approveSchool(item.id) : console.warn('approveSchool fn missing');
                 actionTd.appendChild(approveBtn);
             }
 
             actionTd.append(
-                actionButton('<i class="bi bi-pencil-square"></i>', 'edit', type, item.id),
-                actionButton('<i class="bi bi-trash"></i>', 'delete', type, item.id)
+                actionButton('bi-pencil-square', 'edit', type, item.id),
+                actionButton('bi-trash', 'delete', type, item.id)
             );
         }
 
@@ -448,15 +691,32 @@ const App = (() => {
         return tr;
     };
 
-    const actionButton = (html, action, entity, id) => {
+    const actionButton = (iconClass, action, entity, id) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `btn btn-sm btn-outline-${action === 'delete' ? 'danger' : 'primary'} ms-1`;
-        btn.innerHTML = html;
+
+        const i = document.createElement('i');
+        i.className = `bi ${iconClass}`;
+        btn.appendChild(i);
+
         btn.dataset.action = action;
         btn.dataset.entity = entity;
         btn.dataset.id = id;
         return btn;
+    };
+
+    const createSkeletonRow = (cols = 6) => {
+        const tr = document.createElement('tr');
+        tr.className = 'skeleton-row';
+        for (let i = 0; i < cols; i++) {
+            const td = document.createElement('td');
+            const skeleton = document.createElement('div');
+            skeleton.className = 'skeleton-line';
+            td.appendChild(skeleton);
+            tr.appendChild(td);
+        }
+        return tr;
     };
 
     const emptyRow = (message, isError = false) => {
@@ -483,9 +743,11 @@ const App = (() => {
         }
 
         if (action === 'edit') {
-            const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            btn.replaceChildren();
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm';
+            btn.appendChild(spinner);
 
             try {
                 // Fetch full data for the entity before editing
@@ -503,7 +765,10 @@ const App = (() => {
                 Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load item data.' });
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = originalHtml;
+                btn.replaceChildren();
+                const i = document.createElement('i');
+                i.className = action === 'delete' ? 'bi bi-trash' : 'bi bi-pencil-square';
+                btn.appendChild(i);
             }
         }
     };
@@ -541,7 +806,10 @@ const App = (() => {
 
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+            submitBtn.replaceChildren();
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm me-2';
+            submitBtn.append(spinner, document.createTextNode('Saving...'));
         }
 
         try {
@@ -587,6 +855,8 @@ const App = (() => {
     };
 
     const showFormErrors = (form, errors) => {
+        if (!errors || typeof errors !== 'object') return;
+
         Object.entries(errors).forEach(([field, msgs]) => {
             const input = form.elements[field];
             if (!input) return;
@@ -688,7 +958,12 @@ const App = (() => {
 
         try {
             const res = await axios.get(url);
-            const data = res?.data?.data || res?.data || [];
+            let data = res?.data?.data || res?.data || [];
+
+            // Handle Laravel Pagination
+            if (data && !Array.isArray(data) && Array.isArray(data.data)) {
+                data = data.data;
+            }
 
             const defaultOpt = document.createElement('option');
             defaultOpt.value = '';
@@ -697,9 +972,14 @@ const App = (() => {
 
             data.forEach(item => {
                 const opt = document.createElement('option');
-                opt.value = item[valueKey];
-                opt.textContent = item[labelKey];
-                if (selectedId && String(item[valueKey]) === String(selectedId)) opt.selected = true;
+
+                const val = typeof valueKey === 'function' ? valueKey(item) : item[valueKey];
+                const lbl = typeof labelKey === 'function' ? labelKey(item) : item[labelKey];
+
+                opt.value = val;
+                opt.textContent = lbl;
+
+                if (selectedId && String(val) === String(selectedId)) opt.selected = true;
                 select.appendChild(opt);
             });
 
@@ -712,12 +992,20 @@ const App = (() => {
         }
     };
 
+    const resetForm = (form) => {
+        if (!form) return;
+        form.reset();
+        clearFormErrors(form);
+        // Clear hidden IDs that might be left over from previous edits
+        form.querySelectorAll('input[type="hidden"][name$="_id"]').forEach(i => i.value = '');
+    };
+
     const formatCurrency = (val) =>
         new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
 
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-    return { init, renderTable, submitForm, populateForm, deleteItem, logout, loadOptions };
+    return { init, renderTable, submitForm, populateForm, resetForm, deleteItem, logout, loadOptions, safeHTML, formatCurrency };
 })();
 
 window.App = App;

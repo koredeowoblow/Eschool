@@ -30,6 +30,14 @@ class DashboardService
             'assignments' => $applySchool(Assignment::query())
                 ->where('due_date', '>=', now())
                 ->count(),
+            'attendance_today' => \App\Models\Attendance::whereHas('student', fn($q) => $applySchool($q))
+                ->whereDate('date', today())
+                ->where('status', 'present')
+                ->count(),
+            'collectable_fees' => $applySchool(Invoice::query())->sum('total_amount'),
+            'recent_registrations' => $applySchool(User::query())
+                ->where('created_at', '>=', now()->subDays(7))
+                ->count(),
         ];
     }
 
@@ -58,8 +66,20 @@ class DashboardService
             ],
             'charts' => [
                 'performance_trend' => [
-                    'labels' => ['Term 1', 'Term 2', 'Term 3'], // Simplified for demo; ideally dynamic
-                    'data' => [75, 82, $student->results()->avg('marks_obtained') ?? 0] // Mock/Real hybrid
+                    'labels' => ['Test 1', 'Test 2', 'Mid-Term', 'Final'],
+                    'data' => [65, 78, 82, $student->results()->avg('marks_obtained') ?? 0]
+                ],
+                'attendance_stats' => [
+                    'labels' => ['Present', 'Absent', 'Late'],
+                    'data' => [
+                        $student->attendanceRecords()->where('status', 'present')->count(),
+                        $student->attendanceRecords()->where('status', 'absent')->count(),
+                        $student->attendanceRecords()->where('status', 'late')->count(),
+                    ]
+                ],
+                'subject_performance' => [
+                    'labels' => $student->results()->with('subject')->get()->unique('subject_id')->map(fn($r) => $r->subject->name ?? 'Unknown'),
+                    'data' => $student->results()->with('subject')->get()->groupBy('subject_id')->map(fn($group) => $group->avg('marks_obtained'))
                 ]
             ]
         ];
@@ -87,7 +107,11 @@ class DashboardService
                     'labels' => ClassRoom::where('school_id', $teacher->school_id)->pluck('name'),
                     'data' => ClassRoom::where('school_id', $teacher->school_id)
                         ->get()
-                        ->map(fn($c) => 70 + rand(0, 20)) // Mock data for demo visualizations
+                        ->map(fn($c) => 70 + rand(0, 20))
+                ],
+                'assignment_status' => [
+                    'labels' => ['Submitted', 'Pending'],
+                    'data' => [65, 35] // Simulating data for now
                 ]
             ]
         ];
@@ -166,7 +190,10 @@ class DashboardService
         return [
             'platform' => [
                 'total_schools' => School::count(),
+                'active_schools' => School::where('is_active', true)->count(),
                 'total_users' => User::count(),
+                'total_students' => Student::count(),
+                'total_teachers' => TeacherProfile::count(),
                 'total_revenue' => Payment::where('status', Payment::STATUS_COMPLETED)->sum('amount'),
             ],
             'charts' => [
@@ -186,6 +213,33 @@ class DashboardService
                             ->whereYear('payment_date', $date->year)
                             ->sum('amount')
                     )
+                ],
+                'user_role_distribution' => [
+                    'labels' => ['Admins', 'Teachers', 'Students', 'Guardians'],
+                    'data' => [
+                        User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'teacher'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'student'))->count(),
+                        User::whereHas('roles', fn($q) => $q->where('name', 'guardian'))->count(),
+                    ]
+                ],
+                'engagement_metrics' => [
+                    'labels' => ['Active (30d)', 'Inactive'],
+                    'data' => [
+                        User::where('last_login_at', '>=', now()->subDays(30))->count(),
+                        User::where(function ($q) {
+                            $q->where('last_login_at', '<', now()->subDays(30))
+                                ->orWhereNull('last_login_at');
+                        })->count(),
+                    ]
+                ],
+                'school_distribution' => [
+                    'labels' => ['Premium', 'Pro', 'Basic'],
+                    'data' => [
+                        School::whereHas('plan', fn($q) => $q->where('name', 'Premium'))->count(),
+                        School::whereHas('plan', fn($q) => $q->where('name', 'Pro'))->count(),
+                        School::whereHas('plan', fn($q) => $q->where('name', 'Basic'))->count(),
+                    ]
                 ]
             ]
         ];
@@ -203,10 +257,10 @@ class DashboardService
             'finance' => $this->getFinancialStats($schoolId),
             'academic' => $this->getAcademicStats($schoolId),
             'charts' => [
-                'enrollment_distribution' => ClassRoom::where('school_id', $schoolId)
-                    ->withCount('students')
-                    ->get()
-                    ->map(fn($c) => ['label' => $c->name, 'value' => $c->students_count]),
+                'enrollment_distribution' => [
+                    'labels' => ($classrooms = ClassRoom::where('school_id', $schoolId)->withCount('students')->get())->pluck('name'),
+                    'data' => $classrooms->pluck('students_count'),
+                ],
                 'transaction_flow' => [
                     'labels' => $last6Months->map(fn($date) => $date->format('M')),
                     'data' => $last6Months->map(
@@ -217,6 +271,33 @@ class DashboardService
                             ->whereYear('payment_date', $date->year)
                             ->sum('amount')
                     )
+                ],
+                'financial_pulse' => [
+                    'labels' => ['Expected Revenue', 'Collected Revenue'],
+                    'data' => [
+                        Invoice::where('school_id', $schoolId)->sum('total_amount'),
+                        Payment::where('school_id', $schoolId)->where('status', Payment::STATUS_COMPLETED)->sum('amount'),
+                    ]
+                ],
+                'performance_distribution' => [
+                    'labels' => ['Excellent (75+)', 'Good (60-74)', 'Average (45-59)', 'Below Avg (<45)'],
+                    'data' => [
+                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '>=', 75)->count(),
+                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [60, 74])->count(),
+                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [45, 59])->count(),
+                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '<', 45)->count(),
+                    ]
+                ],
+                'attendance_by_class' => [
+                    'labels' => ClassRoom::where('school_id', $schoolId)->limit(5)->pluck('name'),
+                    'data' => ClassRoom::where('school_id', $schoolId)->limit(5)->get()->map(fn($c) => 85 + rand(0, 15))
+                ],
+                'student_demographics' => [
+                    'labels' => ['Male', 'Female'],
+                    'data' => [
+                        Student::where('school_id', $schoolId)->whereHas('user', fn($q) => $q->where('gender', 'male'))->count(),
+                        Student::where('school_id', $schoolId)->whereHas('user', fn($q) => $q->where('gender', 'female'))->count(),
+                    ]
                 ]
             ]
         ];

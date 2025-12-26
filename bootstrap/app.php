@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/api/library.php');
 
                     require base_path('routes/api/payment.php');
+                    require base_path('routes/api/fee.php');
                     require base_path('routes/api/report.php');
                     require base_path('routes/api/result.php');
                     require base_path('routes/api/student.php');

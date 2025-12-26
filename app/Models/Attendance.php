@@ -18,4 +18,14 @@ class Attendance extends Model
         'status',
         'school_id',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function classRoom()
+    {
+        return $this->belongsTo(ClassRoom::class, 'class_id');
+    }
 }

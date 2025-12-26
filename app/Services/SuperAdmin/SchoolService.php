@@ -103,11 +103,31 @@ class SchoolService
      */
     public function updateSchool($id, array $data): School
     {
-        $school = $this->schoolRepo->update($id, $data);
-        if (!$school) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
-        }
-        return $school;
+        return DB::transaction(function () use ($id, $data) {
+            // Automatically set is_active based on status field
+            if (isset($data['status'])) {
+                $data['is_active'] = ($data['status'] === 'active');
+            }
+
+            // If is_active is set directly, ensure status is also set
+            if (isset($data['is_active']) && !isset($data['status'])) {
+                $data['status'] = $data['is_active'] ? 'active' : 'inactive';
+            }
+
+            $school = $this->schoolRepo->update($id, $data);
+            if (!$school) {
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
+            }
+
+            // If school is being activated, also activate all its users
+            if (isset($data['is_active']) && $data['is_active']) {
+                User::where('school_id', $school->id)
+                    ->where('status', '!=', 'active')
+                    ->update(['status' => 'active']);
+            }
+
+            return $school;
+        });
     }
 
     /**

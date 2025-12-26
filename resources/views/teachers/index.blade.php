@@ -28,6 +28,7 @@
                             <th>Teacher</th>
                             <th>Employee #</th>
                             <th>Status</th>
+                            <th>Subjects</th>
                             <th>Phone</th>
                             <th>Hire Date</th>
                             <th class="text-end">Actions</th>

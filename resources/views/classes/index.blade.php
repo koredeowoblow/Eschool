@@ -143,6 +143,59 @@
             </div>
         </div>
     </div>
+    <!-- Manage Subjects Modal -->
+    <div class="modal fade" id="manageSubjectsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Manage Class Subjects</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info py-2 small">
+                        Assign subjects and their respective teachers to <strong id="manageSubjectsClassName"></strong>.
+                    </div>
+
+                    <!-- Assign Form -->
+                    <form id="assignSubjectForm" class="row g-2 mb-4">
+                        @csrf
+                        <input type="hidden" name="class_id" id="assignSubjectClassId">
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold">Subject</label>
+                            <select name="subject_id" id="assign_subject_id" class="form-select form-select-sm" required>
+                                <option value="">Select Subject</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold">Teacher</label>
+                            <select name="teacher_id" id="assign_teacher_id" class="form-select form-select-sm" required>
+                                <option value="">Select Teacher</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary-premium btn-sm w-100">Assign</button>
+                        </div>
+                    </form>
+
+                    <h6 class="fw-bold mb-3 small text-uppercase text-muted">Current Assignments</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Teacher</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classSubjectsTableBody">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -208,6 +261,108 @@
 
             const modal = new bootstrap.Modal(document.getElementById('editClassModal'));
             modal.show();
+        }
+
+        function manageSubjects(classId, className) {
+            document.getElementById('manageSubjectsClassName').textContent = className;
+            document.getElementById('assignSubjectClassId').value = classId;
+
+            // Load Options for assignment dropdowns
+            App.loadOptions('/api/v1/subjects', 'assign_subject_id');
+            App.loadOptions('/api/v1/teachers', 'assign_teacher_id', null, 'id', (item) => item.user?.name || 'N/A');
+
+            reloadClassSubjects(classId);
+
+            const modal = new bootstrap.Modal(document.getElementById('manageSubjectsModal'));
+            modal.show();
+        }
+
+        async function reloadClassSubjects(classId) {
+            const tbody = document.getElementById('classSubjectsTableBody');
+            tbody.innerHTML =
+                '<tr><td colspan="3" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+
+            try {
+                const res = await axios.get(`/api/v1/teacher-subjects?class_id=${classId}`);
+                const data = res.data.data;
+
+                tbody.innerHTML = '';
+                if (data.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3" class="text-center py-3 text-muted">No subjects assigned yet</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${item.subject?.name || 'N/A'}</strong></td>
+                        <td>${item.teacher?.user?.name || 'N/A'}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-danger border-0" onclick="removeSubjectAssignment(${item.id}, ${classId})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML =
+                    '<tr><td colspan="3" class="text-center py-3 text-danger">Error loading assignments</td></tr>';
+            }
+        }
+
+        document.getElementById('assignSubjectForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const classId = document.getElementById('assignSubjectClassId').value;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            try {
+                await axios.post('/api/v1/teacher-subjects', new FormData(form));
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Assigned',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+                reloadClassSubjects(classId);
+                reloadClasses(); // Update count in main table
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.response?.data?.message || 'Assignment failed'
+                });
+            } finally {
+                submitBtn.disabled = false;
+            }
+        };
+
+        async function removeSubjectAssignment(id, classId) {
+            const result = await Swal.fire({
+                title: 'Unassign Subject?',
+                text: "This teacher will no longer be assigned to this subject in this class.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, remove!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await axios.delete(`/api/v1/teacher-subjects/${id}`);
+                    reloadClassSubjects(classId);
+                    reloadClasses(); // Update count in main table
+                } catch (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to remove assignment'
+                    });
+                }
+            }
         }
     </script>
 @endsection

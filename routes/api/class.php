@@ -9,6 +9,7 @@ use App\Http\Controllers\Class\Session\EnrollmentController;
 use App\Http\Controllers\Class\Session\SessionController;
 use App\Http\Controllers\Class\Session\SectionController;
 use App\Http\Controllers\Class\Session\TermController;
+use App\Http\Controllers\Class\SubjectController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -18,6 +19,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('classes/{id}', [ClassController::class, 'show']);
     Route::put('classes/{id}', [ClassController::class, 'update']);
     Route::delete('classes/{id}', [ClassController::class, 'destroy']);
+
+    Route::get('subjects', [SubjectController::class, 'index']);
+    Route::post('subjects', [SubjectController::class, 'store']);
+    Route::get('subjects/{id}', [SubjectController::class, 'show']);
+    Route::put('subjects/{id}', [SubjectController::class, 'update']);
+    Route::delete('subjects/{id}', [SubjectController::class, 'destroy']);
 
     Route::get('lesson-notes', [LessonNoteController::class, 'index']);
     Route::post('lesson-notes', [LessonNoteController::class, 'store']);
