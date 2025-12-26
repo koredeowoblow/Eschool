@@ -1,17 +1,17 @@
-# Eschool - Advanced Education Management System
+# 🏫 Eschool - Advanced Education Management System
 
-Eschool is a high-performance, multi-tenant Education Management System (EMS) architected for scalability, security, and administrative efficiency. It provides a centralized platform for managing multiple educational institutions with complete data isolation and granular role-based control.
+Eschool is a high-performance, multi-tenant Education Management System (EMS) designed for seamless school administration. It features strict data isolation, a robust subscription model, and real-time communication capabilities.
 
 ---
 
 ## 📖 Table of Contents
 - [🚀 Key Features](#-key-features)
-- [🏗 Architecture & Design Patterns](#-architecture--design-patterns)
-- [👥 User Role & Access Model](#-user-role--access-model)
-- [📦 Core Modules](#-core-modules)
-- [📂 Project Structure](#-project-structure)
+- [🏗 Architecture & Design](#-architecture--design)
+- [👥 Role-Based Access (RBAC)](#-role-based-access-rbac)
+- [📦 Core Business Modules](#-core-business-modules)
+- [📂 Project Topology](#-project-topology)
 - [⚙️ Setup & Installation](#-setup--installation)
-- [📝 Developer Guidelines](#-developer-guidelines)
+- [📝 Developer Handbook](#-developer-handbook)
 - [🔐 Security & Compliance](#-security--compliance)
 
 ---
@@ -19,133 +19,129 @@ Eschool is a high-performance, multi-tenant Education Management System (EMS) ar
 ## 🚀 Key Features
 
 ### 🏢 Enterprise Multi-Tenancy
-- **Strict Isolation**: Model-level scoping using `school_id` ensures no data "leakage" between institutions.
-- **Dynamic Resource Limits**: Enforce student, teacher, and staff limits based on school subscription plans.
-- **Custom Branding**: Configuration hooks for school-specific settings and identity.
+- **Database-Level Isolation**: Every query is automatically scoped by `school_id` via the Repository layer.
+- **Resource Guardrails**: Real-time enforcement of student and staff limits based on the school's active subscription plan.
+- **Dynamic Configuration**: Each school maintains its own grading scales, sessions, and academic calendars.
 
-### � Academic Excellence
-- **3-Step Result Workflow**: `Draft` -> `Submitted` -> `Reviewed/Published`. Results only reach parents/students after administrative sign-off.
-- **Automated Grading**: Dynamic grade calculation based on school-defined grading scales.
-- **Attendance & Engagement**: Real-time digital registers and interactive assignment tracking.
+### 📚 Academic Engine
+- **Hierarchical Approvals**: A fail-safe workflow for student results (`Draft` → `Submitted` → `Reviewed` → `Published`).
+- **Real-time Registers**: Digital attendance tracking with automated notifications to guardians.
+- **Instructional Tools**: Integrated lesson note distribution and assignment management.
 
-### � Financial Integrity
-- **Intelligent Billing**: Automated fee generation based on student class/category.
-- **Payment Verification**: Secured payment gateway integration with manual override for cash/bank transfers.
-- **System-Wide Auditing**: Every modification to financial or academic data is timestamped and attributed.
+### 💰 Financial Integrity
+- **Flex-Billing**: Automated invoice generation for fees with support for discounts and installments.
+- **Audit Ledger**: A permanent, unchangeable record of all financial transactions and administrative changes.
 
 ---
 
-## 🏗 Architecture & Design Patterns
+## 🏗 Architecture & Design
 
 ### 1. Service-Repository Pattern
-We strictly separate data access from business logic:
-- **Repositories**: Standardize database queries and enforce tenancy scoping.
-- **Services**: Coordinate business workflows, handle external events, and manage transactions.
-- **Controllers**: Thin wrappers that handle request validation and response delivery.
+- **Repositories**: Standardize data access. They handle all Eloquent queries and ensure strict multi-tenancy.
+- **Services**: Contain the core "business rules." If a student is created, the Service handles the User creation, Role assignment, and Enrollment simultaneously.
+- **Controllers**: Logic-less entry points. They validate the request and deliver the response.
 
-### 2. Tenancy Scoping (Automated)
-Most repositories extend `BaseRepository`, which implements a global query scope using the authenticated user's `school_id`.
-> [!IMPORTANT]
-> Always use Repository methods instead of direct Eloquent queries in Services or Controllers to ensure tenancy is never bypassed.
-
-### 3. API Response Standardization
-All endpoints must use the `ResponseHelper` to maintain consistency:
-- **Success**: `{"success": true, "data": {...}, "message": "..."}`
-- **Error**: `{"success": false, "errors": {...}, "message": "..."}`
+### 2. Multi-Tenancy (Spatie Teams)
+We use `spatie/laravel-permission` with the `teams` feature. 
+- **Global Roles**: Shared templates (e.g., `Teacher`, `Student`) with `school_id = null`.
+- **Custom Roles**: School-specific roles (e.g., `Principal`) scoped to a specific `school_id`.
 
 ---
 
-## 👥 User Role & Access Model
+## 🛠 Tech Stack
 
-The system uses [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) with the **Teams** feature enabled.
+- **Backend**: Laravel 11 (PHP 8.2+)
+- **Storage**: MySQL 8.0+ / PostgreSQL 15+
+- **Real-time**: Laravel Reverb (WebSockets)
+- **Security**: Laravel Sanctum & Spatie Permissions
+- **Frontend**: Blade Components, Vanilla JS, CSS3, SweetAlert2
+- **Tools**: Composer, Git, Artisan
 
-| Role | Responsibility | Scope Access |
+---
+
+## 👥 Role-Based Access (RBAC)
+
+| Role | Responsibility | Data Boundary |
 | :--- | :--- | :--- |
-| **Super Admin** | Platform maintenance, school onboarding, global plan management. | **Global** (No Scoping) |
-| **School Admin** | Daily operations, staff management, financial approval, settings. | **Tenant** (`school_id`) |
-| **Teacher** | Classroom management, attendance, mark entry, lesson notes. | **Resource-Scoped** |
-| **Student** | Viewing materials, taking assignments, tracking progress. | **Owner-Scoped** |
-| **Guardian** | Monitoring ward performance, chatting with teachers, paying fees. | **Relationship-Scoped** |
+| **Super Admin** | Platform maintenance, school onboarding, global plans. | **Global** |
+| **School Admin** | Daily operations, staff oversight, billing, local settings. | **Tenant** |
+| **Teacher** | Class management, attendance, mark entry, lesson planning. | **Resource-Scoped** |
+| **Student** | Learning portal access, assignments, result tracking. | **Personal** |
+| **Guardian** | Ward monitoring, teacher communication, fee payments. | **Relation-Scoped** |
 
 ---
 
-## 📦 Core Modules
+## 📦 Core Business Modules
 
-### Result System (`Model\Result.php`)
-The result system moves through defined states:
-1. **Draft**: Initial entry by Teacher.
-2. **Submitted**: Sent for review (locked for Teacher).
-3. **Reviewed**: Verified by Exam Officer/Admin.
-4. **Published**: Visible to Student/Guardian.
+### 📝 Result Management
+Managed in `App\Services\Academic\ResultService`. 
+- Results are **Locked** once submitted by a teacher.
+- **Validation**: Marks cannot exceed the assessment's maximum score.
+- **Publication**: Results are only visible to the public after the `Published` state is reached.
 
-### Finance System (`Services\Finance\FinanceService.php`)
-Handles complex fee logic:
-- Multi-student discounts (linked via Guardian).
-- Part-payment support with outstanding balance tracking.
-- Automated invoice aging (Overdue notifications).
+### 💸 Fee System
+Managed in `App\Services\Finance\FinanceService`.
+- **Invoicing**: Triggered at the start of a term or upon student enrollment.
+- **Payments**: Supports partial payments. The `invoices` table tracks `amount_paid` and `balance_due`.
 
 ---
 
-## 📂 Project Structure
+## 📂 Project Topology
 
 ```text
 app/
-├── Helpers/        # AuditLogger, ResponseHelper, and generic global helpers.
+├── Helpers/        # Standardized Audit & Response helpers.
 ├── Http/
-│   ├── Controllers/ # Thin controllers, delegated to Services.
-│   ├── Requests/    # Validation logic (FormRequests).
-│   └── Middleware/  # Tenancy verification, Session checking.
-├── Models/         # UUID models (Traits: HasUuids, HasRoles, HasTenancy).
-├── Repositories/   # Scoped data access logic.
-└── Services/       # The "Brain" of the application (Business Logic).
+│   ├── Controllers/ # Delivery layer (Web/API).
+│   └── Requests/    # Complex validation rules.
+├── Repositories/   # Tenant-scoped data access.
+└── Services/       # Business logic orchestration.
 database/
-├── migrations/     # Ordered migrations with UUID support.
-└── seeders/        # Environment-aware seeding (Global Roles & Admin).
+├── migrations/     # Multi-tenant schema definitions.
+└── seeders/        # Global baseline and system roles.
+public/
+└── js/             # Pre-built premium dashboard assets.
 ```
 
 ---
 
 ## ⚙️ Setup & Installation
 
-### Requirements
-- PHP 8.2+
-- MySQL 8.0+ / PostgreSQL 15+
-- Node.js 18+
-
 ### Steps
-1. **Clone**: `git clone <repo>`
-2. **PHP Dependencies**: `composer install`
-3. **JS Dependencies**: `npm install && npm run build`
-4. **Environment**: `cp .env.example .env && php artisan key:generate`
-5. **Database**: `php artisan migrate:fresh --seed`
-6. **Serve**: `php artisan serve`
+1. **Clone**: `git clone <repository-url>`
+2. **Install**: `composer install`
+3. **Configure**: `cp .env.example .env && php artisan key:generate`
+4. **Initialize**: `php artisan migrate:fresh --seed`
+
+### 🏃 Running the Application
+To run the full suite (Server + Real-time Messaging):
+
+```bash
+# Terminal 1: Web Server
+php artisan serve
+
+# Terminal 2: Real-time Messaging (WebSockets)
+php artisan reverb:start
+```
 
 ---
 
-## 📝 Developer Guidelines
+## 📝 Developer Handbook
 
-### 1. Naming Conventions
-- **Controllers**: `[Domain]Controller.php` (e.g., `StudentController`)
-- **Services**: `[Domain]Service.php` (e.g., `FinanceService`)
-- **Repositories**: `[Domain]Repository.php`
-- **Database**: Use UUIDs for all `id` columns.
+### 1. Tenancy Rule #1
+**Never** use `Model::all()` or `Model::find()`. Always use the corresponding Repository method to ensure the query is scoped to the current school.
 
-### 2. Transaction Safety
-Always use `DB::transaction()` in Services when modifying multiple tables (e.g., creating a Student + User + Enrollment).
+### 2. Standardized Responses
+Always use the `ResponseHelper`.
+- `return ResponseHelper::success($data, 'Successfully updated');`
+- `return ResponseHelper::error('Unauthorized access', 403);`
 
-### 3. Auditing
-Include `AuditLogger::log(...)` for all state-changing actions. This is critical for the Accountability log visible to Super Admins.
+### 3. State Management
+For entities like `Results` or `Invoices`, use the defined constants in the Model (e.g., `Result::STATUS_PUBLISHED`) instead of hardcoded strings.
 
 ---
 
 ## 🔐 Security & Compliance
-- **Authentication**: Laravel Sanctum with 24-hour token expiration.
-- **Authorization**: Mandatory `middleware(['role:name'])` or `can('permission')` on all routes.
-- **Data Protection**: Sensitive data (passwords, specific student PII) is never exposed in API responses without explicit intent.
-- **Rate Limiting**: Configured per endpoint based on sensitivity (Login/Payment).
-
----
-
-## 📄 Documentation Links
-- [Internal Codebase Flow](file:///c:/Users/pc/.gemini/antigravity/brain/032af03b-9877-4d62-aa71-d779b1cac7f9/codebase_flow.md)
-- [Verification Guide](file:///c:/Users/pc/.gemini/antigravity/brain/032af03b-9877-4d62-aa71-d779b1cac7f9/walkthrough.md)
+- **JWT/Sanctum**: All API routes are protected by token authentication.
+- **Audit Logs**: Every state change is recorded with the `user_id` and `timestamp`.
+- **Rate Limiting**: Critical endpoints (Login, Payment) are throttled to prevent brute-force attacks.
