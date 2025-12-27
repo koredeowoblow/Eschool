@@ -30,7 +30,7 @@ class RoleManagementController extends Controller
             $query->where(function ($q) use ($user) {
                 $q->where('school_id', $user->school_id)
                     ->orWhereNull('school_id');
-            });
+            })->where('name', '!=', 'super_admin');
         }
 
         $roles = $query->get();
@@ -114,7 +114,7 @@ class RoleManagementController extends Controller
         }
 
         // Prevent editing core roles
-        $coreRoles = ['School Admin', 'Teacher', 'Finance Officer', 'Exams Officer', 'Guardian'];
+        $coreRoles = ['super_admin', 'School Admin', 'Teacher', 'Finance Officer', 'Exams Officer', 'Guardian', 'Student'];
         if (in_array($role->name, $coreRoles)) {
             return $this->error('Cannot modify core system roles', 403);
         }
@@ -165,7 +165,7 @@ class RoleManagementController extends Controller
         }
 
         // Prevent deleting core roles
-        $coreRoles = ['School Admin', 'Teacher', 'Finance Officer', 'Exams Officer', 'Guardian'];
+        $coreRoles = ['super_admin', 'School Admin', 'Teacher', 'Finance Officer', 'Exams Officer', 'Guardian', 'Student'];
         if (in_array($role->name, $coreRoles)) {
             return $this->error('Cannot delete core system roles', 403);
         }
@@ -197,6 +197,11 @@ class RoleManagementController extends Controller
             'user_id' => 'required|exists:users,id',
             'role_name' => 'required|string'
         ]);
+
+        // Security check: only super_admin can assign super_admin
+        if ($validated['role_name'] === 'super_admin' && !$user->hasRole('super_admin')) {
+            return $this->error('Unauthorized to assign super_admin role', 403);
+        }
 
         $query = \App\Models\User::query();
         if (!$user->hasRole('super_admin')) {

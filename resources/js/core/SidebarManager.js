@@ -51,7 +51,7 @@ export class SidebarManager {
             const common = await import('../sidebar/common.js');
             items = [...common.default];
 
-            const roles = (this.config.user?.roles || []).map(r => String(r).toLowerCase());
+            const roles = (this.config.user?.roles || []);
             const isSuperAdmin = roles.includes('super_admin');
 
             if (isSuperAdmin) {
@@ -59,17 +59,17 @@ export class SidebarManager {
                 items.push(...superAdmin.default);
             }
 
-            if (roles.includes('school_admin') || isSuperAdmin) {
+            if (roles.includes('School Admin') || isSuperAdmin) {
                 const admin = await import('../sidebar/admin.js');
                 items.push(...admin.default);
             }
 
-            if (roles.includes('teacher')) {
+            if (roles.includes('Teacher')) {
                 const teacher = await import('../sidebar/teacher.js');
                 items.push(...teacher.default);
             }
 
-            if (roles.includes('student')) {
+            if (roles.includes('Student')) {
                 const student = await import('../sidebar/student.js');
                 items.push(...student.default);
             }
@@ -93,7 +93,7 @@ export class SidebarManager {
             if (item.roles && item.roles.length > 0) {
                 // Skip role check if it's '*', otherwise check match
                 if (!item.roles.includes('*')) {
-                    const hasRole = item.roles.some(r => userRoles.includes(r.toLowerCase()));
+                    const hasRole = item.roles.some(r => userRoles.includes(r));
                     if (!hasRole) return false;
                 }
             }

@@ -7,7 +7,7 @@ use App\Http\Controllers\Assignment\AssignmentSubmissionController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // Assignments
-    Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+    Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
         Route::get('/assignments', [AssignmentController::class, 'index']);
         Route::get('/assignments/{id}', [AssignmentController::class, 'show']);
 
@@ -19,7 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
     // Assignment submissions
-    Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+    Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
         Route::get('/assignment-submissions', [AssignmentSubmissionController::class, 'index']);
         Route::get('/assignment-submissions/{id}', [AssignmentSubmissionController::class, 'show']);
 

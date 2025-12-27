@@ -10,7 +10,7 @@
             <input type="date" id="paymentDateFilter" class="form-control border-start-0 ps-0" onchange="reloadPayments()">
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createPaymentForm']);"
                 data-bs-toggle="modal" data-bs-target="#createPaymentModal">
                 <i class="bi bi-plus-lg me-1"></i> Record Payment
@@ -107,7 +107,7 @@
                     App.loadOptions('/api/v1/students', 'payment_student_id', null, 'id', 'full_name');
                     App.loadOptions('/api/v1/settings/enums?type=payment_method', 'paymentMethodSelect');
                     App.loadOptions('/api/v1/fee-types', 'feeTypeSelect', null, 'name',
-                    'name'); // Assuming fee-types API returns {name: 'Tuition'}
+                        'name'); // Assuming fee-types API returns {name: 'Tuition'}
                 });
                 modal.dataset.listenerAttached = 'true';
             }

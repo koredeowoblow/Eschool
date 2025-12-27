@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    @hasrole('super_admin|school_admin|teacher')
+    @hasrole('super_admin|School Admin|Teacher')
         <div class="d-flex justify-content-end mb-4">
             <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createResultForm']);"
                 data-bs-toggle="modal" data-bs-target="#createResultModal">

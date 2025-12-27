@@ -51,7 +51,9 @@ export class SidebarManager {
             const common = await import('../sidebar/common.js');
             items = [...common.default];
 
-            const roles = (this.config.user?.roles || []).map(r => String(r).toLowerCase());
+            const roles = (this.config.user?.roles || []).map(r =>
+                String(r).toLowerCase().replace(/\s+/g, '_')
+            );
             const isSuperAdmin = roles.includes('super_admin');
 
             if (isSuperAdmin) {
@@ -74,6 +76,21 @@ export class SidebarManager {
                 items.push(...student.default);
             }
 
+            if (roles.includes('guardian')) {
+                const guardian = await import('../sidebar/guardian.js');
+                items.push(...guardian.default);
+            }
+
+            if (roles.includes('finance_officer')) {
+                const finance = await import('../sidebar/finance_officer.js');
+                items.push(...finance.default);
+            }
+
+            if (roles.includes('exams_officer')) {
+                const exams = await import('../sidebar/exams_officer.js');
+                items.push(...exams.default);
+            }
+
             // Filter items based on permissions
             items = this.filterByPermission(items, roles, isSuperAdmin);
 
@@ -88,7 +105,9 @@ export class SidebarManager {
 
         return items.filter(item => {
             if (item.roles && item.roles.length > 0) {
-                const hasRole = item.roles.some(r => userRoles.includes(r.toLowerCase()));
+                const hasRole = item.roles.some(r =>
+                    userRoles.includes(String(r).toLowerCase().replace(/\s+/g, '_'))
+                );
                 if (!hasRole) return false;
             }
 

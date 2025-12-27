@@ -47,23 +47,23 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ViewController::class)->group(function () {
 
         // Students
-        Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher'])->group(function () {
             Route::get('/students', 'studentsIndex')->name('web.students.index');
             Route::get('/promotions', 'promotionsIndex')->name('web.promotions.index');
         });
 
         // Teachers
-        Route::middleware(['role:super_admin|school_admin'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin'])->group(function () {
             Route::get('/teachers', 'teachersIndex')->name('web.teachers.index');
         });
 
         // Guardians
-        Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher'])->group(function () {
             Route::get('/guardians', 'guardiansIndex')->name('web.guardians.index');
         });
 
         // Classes
-        Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher'])->group(function () {
             Route::get('/classes', 'classesIndex')->name('web.classes.index');
             Route::get('/subjects', 'subjectsIndex')->name('web.subjects.index');
             Route::get('/subject-assignments', 'subjectAssignmentsIndex')->name('web.subject_assignments.index');
@@ -74,27 +74,27 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Assignments
-        Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/assignments', 'assignmentsIndex')->name('web.assignments.index');
         });
 
         // Assignment Submissions
-        Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/assignment-submissions', 'assignmentSubmissionsIndex')->name('web.assignment_submissions.index');
         });
 
         // Attendance
-        Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/attendance', 'attendanceIndex')->name('web.attendance.index');
         });
 
         // Enrollments
-        Route::middleware(['role:super_admin|school_admin'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin'])->group(function () {
             Route::get('/enrollments', 'enrollmentsIndex')->name('web.enrollments.index');
         });
 
         // Attachments
-        Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher'])->group(function () {
             Route::get('/attachments', 'attachmentsIndex')->name('web.attachments.index');
         });
 
@@ -102,7 +102,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/library', 'libraryIndex')->name('web.library.index');
 
         // Payments & Fees
-        Route::middleware(['role:super_admin|school_admin|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Student'])->group(function () {
             Route::get('/payments', 'paymentsIndex')->name('web.payments.index');
             Route::get('/fee-types', 'feeTypesIndex')->name('web.fee_types.index');
             Route::get('/invoices', 'invoicesIndex')->name('web.invoices.index');
@@ -115,7 +115,7 @@ Route::middleware(['auth'])->group(function () {
             // Route::get('/finance/invoices/create', ...)->name('web.finance.invoices.create');
         });
 
-        Route::middleware(['role:super_admin|school_admin|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Student'])->group(function () {
             // New Fee Module Routes (Legacy/Existing?)
             Route::get('/fees', 'feesIndex')->name('web.fees.index');
             Route::get('/fees/assign', 'feesAssignIndex')->name('web.fees.assign');
@@ -135,18 +135,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/timetables', 'timetablesIndex')->name('web.timetables.index');
 
         // Reports
-        Route::middleware(['role:super_admin|school_admin|teacher'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher'])->group(function () {
             Route::get('/reports', 'reportsIndex')->name('web.reports.index');
             Route::get('/reports/academic', 'academicReportsIndex')->name('web.reports.academic');
         });
 
         // Assessments
-        Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/assessments', 'assessmentsIndex')->name('web.assessments.index');
         });
 
         // Results
-        Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+        Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/results', 'resultsIndex')->name('web.results.index');
         });
 

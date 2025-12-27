@@ -53,13 +53,13 @@ class UserService
             // Security: Prevent lower-level admins from assigning super_admin role
             $requestedRole = $data['role'];
             if ($requestedRole === 'super_admin' && !Auth::user()->hasRole('super_admin')) {
-                $requestedRole = 'school_admin'; // Downgrade if unauthorized
+                $requestedRole = 'School Admin'; // Downgrade if unauthorized
                 Log::warning("Unauthorized attempt to create super_admin by user " . Auth::id());
             }
             $user->assignRole($requestedRole);
 
             // 2. Handle student-specific logic
-            if ($data['role'] === 'student') {
+            if ($data['role'] === 'Student') {
                 if (!$guardianData || !is_array($guardianData)) {
                     throw new Exception("Guardian information is required for student.");
                 }
@@ -99,7 +99,7 @@ class UserService
             }
 
             // 3. Handle teacher-specific logic
-            if ($data['role'] === 'teacher') {
+            if ($data['role'] === 'Teacher') {
                 $this->teacherRepo->create([
                     'school_id'       => $user->school_id,
                     'user_id'         => $user->id,
@@ -232,7 +232,7 @@ class UserService
                 ]);
             } else {
                 $guardianData['password'] = bcrypt($guardianPassword);
-                $guardianData['role'] = 'guardian';
+                $guardianData['role'] = 'Guardian';
 
                 $guardianUser = $this->userRepo->create($guardianData);
                 $guardianUser->assignRole('Guardian');

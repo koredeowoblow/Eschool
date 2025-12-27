@@ -19,35 +19,35 @@ export const sidebarConfig = [
         key: 'students',
         label: 'Students',
         icon: 'bi bi-people',
-        roles: ['super_admin', 'school_admin', 'teacher']
+        roles: ['super_admin', 'School Admin', 'Teacher']
     },
     {
         type: 'link',
         key: 'teachers',
         label: 'Teachers',
         icon: 'bi bi-person-badge',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         type: 'link',
         key: 'classes',
         label: 'Classes',
         icon: 'bi bi-grid',
-        roles: ['super_admin', 'school_admin', 'teacher']
+        roles: ['super_admin', 'School Admin', 'Teacher']
     },
     {
         type: 'link',
         key: 'assignments',
         label: 'Assignments',
         icon: 'bi bi-journal-text',
-        roles: ['super_admin', 'school_admin', 'teacher', 'student']
+        roles: ['super_admin', 'School Admin', 'Teacher', 'Student']
     },
     {
         type: 'link',
         key: 'attendance',
         label: 'Attendance',
         icon: 'bi bi-calendar-check',
-        roles: ['super_admin', 'school_admin', 'teacher', 'student']
+        roles: ['super_admin', 'School Admin', 'Teacher', 'Student']
     },
     {
         type: 'link',
@@ -61,7 +61,7 @@ export const sidebarConfig = [
         key: 'results',
         label: 'Results',
         icon: 'bi bi-award',
-        roles: ['super_admin', 'school_admin', 'teacher', 'student']
+        roles: ['super_admin', 'School Admin', 'Teacher', 'Student']
     },
     {
         type: 'header',

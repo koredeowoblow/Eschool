@@ -10,7 +10,7 @@
                 <option value="">Loading...</option>
             </select>
         </div>
-        @hasrole('super_admin|school_admin|teacher')
+        @hasrole('super_admin|School Admin|Teacher')
             <button type="button" class="btn btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createSlotModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Slot
             </button>
@@ -176,7 +176,7 @@
                                     <div class="subject-name">${slot.subject?.name || 'N/A'}</div>
                                     <div class="teacher-name">${slot.teacher?.user?.name || 'N/A'}</div>
                                     <div class="subject-block-actions">
-                                        @hasrole('super_admin|school_admin|teacher')
+                                        @hasrole('super_admin|School Admin|Teacher')
                                         <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSlot(${slot.id})">
                                             <i class="bi bi-trash"></i>
                                         </button>

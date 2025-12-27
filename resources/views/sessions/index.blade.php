@@ -7,13 +7,15 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="sessionSearch" class="form-control border-start-0 ps-0" placeholder="Search sessions..." oninput="reloadSessions()">
+            <input type="text" id="sessionSearch" class="form-control border-start-0 ps-0" placeholder="Search sessions..."
+                oninput="reloadSessions()">
         </div>
 
-        @hasrole('super_admin|school_admin')
-        <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createSessionForm']);" data-bs-toggle="modal" data-bs-target="#createSessionModal">
-            <i class="bi bi-plus-lg me-1"></i> Add Session
-        </button>
+        @hasrole('super_admin|School Admin')
+            <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createSessionForm']);"
+                data-bs-toggle="modal" data-bs-target="#createSessionModal">
+                <i class="bi bi-plus-lg me-1"></i> Add Session
+            </button>
         @endhasrole
     </div>
 
@@ -37,7 +39,8 @@
     <div class="modal fade" id="createSessionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="createSessionForm" action="/api/v1/school-sessions" method="POST" onsubmit="App.submitForm(event, reloadSessions, 'session', 'createSessionModal')">
+                <form name="createSessionForm" action="/api/v1/school-sessions" method="POST"
+                    onsubmit="App.submitForm(event, reloadSessions, 'session', 'createSessionModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Add Session</h5>
@@ -81,7 +84,8 @@
     <div class="modal fade" id="editSessionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editSessionForm" method="POST" onsubmit="App.submitForm(event, reloadSessions, 'session', 'editSessionModal')">
+                <form id="editSessionForm" method="POST"
+                    onsubmit="App.submitForm(event, reloadSessions, 'session', 'editSessionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Session</h5>
@@ -122,22 +126,22 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        reloadSessions();
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            reloadSessions();
+        });
 
-    function reloadSessions() {
-        const query = document.getElementById('sessionSearch').value;
-        App.renderTable('/api/v1/school-sessions?search=' + encodeURIComponent(query), 'sessionsTableBody', 'session');
-    }
+        function reloadSessions() {
+            const query = document.getElementById('sessionSearch').value;
+            App.renderTable('/api/v1/school-sessions?search=' + encodeURIComponent(query), 'sessionsTableBody', 'session');
+        }
 
-    function editSession(data) {
-        const form = document.getElementById('editSessionForm');
-        form.action = `/api/v1/school-sessions/${data.id}`;
-        App.populateForm(form, data);
-        const modal = new bootstrap.Modal(document.getElementById('editSessionModal'));
-        modal.show();
-    }
-</script>
+        function editSession(data) {
+            const form = document.getElementById('editSessionForm');
+            form.action = `/api/v1/school-sessions/${data.id}`;
+            App.populateForm(form, data);
+            const modal = new bootstrap.Modal(document.getElementById('editSessionModal'));
+            modal.show();
+        }
+    </script>
 @endsection

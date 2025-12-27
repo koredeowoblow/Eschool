@@ -8,35 +8,35 @@ export default [
         key: 'assignments',
         label: 'Assignments',
         icon: 'bi bi-journal-text',
-        roles: ['student']
+        roles: ['Student']
     },
     {
         type: 'link',
         key: 'assignmentSubmissions',
         label: 'Submissions',
         icon: 'bi bi-inboxes',
-        roles: ['student']
+        roles: ['Student']
     },
     {
         type: 'link',
         key: 'attendance',
         label: 'Attendance',
         icon: 'bi bi-calendar-check',
-        roles: ['student']
+        roles: ['Student']
     },
     {
         type: 'link',
         key: 'results',
         label: 'Results',
         icon: 'bi bi-award',
-        roles: ['student']
+        roles: ['Student']
     },
     {
         type: 'link',
         key: 'reports/academic',
         label: 'Academic Reports',
         icon: 'bi bi-file-earmark-bar-graph',
-        roles: ['student']
+        roles: ['Student']
     },
     {
         type: 'header',
@@ -47,6 +47,6 @@ export default [
         key: 'payments',
         label: 'Payments',
         icon: 'bi bi-credit-card',
-        roles: ['student']
+        roles: ['Student']
     }
 ];

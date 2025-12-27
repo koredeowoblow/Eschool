@@ -11,7 +11,7 @@
                 placeholder="Search assignments..." oninput="reloadAssignments()">
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium requires-session-lock"
                 onclick="App.resetForm(document.forms['createAssignmentForm']);" data-bs-toggle="modal"
                 data-bs-target="#createAssignmentModal">

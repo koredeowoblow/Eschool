@@ -11,7 +11,7 @@
                 oninput="reloadGuardians()">
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createGuardianForm']);"
                 data-bs-toggle="modal" data-bs-target="#createGuardianModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Guardian

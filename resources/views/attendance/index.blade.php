@@ -4,7 +4,7 @@
 @section('header_title', 'Attendance Management')
 
 @section('content')
-    @hasrole('super_admin|school_admin|teacher')
+    @hasrole('super_admin|School Admin|Teacher')
         <div class="card-premium mb-4">
             <div class="card-body p-3">
                 <div class="row g-3 align-items-end">
@@ -53,7 +53,7 @@
                     </table>
                 </div>
 
-                @hasrole('super_admin|school_admin|teacher')
+                @hasrole('super_admin|School Admin|Teacher')
                     <div class="p-3 border-top text-end bg-light">
                         <button type="submit" class="btn btn-primary-premium px-4">Save Attendance</button>
                     </div>

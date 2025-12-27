@@ -8,76 +8,76 @@ export default [
         key: 'students',
         label: 'Students',
         icon: 'bi bi-people',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'guardians',
         label: 'Guardians',
         icon: 'bi bi-people-fill',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'classes',
         label: 'Classes',
         icon: 'bi bi-grid',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'lessonNotes',
         label: 'Lesson Notes',
         icon: 'bi bi-journal-bookmark',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'assignments',
         label: 'Assignments',
         icon: 'bi bi-journal-text',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'assignmentSubmissions',
         label: 'Submissions',
         icon: 'bi bi-inboxes',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'attendance',
         label: 'Attendance',
         icon: 'bi bi-calendar-check',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'reports',
         label: 'Reports',
         icon: 'bi bi-graph-up',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'reports/academic',
         label: 'Academic Reports',
         icon: 'bi bi-file-earmark-bar-graph',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'assessments',
         label: 'Assessments',
         icon: 'bi bi-clipboard-check',
-        roles: ['teacher']
+        roles: ['Teacher']
     },
     {
         type: 'link',
         key: 'results',
         label: 'Results',
         icon: 'bi bi-award',
-        roles: ['teacher']
+        roles: ['Teacher']
     }
 ];

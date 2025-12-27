@@ -11,7 +11,7 @@
                 placeholder="Search enrollments..." oninput="reloadEnrollments()">
         </div>
 
-        @hasrole('super_admin|school_admin|teacher')
+        @hasrole('super_admin|School Admin|Teacher')
             <button type="button" class="btn btn-primary-premium"
                 onclick="App.resetForm(document.forms['createEnrollmentForm']);" data-bs-toggle="modal"
                 data-bs-target="#createEnrollmentModal">

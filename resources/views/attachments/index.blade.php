@@ -7,13 +7,16 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="attachmentSearch" class="form-control border-start-0 ps-0" placeholder="Search attachments..." oninput="reloadAttachments()">
+            <input type="text" id="attachmentSearch" class="form-control border-start-0 ps-0"
+                placeholder="Search attachments..." oninput="reloadAttachments()">
         </div>
 
-        @hasrole('super_admin|school_admin|teacher')
-        <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createAttachmentForm']);" data-bs-toggle="modal" data-bs-target="#createAttachmentModal">
-            <i class="bi bi-plus-lg me-1"></i> New Attachment
-        </button>
+        @hasrole('super_admin|School Admin|Teacher')
+            <button type="button" class="btn btn-primary-premium"
+                onclick="App.resetForm(document.forms['createAttachmentForm']);" data-bs-toggle="modal"
+                data-bs-target="#createAttachmentModal">
+                <i class="bi bi-plus-lg me-1"></i> New Attachment
+            </button>
         @endhasrole
     </div>
 
@@ -39,7 +42,8 @@
     <div class="modal fade" id="createAttachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form name="createAttachmentForm" action="/api/v1/attachments" method="POST" enctype="multipart/form-data" onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'createAttachmentModal')">
+                <form name="createAttachmentForm" action="/api/v1/attachments" method="POST" enctype="multipart/form-data"
+                    onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'createAttachmentModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Upload Attachment</h5>
@@ -53,11 +57,13 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Type</label>
-                                <input type="text" name="type" class="form-control" placeholder="e.g. assignment, lesson_note">
+                                <input type="text" name="type" class="form-control"
+                                    placeholder="e.g. assignment, lesson_note">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Related ID</label>
-                                <input type="number" name="related_id" class="form-control" placeholder="Related record ID">
+                                <input type="number" name="related_id" class="form-control"
+                                    placeholder="Related record ID">
                             </div>
                         </div>
                     </div>
@@ -74,7 +80,8 @@
     <div class="modal fade" id="editAttachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="editAttachmentForm" method="POST" onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'editAttachmentModal')">
+                <form id="editAttachmentForm" method="POST"
+                    onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'editAttachmentModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Attachment</h5>
@@ -103,26 +110,27 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        App.renderTable('/api/v1/attachments', 'attachmentsTableBody', 'attachment');
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            App.renderTable('/api/v1/attachments', 'attachmentsTableBody', 'attachment');
+        });
 
-    function reloadAttachments() {
-        const query = document.getElementById('attachmentSearch').value;
-        App.renderTable('/api/v1/attachments?search=' + encodeURIComponent(query), 'attachmentsTableBody', 'attachment');
-    }
+        function reloadAttachments() {
+            const query = document.getElementById('attachmentSearch').value;
+            App.renderTable('/api/v1/attachments?search=' + encodeURIComponent(query), 'attachmentsTableBody',
+            'attachment');
+        }
 
-    function editAttachment(data) {
-        const form = document.getElementById('editAttachmentForm');
-        form.action = `/api/v1/attachments/${data.id}`;
-        App.populateForm(form, data);
-        const modal = new bootstrap.Modal(document.getElementById('editAttachmentModal'));
-        modal.show();
-    }
+        function editAttachment(data) {
+            const form = document.getElementById('editAttachmentForm');
+            form.action = `/api/v1/attachments/${data.id}`;
+            App.populateForm(form, data);
+            const modal = new bootstrap.Modal(document.getElementById('editAttachmentModal'));
+            modal.show();
+        }
 
-    function deleteAttachment(id) {
-        App.deleteItem(`/api/v1/attachments/${id}`, reloadAttachments);
-    }
-</script>
+        function deleteAttachment(id) {
+            App.deleteItem(`/api/v1/attachments/${id}`, reloadAttachments);
+        }
+    </script>
 @endsection

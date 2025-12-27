@@ -11,7 +11,7 @@
                 oninput="reloadInvoices()">
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createInvoiceForm']);"
                 data-bs-toggle="modal" data-bs-target="#createInvoiceModal">
                 <i class="bi bi-plus-lg me-1"></i> Create Invoice
@@ -228,10 +228,10 @@
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2">
                                 ${balance > 0 ? `
-                                                <button class="btn btn-primary-premium btn-sm py-1 shadow-sm" onclick="payInvoice(${item.id}, ${balance})" title="Pay Now">
-                                                    <i class="bi bi-credit-card me-1"></i> Pay
-                                                </button>
-                                            ` : ''}
+                                                    <button class="btn btn-primary-premium btn-sm py-1 shadow-sm" onclick="payInvoice(${item.id}, ${balance})" title="Pay Now">
+                                                        <i class="bi bi-credit-card me-1"></i> Pay
+                                                    </button>
+                                                ` : ''}
                                 <button class="btn btn-light shadow-sm btn-sm" onclick="App.deleteItem('/api/v1/invoices/${item.id}', reloadInvoices)" title="Delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </button>

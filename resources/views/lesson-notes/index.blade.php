@@ -11,7 +11,7 @@
                 placeholder="Search lesson notes..." oninput="reloadLessonNotes()">
         </div>
 
-        @hasrole('super_admin|school_admin|teacher')
+        @hasrole('super_admin|School Admin|Teacher')
             <button type="button" class="btn btn-primary-premium requires-session-lock"
                 onclick="App.resetForm(document.forms['createLessonNoteForm']);" data-bs-toggle="modal"
                 data-bs-target="#createLessonNoteModal">

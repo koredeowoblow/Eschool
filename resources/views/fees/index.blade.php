@@ -20,7 +20,7 @@
             </select>
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium flex-shrink-0"
                 onclick="App.resetForm(document.forms['createFeeForm']);" data-bs-toggle="modal"
                 data-bs-target="#createFeeModal">

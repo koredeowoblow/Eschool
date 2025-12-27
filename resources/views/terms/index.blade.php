@@ -7,13 +7,15 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="termSearch" class="form-control border-start-0 ps-0" placeholder="Search terms..." oninput="reloadTerms()">
+            <input type="text" id="termSearch" class="form-control border-start-0 ps-0" placeholder="Search terms..."
+                oninput="reloadTerms()">
         </div>
 
-        @hasrole('super_admin|school_admin')
-        <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createTermForm']);" data-bs-toggle="modal" data-bs-target="#createTermModal">
-            <i class="bi bi-plus-lg me-1"></i> Add Term
-        </button>
+        @hasrole('super_admin|School Admin')
+            <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createTermForm']);"
+                data-bs-toggle="modal" data-bs-target="#createTermModal">
+                <i class="bi bi-plus-lg me-1"></i> Add Term
+            </button>
         @endhasrole
     </div>
 
@@ -37,7 +39,8 @@
     <div class="modal fade" id="createTermModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="createTermForm" action="/api/v1/terms" method="POST" onsubmit="App.submitForm(event, reloadTerms, 'term', 'createTermModal')">
+                <form name="createTermForm" action="/api/v1/terms" method="POST"
+                    onsubmit="App.submitForm(event, reloadTerms, 'term', 'createTermModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Add Term</h5>
@@ -52,7 +55,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Term Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" required placeholder="e.g. First Term">
+                            <input type="text" name="name" class="form-control" required
+                                placeholder="e.g. First Term">
                         </div>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
@@ -87,7 +91,8 @@
     <div class="modal fade" id="editTermModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editTermForm" method="POST" onsubmit="App.submitForm(event, reloadTerms, 'term', 'editTermModal')">
+                <form id="editTermForm" method="POST"
+                    onsubmit="App.submitForm(event, reloadTerms, 'term', 'editTermModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Term</h5>
@@ -134,34 +139,34 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        reloadTerms();
-        
-        // Initialize Create Modal Dropdowns
-        const createModal = document.getElementById('createTermModal');
-        createModal.addEventListener('show.bs.modal', () => {
-            App.loadOptions('/api/v1/school-sessions', 'sessionSelect');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            reloadTerms();
+
+            // Initialize Create Modal Dropdowns
+            const createModal = document.getElementById('createTermModal');
+            createModal.addEventListener('show.bs.modal', () => {
+                App.loadOptions('/api/v1/school-sessions', 'sessionSelect');
+            });
+
+            // Initialize Edit Modal Dropdowns
+            const editModal = document.getElementById('editTermModal');
+            editModal.addEventListener('show.bs.modal', () => {
+                App.loadOptions('/api/v1/school-sessions', 'editSessionSelect');
+            });
         });
 
-        // Initialize Edit Modal Dropdowns
-        const editModal = document.getElementById('editTermModal');
-        editModal.addEventListener('show.bs.modal', () => {
-            App.loadOptions('/api/v1/school-sessions', 'editSessionSelect');
-        });
-    });
+        function reloadTerms() {
+            const query = document.getElementById('termSearch').value;
+            App.renderTable('/api/v1/terms?search=' + encodeURIComponent(query), 'termsTableBody', 'term');
+        }
 
-    function reloadTerms() {
-        const query = document.getElementById('termSearch').value;
-        App.renderTable('/api/v1/terms?search=' + encodeURIComponent(query), 'termsTableBody', 'term');
-    }
-
-    function editTerm(data) {
-        const form = document.getElementById('editTermForm');
-        form.action = `/api/v1/terms/${data.id}`;
-        App.populateForm(form, data);
-        const modal = new bootstrap.Modal(document.getElementById('editTermModal'));
-        modal.show();
-    }
-</script>
+        function editTerm(data) {
+            const form = document.getElementById('editTermForm');
+            form.action = `/api/v1/terms/${data.id}`;
+            App.populateForm(form, data);
+            const modal = new bootstrap.Modal(document.getElementById('editTermModal'));
+            modal.show();
+        }
+    </script>
 @endsection

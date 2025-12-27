@@ -17,7 +17,7 @@ class UserController extends Controller
     public function __construct(private UserService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update']);
     }
 
     /**

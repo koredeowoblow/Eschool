@@ -90,8 +90,9 @@
                 }
 
                 tbody.innerHTML = roles.map(role => {
-                    const isCoreRole = ['School Admin', 'Teacher', 'Finance Officer', 'Exams Officer',
-                        'Guardian'
+                    const isCoreRole = ['super_admin', 'School Admin', 'Teacher', 'Finance Officer',
+                        'Exams Officer',
+                        'Guardian', 'Student'
                     ].includes(role.name);
 
                     return `
@@ -107,13 +108,13 @@
                             <i class="bi bi-eye"></i>
                         </button>
                         ${!isCoreRole ? `
-                                <button class="btn btn-sm btn-outline-warning" onclick="editRole(${role.id})">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteRole(${role.id}, '${role.name}')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                ` : ''}
+                                    <button class="btn btn-sm btn-outline-warning" onclick="editRole(${role.id})">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteRole(${role.id}, '${role.name}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    ` : ''}
                     </td>
                 </tr>
             `;
@@ -136,13 +137,13 @@
                 <div class="mb-3">
                     <h6 class="text-capitalize">${category}</h6>
                     ${perms.map(p => `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="${p.name}" id="perm-${p.id}">
-                                    <label class="form-check-label" for="perm-${p.id}">
-                                        ${p.name}
-                                    </label>
-                                </div>
-                            `).join('')}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="${p.name}" id="perm-${p.id}">
+                                        <label class="form-check-label" for="perm-${p.id}">
+                                            ${p.name}
+                                        </label>
+                                    </div>
+                                `).join('')}
                 </div>
             `;
                 }

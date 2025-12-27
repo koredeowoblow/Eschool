@@ -11,7 +11,7 @@
                 oninput="reloadTeachers()">
         </div>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createTeacherForm']);"
                 data-bs-toggle="modal" data-bs-target="#createTeacherModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Teacher

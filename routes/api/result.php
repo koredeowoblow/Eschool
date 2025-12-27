@@ -8,7 +8,7 @@ use App\Http\Controllers\Assignment\AssessmentController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+    Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
         Route::get('/assessments', [AssessmentController::class, 'index']);
         Route::get('/assessments/{id}', [AssessmentController::class, 'show']);
 
@@ -21,7 +21,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Results
-    Route::middleware(['role:super_admin|school_admin|teacher|student'])->group(function () {
+    Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
         Route::get('/results', [ResultController::class, 'index']);
         Route::get('/results/{id}', [ResultController::class, 'show']);
 

@@ -7,7 +7,7 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <h5 class="text-muted fw-normal mb-0">Academic Structures</h5>
 
-        @hasrole('super_admin|school_admin')
+        @hasrole('super_admin|School Admin')
             <button type="button" class="btn btn-primary-premium requires-session-lock" data-bs-toggle="modal"
                 data-bs-target="#createClassModal">
                 <i class="bi bi-plus-lg me-1"></i> Create Class
