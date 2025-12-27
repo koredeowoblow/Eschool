@@ -3,7 +3,9 @@
 namespace App\Repositories\Fees;
 
 use App\Models\Invoice;
+use Illuminate\Database\Eloquent\Model;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class InvoiceRepository extends BaseRepository
 {
@@ -12,16 +14,16 @@ class InvoiceRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function all(array $relations = []): \Illuminate\Database\Eloquent\Collection
+    public function all(array $relations = []): Collection
     {
         $rels = !empty($relations) ? $relations : ['payments', 'student', 'student.user', 'session', 'term'];
         return $this->query()->with($rels)->latest()->get();
     }
 
-    public function findById(int|string $id, array $relations = []): ?\Illuminate\Database\Eloquent\Model
+    public function findById(int|string $id, array $relations = []): Model
     {
         $rels = !empty($relations) ? $relations : ['payments', 'student', 'student.user', 'session', 'term', 'items'];
-        return $this->query()->with($rels)->find($id);
+        return $this->query()->with($rels)->findOrFail($id);
     }
 
     /**

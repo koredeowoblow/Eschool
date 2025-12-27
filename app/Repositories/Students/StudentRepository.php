@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
 class StudentRepository extends BaseRepository
@@ -23,7 +24,7 @@ class StudentRepository extends BaseRepository
     /**
      * List all students with filters.
      */
-    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function list(array $filters = []): LengthAwarePaginator
     {
         $query = $this->model->query();
 
@@ -74,11 +75,11 @@ class StudentRepository extends BaseRepository
      * @param array $relations
      * @return Model|null
      */
-    public function findById(int|string $id, array $relations = []): ?Model
+    public function findById(int|string $id, array $relations = []): Model
     {
         $rels = !empty($relations) ? $relations : ['user', 'classRoom', 'section', 'guardians.user', 'enrollments'];
         return $this->query()
             ->with($rels)
-            ->find($id);
+            ->findOrFail($id);
     }
 }
