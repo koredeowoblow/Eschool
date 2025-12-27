@@ -35,12 +35,8 @@ class TeacherController extends Controller
 
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Teacher profile fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Teacher profile fetched successfully');
     }
 
     public function update(TeacherRequest $request, string $id)
@@ -51,11 +47,7 @@ class TeacherController extends Controller
 
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Teacher profile deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Teacher profile deleted successfully');
     }
 }

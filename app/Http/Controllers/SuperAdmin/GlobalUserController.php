@@ -5,8 +5,8 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\GlobalUserService;
 use Illuminate\Http\Request;
-
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\SuperAdmin\GlobalUserRequest;
 
 class GlobalUserController extends Controller
 {
@@ -21,13 +21,9 @@ class GlobalUserController extends Controller
         return ResponseHelper::success($this->userService->getAllUsers(), 'Users fetched successfully');
     }
 
-    public function update(Request $request, $id)
+    public function update(GlobalUserRequest $request, $id)
     {
-        try {
-            $user = $this->userService->updateUser($id, $request->all());
-            return ResponseHelper::success($user, 'User updated successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error('Failed to update user: ' . $e->getMessage());
-        }
+        $user = $this->userService->updateUser($id, $request->validated());
+        return ResponseHelper::success($user, 'User updated successfully');
     }
 }

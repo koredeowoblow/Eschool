@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\School\CreateRequest;
+use App\Http\Requests\School\UpdateRequest;
 
 class SchoolController extends Controller
 {
@@ -30,43 +31,29 @@ class SchoolController extends Controller
 
     public function show($id)
     {
-        try {
-            $school = $this->schoolService->findSchool($id);
-            return ResponseHelper::success($school, 'School fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+
+        $school = $this->schoolService->findSchool($id);
+        return ResponseHelper::success($school, 'School fetched successfully');
     }
 
     public function store(CreateRequest $request)
     {
-        try {
-            $school = $this->schoolService->createSchool($request->validated());
-            return ResponseHelper::success($school, 'School created successfully.', 201);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+
+        $school = $this->schoolService->createSchool($request->validated());
+        return ResponseHelper::success($school, 'School created successfully.', 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        try {
-            $updatedSchool = $this->schoolService->updateSchool($id, $request->all());
-            return ResponseHelper::success($updatedSchool, 'School updated successfully.');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+
+        $updatedSchool = $this->schoolService->updateSchool($id, $request->validated());
+        return ResponseHelper::success($updatedSchool, 'School updated successfully.');
     }
 
     public function destroy($id)
     {
-        try {
-            $this->schoolService->deleteSchool($id);
-            return ResponseHelper::success(null, 'School deleted successfully.');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+
+        $this->schoolService->deleteSchool($id);
+        return ResponseHelper::success(null, 'School deleted successfully.');
     }
 }

@@ -75,19 +75,13 @@ abstract class BaseRepository implements IRepository
      * @param array $relations
      * @return Model|null
      */
-    public function findById(int|string $id, array $relations = []): ?Model
+    public function findById(int|string $id, array $relations = []): Model
     {
         $query = $this->withRelations($this->query(), $relations);
-        return $query->find($id);
+        return $query->findOrFail($id);
     }
 
-    /**
-     * Alias for findById for backward compatibility.
-     *
-     * @param int|string $id
-     * @return Model|null
-     */
-    public function single(int|string $id): ?Model
+    public function single(int|string $id): Model
     {
         return $this->findById($id);
     }
@@ -117,16 +111,11 @@ abstract class BaseRepository implements IRepository
      * @param array $data
      * @return Model|null
      */
-    public function update(int|string $id, array $data): ?Model
+    public function update(int|string $id, array $data): Model
     {
         $record = $this->findById($id);
-
-        if ($record) {
-            $record->update($data);
-            return $record;
-        }
-
-        return null;
+        $record->update($data);
+        return $record;
     }
 
     /**
@@ -138,11 +127,6 @@ abstract class BaseRepository implements IRepository
     public function delete(int|string $id): bool
     {
         $record = $this->findById($id);
-
-        if ($record) {
-            return $record->delete();
-        }
-
-        return false;
+        return $record->delete();
     }
 }

@@ -622,6 +622,48 @@ const App = (() => {
             statusBadge.textContent = isActive ? 'Active' : 'Inactive';
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
+        } else if (type === 'staff') {
+            const staffTd = document.createElement('td');
+            const staffDiv = document.createElement('div');
+            staffDiv.className = 'd-flex align-items-center';
+
+            const avatarBox = document.createElement('div');
+            avatarBox.className = 'avatar-sm me-2 bg-light rounded text-center';
+            avatarBox.style.cssText = 'width:32px; height:32px; line-height:32px;';
+            avatarBox.innerHTML = '<i class="bi bi-person-gear text-primary"></i>';
+
+            const infoBox = document.createElement('div');
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'fw-bold text-dark';
+            nameDiv.textContent = item.name || 'N/A';
+
+            infoBox.append(nameDiv);
+            staffDiv.append(avatarBox, infoBox);
+            staffTd.appendChild(staffDiv);
+            tr.appendChild(staffTd);
+
+            const roleTd = document.createElement('td');
+            const roleBadge = document.createElement('span');
+            roleBadge.className = 'badge bg-primary-subtle text-primary';
+            roleBadge.textContent = item.roles && item.roles.length ? item.roles[0].name : 'Staff';
+            roleTd.appendChild(roleBadge);
+            tr.appendChild(roleTd);
+
+            const emailTd = document.createElement('td');
+            emailTd.textContent = item.email || 'N/A';
+            tr.appendChild(emailTd);
+
+            const phoneTd = document.createElement('td');
+            phoneTd.textContent = item.phone || 'N/A';
+            tr.appendChild(phoneTd);
+
+            const statusTd = document.createElement('td');
+            const isActive = item.status === true || item.status === 1 || item.status === 'active';
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
+            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            statusTd.appendChild(statusBadge);
+            tr.appendChild(statusTd);
         } else if (type === 'class') {
             const nameTd = document.createElement('td');
             nameTd.className = 'fw-bold text-dark';

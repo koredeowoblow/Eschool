@@ -17,11 +17,7 @@ class EnrollmentService
 
     public function get(int|string $id): Enrollment
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new ModelNotFoundException("Enrollment not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function create(array $data): Enrollment
@@ -31,11 +27,7 @@ class EnrollmentService
 
     public function update(int|string $id, array $data): Enrollment
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new ModelNotFoundException("Enrollment not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

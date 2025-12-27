@@ -35,20 +35,16 @@ class PaymentController extends Controller
      */
     public function store(PaymentRequest $request)
     {
-        try {
-            $validated = $request->validated();
-            $validated['processed_by'] = $request->user()->id;
+        $validated = $request->validated();
+        $validated['processed_by'] = $request->user()->id;
 
-            // Security: Force pending status for non-admins to prevent self-approval
-            if (!$request->user()->hasRole(['super_admin', 'school_admin'])) {
-                $validated['status'] = 'pending';
-            }
-
-            $payment = $this->service->create($validated);
-            return ResponseHelper::success($payment, 'Payment created successfully', 201);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
+        // Security: Force pending status for non-admins to prevent self-approval
+        if (!$request->user()->hasRole(['super_admin', 'school_admin'])) {
+            $validated['status'] = 'pending';
         }
+
+        $payment = $this->service->create($validated);
+        return ResponseHelper::success($payment, 'Payment created successfully', 201);
     }
 
     /**
@@ -56,12 +52,8 @@ class PaymentController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Payment fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Payment fetched successfully');
     }
 
     /**
@@ -69,12 +61,8 @@ class PaymentController extends Controller
      */
     public function update(PaymentRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Payment updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Payment updated successfully');
     }
 
     /**
@@ -82,12 +70,8 @@ class PaymentController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Payment deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Payment deleted successfully');
     }
 
     /**
@@ -113,14 +97,8 @@ class PaymentController extends Controller
      */
     public function verifyPayment(PaymentRequest $request, string $id)
     {
-        try {
-            $result = $this->service->verifyPayment($id, $request->validated(), $request->user()->id);
-            return ResponseHelper::success($result, 'Payment verified successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\RuntimeException $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $result = $this->service->verifyPayment($id, $request->validated(), $request->user()->id);
+        return ResponseHelper::success($result, 'Payment verified successfully');
     }
 
     /**
@@ -128,13 +106,7 @@ class PaymentController extends Controller
      */
     public function generateReceipt(string $id)
     {
-        try {
-            $receipt = $this->service->generateReceipt($id);
-            return ResponseHelper::success($receipt, 'Receipt generated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\RuntimeException $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $receipt = $this->service->generateReceipt($id);
+        return ResponseHelper::success($receipt, 'Receipt generated successfully');
     }
 }

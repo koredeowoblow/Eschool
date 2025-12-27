@@ -22,10 +22,10 @@ class GlobalUserService
     /**
      * Create a new user (global context)
      */
-    public function createUser(array $data): \App\Models\User
+    public function createUser(array $data): User
     {
         if (!empty($data['password'])) {
-            $data['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']);
         }
         return $this->userRepo->create($data);
     }
@@ -33,12 +33,12 @@ class GlobalUserService
     /**
      * Update an existing user (global context)
      */
-    public function updateUser($id, array $data): \App\Models\User
+    public function updateUser($id, array $data): User
     {
         $user = $this->userRepo->query()->findOrFail($id);
 
         if (!empty($data['password'])) {
-            $data['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']);
         }
 
         $user = $this->userRepo->update($id, $data);

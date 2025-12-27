@@ -18,11 +18,7 @@ class LibraryBookService
 
     public function get(int|string $id): LibraryBook
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Book not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function create(array $data): LibraryBook
@@ -36,11 +32,7 @@ class LibraryBookService
         if (isset($data['copies'])) {
             $data['copies'] = max(0, (int) $data['copies']);
         }
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Book not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

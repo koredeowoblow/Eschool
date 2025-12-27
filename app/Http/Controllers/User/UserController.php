@@ -33,12 +33,8 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        try {
-            $user = $this->service->create($request->validated());
-            return ResponseHelper::success($user, 'User created successfully', 201);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $user = $this->service->create($request->validated());
+        return ResponseHelper::success($user, 'User created successfully', 201);
     }
 
     /**
@@ -119,13 +115,35 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, string $id)
     {
-        try {
-            $updatedUser = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updatedUser, 'User updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
+        $updatedUser = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updatedUser, 'User updated successfully');
+    }
+
+    /**
+     * List staff users (non-teachers, non-students, non-guardians)
+     */
+    public function staffIndex()
+    {
+        $schoolId = Auth::user()->school_id;
+        $users = \App\Models\User::role(['Finance Officer', 'Exams Officer', 'School Admin',])
+            ->where('school_id', $schoolId)
+            ->latest()
+            ->paginate(20);
+
+        return ResponseHelper::success($users, 'Staff list fetched successfully');
+    }
+
+    /**
+     * Delete a user
+     */
+    public function destroy(string $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        // Check if user belongs to the same school if not super_admin
+        if (!Auth::user()->hasRole('super_admin') && $user->school_id !== Auth::user()->school_id) {
+            throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('Unauthorized');
         }
+        $user->delete();
+        return ResponseHelper::success(null, 'User deleted successfully');
     }
 }

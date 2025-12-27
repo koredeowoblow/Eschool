@@ -30,43 +30,25 @@ class ContactController extends Controller
 
     public function store(CreateRequest $request)
     {
-        try {
-            $model = $this->service->create($request->validated());
-            return ResponseHelper::success($model, 'Contact message created successfully', 201);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $model = $this->service->create($request->validated());
+        return ResponseHelper::success($model, 'Contact message created successfully', 201);
     }
 
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Contact message fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Contact message fetched successfully');
     }
 
     public function update(UpdateRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Contact message updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Contact message updated successfully');
     }
 
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Contact message deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Contact message deleted successfully');
     }
 }

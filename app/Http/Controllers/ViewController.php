@@ -196,4 +196,10 @@ class ViewController extends Controller
     {
         return view('settings.index');
     }
+
+    // Staff
+    public function staffIndex()
+    {
+        return view('staff.index');
+    }
 }

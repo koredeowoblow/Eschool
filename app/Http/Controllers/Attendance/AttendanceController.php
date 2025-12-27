@@ -40,12 +40,8 @@ class AttendanceController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $record = $this->service->get($id);
-            return ResponseHelper::success($record, 'Attendance fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $record = $this->service->get($id);
+        return ResponseHelper::success($record, 'Attendance fetched successfully');
     }
 
     /**
@@ -53,12 +49,8 @@ class AttendanceController extends Controller
      */
     public function update(AttendanceRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Attendance updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Attendance updated successfully');
     }
 
     /**
@@ -66,11 +58,7 @@ class AttendanceController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Attendance deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Attendance deleted successfully');
     }
 }

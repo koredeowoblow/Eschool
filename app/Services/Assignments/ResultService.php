@@ -15,27 +15,19 @@ class ResultService
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\Result
+    public function get(int|string $id): Result
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Result not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Result
+    public function create(array $data): Result
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Result
+    public function update(int|string $id, array $data): Result
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Result not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

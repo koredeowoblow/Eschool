@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\Users\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Models\School;
+use Exception;
 
 class TeacherService
 {
@@ -25,11 +27,7 @@ class TeacherService
 
     public function get(int|string $id): TeacherProfile
     {
-        $teacher = $this->repo->findById($id, ['user']);
-        if (!$teacher) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Teacher profile not found");
-        }
-        return $teacher;
+        return $this->repo->findById($id, ['user']);
     }
 
     public function create(array $data): TeacherProfile
@@ -38,13 +36,13 @@ class TeacherService
             $schoolId = $data['school_id'] ?? Auth::user()->school_id;
 
             // Check Plan Limit
-            $school = \App\Models\School::find($schoolId);
+            $school = School::find($schoolId);
             if ($school) {
                 $limit = $school->getLimit('teachers');
                 if ($limit > 0) {
-                    $currentCount = \App\Models\TeacherProfile::where('school_id', $schoolId)->count();
+                    $currentCount = TeacherProfile::where('school_id', $schoolId)->count();
                     if ($currentCount >= $limit) {
-                        throw new \Exception("Teacher limit reached for this school plan ({$limit}). Upgrade your plan to add more teachers.");
+                        throw new Exception("Teacher limit reached for this school plan ({$limit}). Upgrade your plan to add more teachers.");
                     }
                 }
             }

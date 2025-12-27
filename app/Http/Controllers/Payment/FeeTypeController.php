@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Fees\FeeTypeService;
 use App\Http\Requests\Fees\FeeTypeRequest;
+use App\Http\Requests\Fees\BulkFeeTypeRequest;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Log;
 
@@ -42,12 +43,8 @@ class FeeTypeController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Fee type fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Fee type fetched successfully');
     }
 
     /**
@@ -55,12 +52,8 @@ class FeeTypeController extends Controller
      */
     public function update(FeeTypeRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Fee type updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Fee type updated successfully');
     }
 
     /**
@@ -68,27 +61,16 @@ class FeeTypeController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Fee type deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\RuntimeException $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Fee type deleted successfully');
     }
 
     /**
      * Bulk create fee types
      */
-    public function bulkCreate(Request $request)
+    public function bulkCreate(BulkFeeTypeRequest $request)
     {
-        $validated = $request->validate([
-            'fee_types' => 'required|array',
-            'fee_types.*.name' => 'required|string|max:255',
-            'fee_types.*.description' => 'nullable|string',
-            'fee_types.*.amount' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         $results = $this->service->bulkCreate($validated['fee_types']);
         return ResponseHelper::success($results, 'Fee types created successfully', 201);
@@ -99,12 +81,8 @@ class FeeTypeController extends Controller
      */
     public function getUsageStats(string $id)
     {
-        try {
-            $stats = $this->service->getUsageStats($id);
-            return ResponseHelper::success($stats, 'Fee type usage statistics fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $stats = $this->service->getUsageStats($id);
+        return ResponseHelper::success($stats, 'Fee type usage statistics fetched successfully');
     }
 
     /**

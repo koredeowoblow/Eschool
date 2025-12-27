@@ -9,6 +9,7 @@ use App\Http\Requests\Invoice\BulkGenerateInvoiceRequest;
 use App\Http\Requests\Invoice\MarkInvoiceAsPaidRequest;
 use App\Services\Fees\InvoiceService;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
 
 class InvoiceController extends Controller
 {
@@ -36,7 +37,7 @@ class InvoiceController extends Controller
         ];
 
         $data = $this->service->list($filters);
-        return get_success_response($data, 'Invoices fetched successfully');
+        return ResponseHelper::success($data, 'Invoices fetched successfully');
     }
 
     /**
@@ -52,7 +53,7 @@ class InvoiceController extends Controller
         $validated['school_id'] = $request->user()->school_id;
 
         $invoice = $this->service->create($validated, $items);
-        return get_success_response($invoice, 'Invoice created successfully', 201);
+        return ResponseHelper::success($invoice, 'Invoice created successfully', 201);
     }
 
     /**
@@ -61,7 +62,7 @@ class InvoiceController extends Controller
     public function show(string $id)
     {
         $model = $this->service->get($id);
-        return get_success_response($model, 'Invoice fetched successfully');
+        return ResponseHelper::success($model, 'Invoice fetched successfully');
     }
 
     /**
@@ -72,7 +73,7 @@ class InvoiceController extends Controller
         $validated = $request->validated();
         $updated = $this->service->update($id, $validated);
 
-        return get_success_response($updated, 'Invoice updated successfully');
+        return ResponseHelper::success($updated, 'Invoice updated successfully');
     }
 
     /**
@@ -81,7 +82,7 @@ class InvoiceController extends Controller
     public function destroy(string $id)
     {
         $this->service->delete($id);
-        return get_success_response(null, 'Invoice deleted successfully');
+        return ResponseHelper::success(null, 'Invoice deleted successfully');
     }
 
     /**
@@ -99,7 +100,7 @@ class InvoiceController extends Controller
         ];
 
         $data = $this->service->list($filters);
-        return get_success_response($data, 'Student invoices fetched successfully');
+        return ResponseHelper::success($data, 'Student invoices fetched successfully');
     }
 
     /**
@@ -112,7 +113,7 @@ class InvoiceController extends Controller
         $validated['school_id'] = $request->user()->school_id;
 
         $result = $this->service->bulkGenerate($validated);
-        return get_success_response($result, 'Invoices generated successfully');
+        return ResponseHelper::success($result, 'Invoices generated successfully');
     }
 
     /**
@@ -123,6 +124,6 @@ class InvoiceController extends Controller
         $validated = $request->validated();
         $result = $this->service->markAsPaid($id, $validated, $request->user()->id);
 
-        return get_success_response($result, 'Invoice marked as paid successfully');
+        return ResponseHelper::success($result, 'Invoice marked as paid successfully');
     }
 }

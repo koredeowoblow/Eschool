@@ -13,13 +13,15 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Exception;
+use App\Services\Plans\PlanService;
+use Illuminate\Support\Facades\Auth;
 
 class SchoolService
 {
     public function __construct(
         protected SchoolRepository $schoolRepo,
         protected UserRepository $userRepo,
-        protected \App\Services\Plans\PlanService $planService
+        protected PlanService $planService
     ) {}
 
     /**
@@ -36,9 +38,6 @@ class SchoolService
     public function findSchool($id)
     {
         $school = $this->schoolRepo->findById($id);
-        if (!$school) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
-        }
         return $school->loadCount(['users', 'students']);
     }
 
@@ -50,7 +49,7 @@ class SchoolService
         return DB::transaction(function () use ($data) {
             // Security: Force status=pending for public/non-superadmin registrations
             $status = $data['status'] ?? 'pending';
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = Auth::user();
             if (!$user || !$user->hasRole('super_admin')) {
                 $status = 'pending';
             }
@@ -94,11 +93,7 @@ class SchoolService
             $adminUser->assignRole('School Admin');
 
             // 5. Send Email
-            try {
-                Mail::to($adminUser->email)->send(new SchoolAdminCreated($rawPassword, $school->name));
-            } catch (Exception $e) {
-                Log::error('Failed to send school admin email: ' . $e->getMessage());
-            }
+            Mail::to($adminUser->email)->send(new SchoolAdminCreated($rawPassword, $school->name));
 
             return $school;
         });
@@ -121,9 +116,6 @@ class SchoolService
             }
 
             $school = $this->schoolRepo->update($id, $data);
-            if (!$school) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("School not found");
-            }
 
             // If school is being activated, also activate all its users
             if (isset($data['is_active']) && $data['is_active']) {

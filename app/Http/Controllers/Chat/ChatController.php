@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\Chat\CreateRequest;
 use App\Http\Requests\Chat\Chat\UpdateRequest;
+use App\Http\Requests\Chat\SendMessageRequest;
 use App\Services\Chat\ChatService;
-
 use App\Helpers\ResponseHelper;
 
 class ChatController extends Controller
@@ -45,43 +45,27 @@ class ChatController extends Controller
 
     public function show(string $id)
     {
-        try {
-            $chat = $this->service->get($id);
-            return ResponseHelper::success($chat, 'Chat fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $chat = $this->service->get($id);
+        return ResponseHelper::success($chat, 'Chat fetched successfully');
     }
 
     public function update(UpdateRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Chat updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Chat updated successfully');
     }
 
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Chat deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Chat deleted successfully');
     }
 
-    public function markAsRead(Request $request)
+    public function markAsRead(SendMessageRequest $request)
     {
-        $request->validate([
-            'partner_id' => 'required|uuid|exists:users,id',
-        ]);
+        $validated = $request->validated();
 
-        $this->service->markAsRead($request->partner_id);
+        $this->service->markAsRead($validated['receiver_id'] ?? $validated['partner_id']);
         return ResponseHelper::success(null, 'Messages marked as read');
     }
 }

@@ -6,6 +6,8 @@ use App\Models\Result;
 use App\Models\ResultVersion;
 use App\Helpers\AuditLogger;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Access\AuthorizationException;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class ResultWorkflowService
@@ -19,7 +21,7 @@ class ResultWorkflowService
 
         if (!$user->can('results.submit.review')) {
             AuditLogger::logUnauthorized('submit_results', 'result', implode(',', $resultIds));
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to submit results for review.");
+            throw new AuthorizationException("You do not have permission to submit results for review.");
         }
 
         return DB::transaction(function () use ($resultIds, $user) {
@@ -53,7 +55,7 @@ class ResultWorkflowService
 
         if (!$user->can('results.review')) {
             AuditLogger::logUnauthorized('review_results', 'result', implode(',', $resultIds));
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to review results.");
+            throw new AuthorizationException("You do not have permission to review results.");
         }
 
         return DB::transaction(function () use ($resultIds, $approved, $comment, $user) {
@@ -94,7 +96,7 @@ class ResultWorkflowService
 
         if (!$user->can('results.publish')) {
             AuditLogger::logUnauthorized('publish_results', 'result', implode(',', $resultIds));
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to publish results.");
+            throw new AuthorizationException("You do not have permission to publish results.");
         }
 
         return DB::transaction(function () use ($resultIds, $user) {
@@ -127,7 +129,7 @@ class ResultWorkflowService
 
         if (!$user->can('results.lock')) {
             AuditLogger::logUnauthorized('lock_results', 'result', implode(',', $resultIds));
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to lock results.");
+            throw new AuthorizationException("You do not have permission to lock results.");
         }
 
         return DB::transaction(function () use ($resultIds, $user) {
@@ -157,7 +159,7 @@ class ResultWorkflowService
 
         if (!$user->can('results.enter')) {
             AuditLogger::logUnauthorized('update_result', 'result', $id);
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to update results.");
+            throw new AuthorizationException("You do not have permission to update results.");
         }
 
         return DB::transaction(function () use ($id, $data, $reason, $user) {
@@ -167,7 +169,7 @@ class ResultWorkflowService
 
             // Check if editable
             if (!$result->isEditable()) {
-                throw new \Exception("This result cannot be edited. Status: {$result->status}");
+                throw new Exception("This result cannot be edited. Status: {$result->status}");
             }
 
             // Create version before update

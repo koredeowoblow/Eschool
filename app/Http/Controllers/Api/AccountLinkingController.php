@@ -9,22 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\LinkingCodeNotification;
 use Illuminate\Support\Str;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\Auth\AccountLinkingRequest;
 
 class AccountLinkingController extends Controller
 {
     /**
      * Initiate account linking - send OTP to email.
      */
-    public function initiate(Request $request)
+    public function initiate(AccountLinkingRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email|exists:users,email'
-        ]);
+        $validated = $request->validated();
 
         $otpCode = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
         Otp::updateOrCreate(
-            ['email' => $request->email, 'type' => 'account_linking'],
+            ['email' => $validated['email'], 'type' => 'account_linking'],
             [
                 'otp' => $otpCode,
                 'used' => false,
@@ -34,31 +34,28 @@ class AccountLinkingController extends Controller
 
         // Send Notification
         // In a real scenario, we'd find the user by email or just notify the email
-        Notification::route('mail', $request->email)
+        Notification::route('mail', $validated['email'])
             ->notify(new LinkingCodeNotification($otpCode));
 
-        return get_success_response(null, 'A verification code has been sent to ' . $request->email);
+        return ResponseHelper::success(null, 'A verification code has been sent to ' . $validated['email']);
     }
 
     /**
      * Verify OTP and link account.
      */
-    public function verify(Request $request)
+    public function verify(AccountLinkingRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'otp' => 'required|string|size:6'
-        ]);
+        $validated = $request->validated();
 
-        $otp = Otp::where('email', $request->email)
-            ->where('otp', $request->otp)
+        $otp = Otp::where('email', $validated['email'])
+            ->where('otp', $validated['otp'])
             ->where('type', 'account_linking')
             ->where('used', false)
             ->where('expires_at', '>', now())
             ->first();
 
         if (!$otp) {
-            return get_error_response('Invalid or expired verification code', 400);
+            abort(400, 'Invalid or expired verification code');
         }
 
         $otp->update(['used' => true]);
@@ -68,6 +65,6 @@ class AccountLinkingController extends Controller
         // Here we just return success as a placeholder for the specific linking logic
         // which would typically happen here based on the user roles.
 
-        return get_success_response(null, 'Account linked successfully!');
+        return ResponseHelper::success(null, 'Account linked successfully!');
     }
 }

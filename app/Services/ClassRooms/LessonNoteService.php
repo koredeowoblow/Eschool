@@ -15,27 +15,19 @@ class LessonNoteService
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\LessonNote
+    public function get(int|string $id): LessonNote
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Lesson note not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\LessonNote
+    public function create(array $data): LessonNote
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\LessonNote
+    public function update(int|string $id, array $data): LessonNote
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Lesson note not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

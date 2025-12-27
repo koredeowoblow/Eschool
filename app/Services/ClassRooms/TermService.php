@@ -17,26 +17,18 @@ class TermService
 
     public function get(int|string $id): Term
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Term not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Term
+    public function create(array $data): Term
     {
         $data['school_id'] = Auth::user()->school_id;
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Term
+    public function update(int|string $id, array $data): Term
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Term not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

@@ -11,7 +11,7 @@ class StoreInvoiceItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreInvoiceItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'invoice_id' => 'required|integer|exists:invoices,id',
+            'fee_type_id' => 'required|integer|exists:fee_types,id',
+            'amount' => 'required|numeric|min:0',
         ];
     }
 }

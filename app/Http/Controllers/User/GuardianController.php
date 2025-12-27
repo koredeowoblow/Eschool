@@ -5,6 +5,9 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Users\GuardianService;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\User\StoreGuardianRequest;
+use App\Http\Requests\User\UpdateGuardianRequest;
 
 class GuardianController extends Controller
 {
@@ -22,45 +25,34 @@ class GuardianController extends Controller
             'email' => $request->query('email'),
             'relation' => $request->query('relation'),
         ]);
-        return get_success_response($data, 'Guardians fetched successfully');
+        return ResponseHelper::success($data, 'Guardians fetched successfully');
     }
 
-    public function store(Request $request)
+    public function store(StoreGuardianRequest $request)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|uuid|exists:users,id',
-            'relation' => 'required|string|max:100',
-            'occupation' => 'nullable|string|max:255',
-            'student_ids' => 'nullable|array',
-            'student_ids.*' => 'integer|exists:students,id',
-        ]);
+        $validated = $request->validated();
 
         $model = $this->service->createAndAttach($validated, $validated['student_ids'] ?? []);
-        return get_success_response($model, 'Guardian created successfully', 201);
+        return ResponseHelper::success($model, 'Guardian created successfully', 201);
     }
 
     public function show(string $id)
     {
         $model = $this->service->get($id);
-        return get_success_response($model, 'Guardian fetched successfully');
+        return ResponseHelper::success($model, 'Guardian fetched successfully');
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateGuardianRequest $request, string $id)
     {
-        $validated = $request->validate([
-            'relation' => 'sometimes|string|max:100',
-            'occupation' => 'nullable|string|max:255',
-            'student_ids' => 'nullable|array',
-            'student_ids.*' => 'integer|exists:students,id',
-        ]);
+        $validated = $request->validated();
 
         $updated = $this->service->updateAndSync($id, $validated, $validated['student_ids'] ?? null);
-        return get_success_response($updated, 'Guardian updated successfully');
+        return ResponseHelper::success($updated, 'Guardian updated successfully');
     }
 
     public function destroy(string $id)
     {
         $this->service->delete($id);
-        return get_success_response(null, 'Guardian deleted successfully');
+        return ResponseHelper::success(null, 'Guardian deleted successfully');
     }
 }

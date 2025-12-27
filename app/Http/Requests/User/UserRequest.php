@@ -25,29 +25,29 @@ class UserRequest extends BaseRequest
                 'name'     => 'required|string|max:255',
                 'email'    => 'required|email|unique:users,email',
                 'password' => 'nullable|string|min:6',
-                'role'     => ['required', Rule::in(['student', 'teacher', 'guardian', 'school_admin'])],
+                'role'     => ['required', Rule::in(['Student', 'Teacher', 'Guardian', 'School Admin', 'Finance Officer', 'Exams Officer', 'super_admin'])],
 
                 // Student-specific fields
-                'admission_number'   => 'required_if:role,student|string|max:50',
-                'admission_date'     => 'required_if:role,student|date',
-                'class_id'           => ['required_if:role,student', 'integer', Rule::exists('classes', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
-                'school_session_id'  => ['required_if:role,student', 'integer', Rule::exists('school_sessions', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
+                'admission_number'   => 'required_if:role,Student|string|max:50',
+                'admission_date'     => 'required_if:role,Student|date',
+                'class_id'           => ['required_if:role,Student', 'integer', Rule::exists('classes', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
+                'school_session_id'  => ['required_if:role,Student', 'integer', Rule::exists('school_sessions', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
 
-                'term_id'            => ['required_if:role,student', 'integer', Rule::exists('terms', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
+                'term_id'            => ['required_if:role,Student', 'integer', Rule::exists('terms', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
 
                 // Teacher-specific fields
-                'employee_number'    => 'required_if:role,teacher|string|max:50',
-                'hire_date'          => 'required_if:role,teacher|date',
+                'employee_number'    => 'required_if:role,Teacher|string|max:50',
+                'hire_date'          => 'required_if:role,Teacher|date',
                 'qualification'      => 'nullable|string|max:255',
                 'department'         => 'nullable|string|max:255',
                 'bio'                => 'nullable|string',
                 'guardian_id'        => ['nullable', 'integer', Rule::exists('guardians', 'id')->where('school_id', \Illuminate\Support\Facades\Auth::user()->school_id)],
 
                 // Guardian-specific fields
-                'guardian'               => 'required_if:role,student|array',
-                'guardian.name'          => 'required_if:role,student|string|max:255',
+                'guardian'               => 'required_if:role,Student|array',
+                'guardian.name'          => 'required_if:role,Student|string|max:255',
                 'guardian.email'         => [
-                    'required_if:role,student',
+                    'required_if:role,Student',
                     'email',
                     function ($attribute, $value, $fail) {
                         $existingUser = \App\Models\User::where('email', $value)->first();
@@ -65,8 +65,8 @@ class UserRequest extends BaseRequest
                     }
                 ],
                 'guardian.password'      => 'nullable|string|min:6',
-                'guardian.relation'      => 'required_if:role,student|string|max:100',
-                'guardian.occupation'    => 'required_if:role,student|string|max:255',
+                'guardian.relation'      => 'required_if:role,Student|string|max:100',
+                'guardian.occupation'    => 'required_if:role,Student|string|max:255',
             ];
         }
 

@@ -11,7 +11,7 @@ class UpdateGuardianRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateGuardianRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'relation' => 'sometimes|string|max:100',
+            'occupation' => 'nullable|string|max:255',
+            'student_ids' => 'nullable|array',
+            'student_ids.*' => 'integer|exists:students,id',
         ];
     }
 }

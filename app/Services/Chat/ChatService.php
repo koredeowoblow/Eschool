@@ -8,6 +8,10 @@ use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Events\MessageSent;
+use App\Models\TeacherSubject;
+use App\Models\Student;
+use RuntimeException;
 
 class ChatService
 {
@@ -20,11 +24,7 @@ class ChatService
 
     public function get(int|string $id): Chat
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Chat record not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function create(array $data): Chat
@@ -46,7 +46,7 @@ class ChatService
         // Security: Verify relationship linkage (Sender must be authorized to message Receiver)
         $availableContacts = $this->getAvailableContacts();
         if (!$availableContacts->pluck('id')->contains($data['receiver_id'])) {
-            throw new \RuntimeException("Unauthorized: You are not permitted to message this user.");
+            throw new RuntimeException("Unauthorized: You are not permitted to message this user.");
         }
 
         $chat = $this->repo->create($data);
@@ -55,16 +55,12 @@ class ChatService
         $chat->load(['sender', 'receiver']);
 
         // Broadcast the event to both sender and receiver
-        try {
-            Log::info('Broadcasting MessageSent event', [
-                'sender_id' => $chat->sender_id,
-                'receiver_id' => $chat->receiver_id,
-                'chat_id' => $chat->id
-            ]);
-            broadcast(new \App\Events\MessageSent($chat))->toOthers();
-        } catch (\Exception $e) {
-            Log::error('Broadcast failed', ['error' => $e->getMessage()]);
-        }
+        Log::info('Broadcasting MessageSent event', [
+            'sender_id' => $chat->sender_id,
+            'receiver_id' => $chat->receiver_id,
+            'chat_id' => $chat->id
+        ]);
+        broadcast(new MessageSent($chat))->toOthers();
 
         return $chat;
     }
@@ -72,12 +68,8 @@ class ChatService
     public function update(int|string $id, array $data): Chat
     {
         $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Chat record not found");
-        }
         return $model;
     }
-
     public function delete(int|string $id): bool
     {
         return $this->repo->delete($id);
@@ -117,7 +109,7 @@ class ChatService
 
         // 3. Teacher: can chat with Students (in their classes), Guardians (of those students), and School Admin
         if ($roles->contains('teacher')) {
-            $classIds = \App\Models\TeacherSubject::where('teacher_id', $user->teacherProfile?->id ?? 0)
+            $classIds = TeacherSubject::where('teacher_id', $user->teacherProfile?->id ?? 0)
                 ->pluck('class_id')
                 ->unique();
 
@@ -141,7 +133,7 @@ class ChatService
                 $classIds = $user->guardian->students->pluck('class_id')->filter();
             } else {
                 // Specific student (or just the student user themselves)
-                $targetStudent = $studentId ? \App\Models\Student::find($studentId) : $user->student;
+                $targetStudent = $studentId ? Student::find($studentId) : $user->student;
                 $classIds = $targetStudent && $targetStudent->class_id ? [$targetStudent->class_id] : [];
             }
 

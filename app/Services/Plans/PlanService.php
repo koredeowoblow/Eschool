@@ -6,6 +6,7 @@ use App\Repositories\Plans\PlanRepository;
 use App\Repositories\Plans\SchoolPlanRepository;
 use App\Models\School;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class PlanService
 {
@@ -53,7 +54,7 @@ class PlanService
             $plan = $this->planRepository->findById($planId);
 
             if (!$plan) {
-                throw new \Exception("Plan not found");
+                throw new Exception("Plan not found");
             }
 
             // Create SchoolPlan instance
@@ -100,7 +101,7 @@ class PlanService
     {
         $school = School::findOrFail($schoolId);
         if (!$school->schoolPlan) {
-            throw new \Exception("School has no active plan");
+            throw new Exception("School has no active plan");
         }
 
         $school->schoolPlan->update($limits);

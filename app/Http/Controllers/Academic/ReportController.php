@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\Academic\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\Academic\ReportCollationRequest;
 
 class ReportController extends Controller
 {
@@ -14,82 +16,55 @@ class ReportController extends Controller
     /**
      * Trigger collation for a class.
      */
-    public function collate(Request $request)
+    public function collate(ReportCollationRequest $request)
     {
-        $request->validate([
-            'class_id' => 'required|exists:classes,id',
-            'term_id' => 'required|exists:terms,id',
-            'session_id' => 'required|exists:school_sessions,id',
-        ]);
+        $validated = $request->validated();
 
-        try {
-            DB::beginTransaction();
-            $result = $this->service->collateResults(
-                $request->class_id,
-                $request->term_id,
-                $request->session_id
+        $result = DB::transaction(function () use ($validated) {
+            return $this->service->collateResults(
+                $validated['class_id'],
+                $validated['term_id'],
+                $validated['school_session_id']
             );
-            DB::commit();
+        });
 
-            return response()->json([
-                'status' => 'success',
-                'message' => "Successfully collated {$result['collated_count']} subject records.",
-                'errors' => $result['errors']
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 422);
-        }
+        return ResponseHelper::success(
+            ['errors' => $result['errors']],
+            "Successfully collated {$result['collated_count']} subject records."
+        );
     }
 
     /**
      * Get missing results list.
      */
-    public function missing(Request $request)
+    public function missing(ReportCollationRequest $request)
     {
-        $request->validate([
-            'class_id' => 'required|exists:classes,id',
-            'term_id' => 'required|exists:terms,id',
-            'session_id' => 'required|exists:school_sessions,id',
-        ]);
+        $validated = $request->validated();
 
         $gaps = $this->service->getMissingResults(
-            $request->class_id,
-            $request->term_id,
-            $request->session_id
+            $validated['class_id'],
+            $validated['term_id'],
+            $validated['school_session_id']
         );
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $gaps
-        ]);
+        return ResponseHelper::success($gaps, 'Missing results fetched successfully');
     }
 
     /**
      * Fetch collated results for a class (Broadsheet data).
      */
-    public function broadsheet(Request $request)
+    public function broadsheet(ReportCollationRequest $request)
     {
-        $request->validate([
-            'class_id' => 'required|exists:classes,id',
-            'term_id' => 'required|exists:terms,id',
-            'session_id' => 'required|exists:school_sessions,id',
-        ]);
+        $validated = $request->validated();
 
         // This would typically involve a repository call or a service method to get SubjectResult entries
         // For now, let's keep it simple.
         $results = \App\Models\SubjectResult::with(['student.user', 'subject'])
-            ->where('class_id', $request->class_id)
-            ->where('term_id', $request->term_id)
-            ->where('session_id', $request->session_id)
+            ->where('class_id', $validated['class_id'])
+            ->where('term_id', $validated['term_id'])
+            ->where('session_id', $validated['school_session_id'])
             ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $results
-        ]);
+        return ResponseHelper::success($results, 'Broadsheet data fetched successfully');
     }
 }

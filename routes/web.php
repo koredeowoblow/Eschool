@@ -140,6 +140,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reports/academic', 'academicReportsIndex')->name('web.reports.academic');
         });
 
+        // Staff Management
+        Route::middleware(['role:super_admin|School Admin'])->group(function () {
+            Route::get('/staff', 'staffIndex')->name('web.staff.index');
+        });
+
         // Assessments
         Route::middleware(['role:super_admin|School Admin|Teacher|Student'])->group(function () {
             Route::get('/assessments', 'assessmentsIndex')->name('web.assessments.index');

@@ -49,6 +49,12 @@ export default [
         roles: ['super_admin', 'school_admin']
     },
     {
+        key: 'staff',
+        label: 'Staff Management',
+        icon: 'bi bi-person-gear',
+        roles: ['super_admin', 'school_admin']
+    },
+    {
         key: 'students',
         label: 'Students',
         icon: 'bi bi-people',

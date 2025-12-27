@@ -10,32 +10,24 @@ class AttendanceService
 {
     public function __construct(public AttendanceRepository $repo) {}
 
-    public function list(array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function list(array $filters = [])
     {
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\Attendance
+    public function get(int|string $id): Attendance
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Attendance record not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Attendance
+    public function create(array $data): Attendance
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Attendance
+    public function update(int|string $id, array $data): Attendance
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Attendance record not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

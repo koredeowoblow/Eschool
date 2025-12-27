@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Fees\InvoiceItemService;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\InvoiceItem\StoreInvoiceItemRequest;
+use App\Http\Requests\InvoiceItem\UpdateInvoiceItemRequest;
 
 class InvoiceItemController extends Controller
 {
@@ -21,41 +24,34 @@ class InvoiceItemController extends Controller
             'invoice_id' => $request->query('invoice_id'),
             'fee_type_id' => $request->query('fee_type_id'),
         ]);
-        return get_success_response($data, 'Invoice items fetched successfully');
+        return ResponseHelper::success($data, 'Invoice items fetched successfully');
     }
 
-    public function store(Request $request)
+    public function store(StoreInvoiceItemRequest $request)
     {
-        $validated = $request->validate([
-            'invoice_id' => 'required|integer|exists:invoices,id',
-            'fee_type_id' => 'required|integer|exists:fee_types,id',
-            'amount' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         $item = $this->service->create($validated);
-        return get_success_response($item, 'Invoice item created successfully', 201);
+        return ResponseHelper::success($item, 'Invoice item created successfully', 201);
     }
 
     public function show(string $id)
     {
         $model = $this->service->get($id);
-        return get_success_response($model, 'Invoice item fetched successfully');
+        return ResponseHelper::success($model, 'Invoice item fetched successfully');
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateInvoiceItemRequest $request, string $id)
     {
-        $validated = $request->validate([
-            'fee_type_id' => 'sometimes|integer|exists:fee_types,id',
-            'amount' => 'sometimes|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         $updated = $this->service->update($id, $validated);
-        return get_success_response($updated, 'Invoice item updated successfully');
+        return ResponseHelper::success($updated, 'Invoice item updated successfully');
     }
 
     public function destroy(string $id)
     {
         $this->service->delete($id);
-        return get_success_response(null, 'Invoice item deleted successfully');
+        return ResponseHelper::success(null, 'Invoice item deleted successfully');
     }
 }

@@ -25,20 +25,12 @@ class TeacherSubjectService
 
     public function get(int|string $id): TeacherSubject
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assignment not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function update(int|string $id, array $data): TeacherSubject
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assignment not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

@@ -10,6 +10,7 @@ use App\Helpers\AuditLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class FinanceService
 {
@@ -24,7 +25,7 @@ class FinanceService
         // 1. Strict Permission Check
         if (!$user->can('finance.generate.invoices')) {
             AuditLogger::logUnauthorized('create_invoice', 'invoice', null);
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to generate invoices.");
+            throw new AuthorizationException("You do not have permission to generate invoices.");
         }
 
         return DB::transaction(function () use ($data, $user) {
@@ -61,7 +62,7 @@ class FinanceService
 
         if (!$user->can('finance.record.payments')) {
             AuditLogger::logUnauthorized('record_payment', 'payment', null);
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to record payments.");
+            throw new AuthorizationException("You do not have permission to record payments.");
         }
 
         return DB::transaction(function () use ($data, $user) {
@@ -104,7 +105,7 @@ class FinanceService
 
         if (!$user->can('finance.view.reports')) {
             AuditLogger::logUnauthorized('view_reports', 'finance_overview', null);
-            throw new \Illuminate\Auth\Access\AuthorizationException("You do not have permission to view finance reports.");
+            throw new AuthorizationException("You do not have permission to view finance reports.");
         }
 
         // Tenant Scoped stats

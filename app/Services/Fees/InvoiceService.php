@@ -12,6 +12,7 @@ use App\Repositories\Fees\InvoiceRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class InvoiceService
 {
@@ -312,32 +313,28 @@ class InvoiceService
             $results['total'] = $students->count();
 
             foreach ($students as $student) {
-                try {
-                    $invoiceData = [
-                        'student_id' => $student->id,
-                        'session_id' => $data['session_id'],
-                        'term_id' => $data['term_id'],
-                        'due_date' => $data['due_date'],
-                        'notes' => $data['notes'] ?? null,
-                        'school_id' => $data['school_id'],
+                $invoiceData = [
+                    'student_id' => $student->id,
+                    'session_id' => $data['session_id'],
+                    'term_id' => $data['term_id'],
+                    'due_date' => $data['due_date'],
+                    'notes' => $data['notes'] ?? null,
+                    'school_id' => $data['school_id'],
+                ];
+
+                $items = [];
+                foreach ($feeTypes as $feeType) {
+                    $items[] = [
+                        'fee_type_id' => $feeType->id,
+                        'description' => $feeType->name,
+                        'amount' => $feeType->amount,
+                        'quantity' => 1
                     ];
-
-                    $items = [];
-                    foreach ($feeTypes as $feeType) {
-                        $items[] = [
-                            'fee_type_id' => $feeType->id,
-                            'description' => $feeType->name,
-                            'amount' => $feeType->amount,
-                            'quantity' => 1
-                        ];
-                    }
-
-                    $invoice = $this->create($invoiceData, $items);
-                    $results['invoices'][] = $invoice->id;
-                    $results['success']++;
-                } catch (\Exception $e) {
-                    $results['failed']++;
                 }
+
+                $invoice = $this->create($invoiceData, $items);
+                $results['invoices'][] = $invoice->id;
+                $results['success']++;
             }
 
             return $results;
@@ -360,7 +357,7 @@ class InvoiceService
             $remainingAmount = $invoice->total_amount - $paidAmount;
 
             if ($remainingAmount <= 0) {
-                throw new \RuntimeException("Invoice is already fully paid.");
+                throw new RuntimeException("Invoice is already fully paid.");
             }
 
             // Create payment for remaining amount

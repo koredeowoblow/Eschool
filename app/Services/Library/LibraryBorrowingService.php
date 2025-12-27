@@ -7,6 +7,8 @@ use App\Models\LibraryBorrowing;
 use App\Models\LibraryBook;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class LibraryBorrowingService
 {
@@ -19,11 +21,7 @@ class LibraryBorrowingService
 
     public function get(int|string $id): LibraryBorrowing
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Borrowing record not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function create(array $data): LibraryBorrowing
@@ -48,7 +46,7 @@ class LibraryBorrowingService
             $availableReal = $book->copies - $pendingCount;
 
             if ($availableReal <= 0) {
-                throw new \RuntimeException('No copies currently available (including pending requests)');
+                throw new RuntimeException('No copies currently available (including pending requests)');
             }
 
             if (!$isStudent && $data['status'] === 'borrowed') {
@@ -67,9 +65,6 @@ class LibraryBorrowingService
             $originalStatus = $model->status;
 
             $model = $this->repo->update($id, $data);
-            if (!$model) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Borrowing record not found");
-            }
 
             if ($originalStatus !== 'returned' && $model->status === 'returned') {
                 // returning a book, increment copies

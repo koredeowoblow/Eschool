@@ -15,27 +15,19 @@ class AssignmentService
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\Assignment
+    public function get(int|string $id): Assignment
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assignment not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Assignment
+    public function create(array $data): Assignment
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Assignment
+    public function update(int|string $id, array $data): Assignment
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assignment not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

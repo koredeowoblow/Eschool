@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Helpers\AuditLogger;
+use App\Http\Requests\Roles\RoleRequest;
+use App\Http\Requests\Roles\AssignRoleRequest;
 
 class RoleManagementController extends Controller
 {
@@ -59,7 +61,7 @@ class RoleManagementController extends Controller
     /**
      * Create a new custom role
      */
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
         $user = Auth::user();
 
@@ -67,11 +69,7 @@ class RoleManagementController extends Controller
             return $this->error('Unauthorized', 403);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name'
-        ]);
+        $validated = $request->validated();
 
         $role = Role::create([
             'name' => $validated['name'],
@@ -91,7 +89,7 @@ class RoleManagementController extends Controller
     /**
      * Update role permissions
      */
-    public function update(Request $request, $id)
+    public function update(RoleRequest $request, $id)
     {
         $user = Auth::user();
 
@@ -119,10 +117,7 @@ class RoleManagementController extends Controller
             return $this->error('Cannot modify core system roles', 403);
         }
 
-        $validated = $request->validate([
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name'
-        ]);
+        $validated = $request->validated();
 
         $oldPermissions = $role->permissions->pluck('name')->toArray();
 
@@ -185,7 +180,7 @@ class RoleManagementController extends Controller
     /**
      * Assign role to user
      */
-    public function assignRole(Request $request)
+    public function assignRole(AssignRoleRequest $request)
     {
         $user = Auth::user();
 
@@ -193,10 +188,7 @@ class RoleManagementController extends Controller
             return $this->error('Unauthorized', 403);
         }
 
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'role_name' => 'required|string'
-        ]);
+        $validated = $request->validated();
 
         // Security check: only super_admin can assign super_admin
         if ($validated['role_name'] === 'super_admin' && !$user->hasRole('super_admin')) {

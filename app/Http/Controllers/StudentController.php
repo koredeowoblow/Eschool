@@ -45,12 +45,8 @@ class StudentController extends Controller
      */
     public function store(UserRequest $request)
     {
-        try {
-            $student = $this->studentService->createStudent($request->validated());
-            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student created successfully.', 201);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $student = $this->studentService->createStudent($request->validated());
+        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student created successfully.', 201);
     }
 
     /**
@@ -58,15 +54,8 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        try {
-            $student = $this->studentService->getStudentById($id);
-            if (!$student) {
-                return ResponseHelper::notFound('Student not found.');
-            }
-            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student retrieved successfully.');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage());
-        }
+        $student = $this->studentService->getStudentById($id);
+        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student retrieved successfully.');
     }
 
     /**
@@ -74,14 +63,8 @@ class StudentController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-        try {
-            $student = $this->studentService->updateStudent($id, $request->validated());
-            return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student updated successfully.');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $student = $this->studentService->updateStudent($id, $request->validated());
+        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student updated successfully.');
     }
 
     /**
@@ -89,14 +72,7 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $deleted = $this->studentService->deleteStudent($id);
-            if (!$deleted) {
-                return ResponseHelper::notFound('Student not found.');
-            }
-            return ResponseHelper::success(null, 'Student deleted successfully.');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage());
-        }
+        $this->studentService->deleteStudent($id);
+        return ResponseHelper::success(null, 'Student deleted successfully.');
     }
 }

@@ -23,11 +23,9 @@ interface IRepository
     /**
      * Find a record by ID.
      *
-     * @param int|string $id
-     * @param array $relations
-     * @return Model|null
+     * @return Model
      */
-    public function findById(int|string $id, array $relations = []): ?Model;
+    public function findById(int|string $id, array $relations = []): Model;
 
     /**
      * Create a new record.
@@ -40,11 +38,9 @@ interface IRepository
     /**
      * Update an existing record.
      *
-     * @param int|string $id
-     * @param array $data
-     * @return Model|null Returns the updated model or null if not found.
+     * @return Model Returns the updated model.
      */
-    public function update(int|string $id, array $data): ?Model;
+    public function update(int|string $id, array $data): Model;
 
     /**
      * Delete a record.

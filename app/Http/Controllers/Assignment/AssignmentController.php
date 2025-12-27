@@ -32,31 +32,19 @@ class AssignmentController extends Controller
 
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Assignment fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Assignment fetched successfully');
     }
 
     public function update(AssignmentRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Assignment updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Assignment updated successfully');
     }
 
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Assignment deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Assignment deleted successfully');
     }
 }

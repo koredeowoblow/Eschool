@@ -3,6 +3,7 @@
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StudentPromotionController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/students', [StudentController::class, 'index']);
@@ -12,6 +13,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
     // Promotions
-    Route::get('/promotions', [\App\Http\Controllers\StudentPromotionController::class, 'index']);
-    Route::post('/promotions', [\App\Http\Controllers\StudentPromotionController::class, 'store']);
+    Route::get('/promotions', [StudentPromotionController::class, 'index']);
+    Route::post('/promotions', [StudentPromotionController::class, 'store']);
 });

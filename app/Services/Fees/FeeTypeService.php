@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class FeeTypeService
 {
@@ -28,11 +29,7 @@ class FeeTypeService
      */
     public function get(int|string $id): FeeType
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Fee type not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     /**
@@ -48,11 +45,7 @@ class FeeTypeService
      */
     public function update(int|string $id, array $data): FeeType
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Fee type not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     /**
@@ -63,7 +56,7 @@ class FeeTypeService
         // Check usage (Failsafe logic remains)
         $usageCount = InvoiceItem::where('fee_type_id', $id)->count();
         if ($usageCount > 0) {
-            throw new \RuntimeException("Cannot delete fee type as it is used in {$usageCount} invoice items");
+            throw new RuntimeException("Cannot delete fee type as it is used in {$usageCount} invoice items");
         }
 
         $this->get($id);
@@ -83,14 +76,9 @@ class FeeTypeService
             ];
 
             foreach ($feeTypes as $feeTypeData) {
-                try {
-                    $feeType = $this->create($feeTypeData);
-                    $results['fee_types'][] = $feeType->id;
-                    $results['success']++;
-                } catch (\Exception $e) {
-                    $results['failed']++;
-                    Log::error('Error in bulk create fee type: ' . $e->getMessage());
-                }
+                $feeType = $this->create($feeTypeData);
+                $results['fee_types'][] = $feeType->id;
+                $results['success']++;
             }
 
             return $results;

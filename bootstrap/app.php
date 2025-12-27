@@ -9,6 +9,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\ValidationException;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -59,24 +62,47 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (MethodNotAllowedHttpException $e, $request) {
-            return get_error_response("Invalid request method for this endpoint", 405);
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return get_error_response("Invalid request method for this endpoint", 405);
+            }
         });
 
-        // Handle routes not found
+        // Handle models not found (404)
+        $exceptions->render(function (ModelNotFoundException $e, $request) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return get_error_response("Resource not found", 404);
+            }
+        });
+
+        // Handle routes not found (404)
         $exceptions->render(function (NotFoundHttpException $e, $request) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return get_error_response("Route not found", 404);
             }
         });
 
-        // Handle validation errors
+        // Handle validation errors (422)
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return get_error_response("Validation failed", 422, $e->errors());
             }
         });
 
-        // Catch-all for unexpected errors
+        // Handle authentication errors (401)
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return get_error_response("Unauthenticated", 401);
+            }
+        });
+
+        // Handle authorization/permission errors (403)
+        $exceptions->render(function (AccessDeniedHttpException $e, $request) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return get_error_response("Access forbidden", 403);
+            }
+        });
+
+        // Catch-all for unexpected errors (500)
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return get_error_response(

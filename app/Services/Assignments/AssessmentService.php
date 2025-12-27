@@ -15,27 +15,19 @@ class AssessmentService
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\Assessment
+    public function get(int|string $id): Assessment
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assessment not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Assessment
+    public function create(array $data): Assessment
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Assessment
+    public function update(int|string $id, array $data): Assessment
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Assessment not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

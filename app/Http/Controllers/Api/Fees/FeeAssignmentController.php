@@ -32,10 +32,7 @@ class FeeAssignmentController extends Controller
             $this->assignmentService->assignFeeToStudent($validated['fee_id'], $validated['student_id']);
             $message = 'Fee assigned to the student.';
         } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Either class_id or student_id is required.'
-            ], 400);
+            return ResponseHelper::error('Either class_id or student_id is required.', 400);
         }
 
         return ResponseHelper::success(

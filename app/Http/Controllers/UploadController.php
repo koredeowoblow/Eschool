@@ -5,23 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\Common\UploadRequest;
 
 class UploadController extends Controller
 {
     /**
      * Handle file upload securely.
      */
-    public function store(Request $request)
+    public function store(UploadRequest $request)
     {
-        $request->validate([
-            'file' => [
-                'required',
-                'file',
-                'mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,txt',
-                'max:10240',
-                'extensions:jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,txt',
-            ],
-        ]);
+        $request->validated();
 
         $file = $request->file('file');
 
@@ -32,7 +26,7 @@ class UploadController extends Controller
 
         // Block common executable headers (MZ, ELF, PHAR)
         if (str_starts_with($header, 'MZ') || str_contains($header, 'ELF') || str_contains($header, '<?php')) {
-            return get_error_response('Malicious file content detected.', 422);
+            return ResponseHelper::error('Malicious file content detected.', 422);
         }
 
         // Generate secure filename using random string (UUID)
@@ -42,7 +36,7 @@ class UploadController extends Controller
         // Store in 'uploads' directory
         $path = $file->storeAs('uploads', $filename, 'public');
 
-        return get_success_response([
+        return ResponseHelper::success([
             'path' => $path,
             'url' => url('storage/' . $path),
             'original_name' => strip_tags($file->getClientOriginalName()),

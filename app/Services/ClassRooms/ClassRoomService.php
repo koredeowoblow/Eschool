@@ -17,11 +17,7 @@ class ClassRoomService
 
     public function get(int|string $id): ClassRoom
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Class not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
 
@@ -32,11 +28,7 @@ class ClassRoomService
 
     public function update(int|string $id, array $data): ClassRoom
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Class not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

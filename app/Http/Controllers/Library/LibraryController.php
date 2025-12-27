@@ -32,34 +32,22 @@ class LibraryController extends Controller
 
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Book fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Book fetched successfully');
     }
 
     public function update(LibraryBookRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Book updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Book updated successfully');
     }
 
     public function destroy(string $id)
     {
-        try {
-            $deleted = $this->service->delete($id);
-            if (! $deleted) {
-                return ResponseHelper::error('Cannot delete book with active borrowings', 422);
-            }
-            return ResponseHelper::success(null, 'Book deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
+        $deleted = $this->service->delete($id);
+        if (! $deleted) {
+            return ResponseHelper::error('Cannot delete book with active borrowings', 422);
         }
+        return ResponseHelper::success(null, 'Book deleted successfully');
     }
 }

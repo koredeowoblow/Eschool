@@ -6,6 +6,8 @@ use App\Repositories\Users\GuardianRepository;
 use App\Models\Guardian;
 use Illuminate\Support\Facades\Auth;
 use App\Models\School;
+use App\Models\Student;
+use Exception;
 
 class GuardianService
 {
@@ -42,14 +44,14 @@ class GuardianService
             if ($limit > 0) {
                 $currentCount = Guardian::where('school_id', $schoolId)->count();
                 if ($currentCount >= $limit) {
-                    throw new \Exception("Guardian limit reached for this school plan ({$limit}). Upgrade your plan to add more guardians.");
+                    throw new Exception("Guardian limit reached for this school plan ({$limit}). Upgrade your plan to add more guardians.");
                 }
             }
         }
 
         // Security: Filter student IDs to ensure they belong to the same school
         if (!empty($studentIds) && !$user->hasRole('super_admin')) {
-            $studentIds = \App\Models\Student::whereIn('id', $studentIds)
+            $studentIds = Student::whereIn('id', $studentIds)
                 ->where('school_id', $schoolId)
                 ->pluck('id')
                 ->toArray();
@@ -83,7 +85,7 @@ class GuardianService
         if (is_array($studentIds)) {
             // Security: Filter student IDs to ensure they belong to the same school
             if (!$user->hasRole('super_admin')) {
-                $studentIds = \App\Models\Student::whereIn('id', $studentIds)
+                $studentIds = Student::whereIn('id', $studentIds)
                     ->where('school_id', $schoolId)
                     ->pluck('id')
                     ->toArray();

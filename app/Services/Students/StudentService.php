@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\AuditLogger;
 use App\Models\School;
 use App\Models\Student;
+use App\Models\Enrollment;
+use Exception;
 
 class StudentService
 {
@@ -55,7 +57,7 @@ class StudentService
                     // StudentService::getAllStudents is scoped, but we need raw count.
                     $currentCount = Student::where('school_id', $schoolId)->count();
                     if ($currentCount >= $limit) {
-                        throw new \Exception("Student limit reached for this school plan ({$limit}). Upgrade your plan to add more students.");
+                        throw new Exception("Student limit reached for this school plan ({$limit}). Upgrade your plan to add more students.");
                     }
                 }
             }
@@ -78,7 +80,7 @@ class StudentService
 
             // 3. Create Enrollment (Consider using EnrollmentRepository)
             if (isset($data['class_id'])) {
-                \App\Models\Enrollment::create([
+                Enrollment::create([
                     'student_id' => $student->id,
                     'class_id' => $data['class_id'],
                     'session_id' => $data['session_id'] ?? $data['school_session_id'] ?? null,
@@ -108,9 +110,6 @@ class StudentService
     {
         return DB::transaction(function () use ($id, $data) {
             $student = $this->studentRepository->findById($id);
-            if (!$student) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Student record not found");
-            }
 
             // Update User model
             if ($student->user) {

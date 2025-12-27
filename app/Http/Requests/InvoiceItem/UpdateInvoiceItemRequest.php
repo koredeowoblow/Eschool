@@ -11,7 +11,7 @@ class UpdateInvoiceItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateInvoiceItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'fee_type_id' => 'sometimes|integer|exists:fee_types,id',
+            'amount' => 'sometimes|numeric|min:0',
         ];
     }
 }

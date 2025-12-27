@@ -111,16 +111,12 @@ class UserService
                 ]);
 
                 // Send welcome email to teacher
-                try {
-                    Mail::to($user->email)->send(new TeacherWelcome(
-                        $user->name,
-                        $user->email,
-                        $mainPassword,
-                        $user->school->name ?? 'School'
-                    ));
-                } catch (\Exception $e) {
-                    Log::error("Failed to send welcome email to teacher {$user->email}: " . $e->getMessage());
-                }
+                Mail::to($user->email)->send(new TeacherWelcome(
+                    $user->name,
+                    $user->email,
+                    $mainPassword,
+                    $user->school->name ?? 'School'
+                ));
             }
 
             return $user;
@@ -169,9 +165,6 @@ class UserService
     {
         return DB::transaction(function () use ($id, $data) {
             $user = $this->userRepo->findById($id);
-            if (!$user) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("User not found");
-            }
 
             // Security: Prevent lower-level admins from changing school_id
             if (!Auth::user()->hasRole('super_admin')) {
@@ -256,19 +249,15 @@ class UserService
 
             // Only send welcome email if it's a new account to avoid credential spam
             if ($isNewGuardian && $studentName && $studentPassword && $studentEmail) {
-                try {
-                    Mail::to($guardianUser->email)->send(new GuardianWelcome(
-                        $guardianUser->name,
-                        $guardianUser->email,
-                        $guardianPassword,
-                        $studentName,
-                        $studentPassword,
-                        $studentEmail,
-                        $guardianUser->school->name ?? 'School'
-                    ));
-                } catch (\Exception $e) {
-                    Log::error("Failed to send welcome email to guardian {$guardianUser->email}: " . $e->getMessage());
-                }
+                Mail::to($guardianUser->email)->send(new GuardianWelcome(
+                    $guardianUser->name,
+                    $guardianUser->email,
+                    $guardianPassword,
+                    $studentName,
+                    $studentPassword,
+                    $studentEmail,
+                    $guardianUser->school->name ?? 'School'
+                ));
             }
 
             return [

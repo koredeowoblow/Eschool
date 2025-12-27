@@ -55,17 +55,13 @@ class FeePaymentController extends Controller
      */
     public function store(FeePaymentRequest $request)
     {
-        try {
-            $payment = $this->paymentService->processPayment($request->validated());
+        $payment = $this->paymentService->processPayment($request->validated());
 
-            return ResponseHelper::success(
-                new FeePaymentResource($payment),
-                'Payment processed successfully',
-                201
-            );
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 400);
-        }
+        return ResponseHelper::success(
+            new FeePaymentResource($payment),
+            'Payment processed successfully',
+            201
+        );
     }
 
     /**

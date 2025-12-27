@@ -5,6 +5,8 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Services\SuperAdmin\SystemSettingsService;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use App\Http\Requests\SuperAdmin\SystemSettingsRequest;
 
 class SystemSettingsController extends Controller
 {
@@ -18,18 +20,18 @@ class SystemSettingsController extends Controller
     public function index()
     {
         if (request()->wantsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'data' => $this->settingsService->getSettings()
-            ]);
+            return ResponseHelper::success(
+                $this->settingsService->getSettings(),
+                'Settings fetched successfully'
+            );
         }
         return view('super_admin.settings.index');
     }
 
-    public function update(Request $request)
+    public function update(SystemSettingsRequest $request)
     {
         // Update logic
-        $this->settingsService->updateSettings($request->all());
-        return response()->json(['status' => 'success', 'message' => 'Settings updated']);
+        $this->settingsService->updateSettings($request->validated());
+        return ResponseHelper::success(null, 'Settings updated successfully');
     }
 }

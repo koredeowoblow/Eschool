@@ -9,6 +9,10 @@ use App\Repositories\Fees\PaymentRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class PaymentService
 {
@@ -30,11 +34,7 @@ class PaymentService
      */
     public function get(int|string $id): Payment
     {
-        $model = $this->payments->findById($id, ['invoice', 'student', 'processedBy']);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Payment record not found");
-        }
-        return $model;
+        return $this->payments->findById($id, ['invoice', 'student', 'processedBy']);
     }
 
     /**
@@ -74,16 +74,16 @@ class PaymentService
                 if (!$data['student_id']) {
                     // DATA INTEGRITY VIOLATION: Orphaned User Record
                     // Policy: Soft-failure with Audit Log. Do not crash.
-                    \Illuminate\Support\Facades\Log::warning("Data Integrity Violation: Orphaned User Record found when attempting payment.", [
+                    Log::warning("Data Integrity Violation: Orphaned User Record found when attempting payment.", [
                         'user_id' => $user->id,
                         'email' => $user->email,
                         'action' => 'PaymentService::create'
                     ]);
 
                     // Gracefully stop the transaction and return a user-friendly error.
-                    throw new \Illuminate\Validation\ValidationException(
-                        \Illuminate\Support\Facades\Validator::make([], []),
-                        \Illuminate\Validation\ValidationException::withMessages([
+                    throw new ValidationException(
+                        Validator::make([], []),
+                        ValidationException::withMessages([
                             'student_id' => ['Your user account is not correctly linked to a student profile. Please contact support.']
                         ])
                     );
@@ -94,9 +94,9 @@ class PaymentService
 
             if ($payment->invoice_id) {
                 // Security: Verify that the invoice belongs to the student
-                $invoice = \App\Models\Invoice::find($payment->invoice_id);
+                $invoice = Invoice::find($payment->invoice_id);
                 if ($invoice && $invoice->student_id !== $payment->student_id) {
-                    throw new \RuntimeException("Unauthorized: This invoice does not belong to the selected student.");
+                    throw new RuntimeException("Unauthorized: This invoice does not belong to the selected student.");
                 }
                 $this->invoices->recalculate($payment->invoice_id);
             }
@@ -112,9 +112,6 @@ class PaymentService
     {
         return DB::transaction(function () use ($id, $data) {
             $model = $this->payments->update($id, $data);
-            if (!$model) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Payment record not found");
-            }
 
             if ($model->invoice_id) {
                 $this->invoices->recalculate($model->invoice_id);
@@ -182,7 +179,7 @@ class PaymentService
             $payment = $this->get($id);
 
             if ($payment->status === Payment::STATUS_COMPLETED) {
-                throw new \RuntimeException("Payment is already completed.");
+                throw new RuntimeException("Payment is already completed.");
             }
 
             $updateData = [
@@ -207,7 +204,7 @@ class PaymentService
         $invoice = $payment->invoice;
 
         if (!$student || !$invoice) {
-            throw new \RuntimeException("Student or Invoice records relevant to this payment are missing.");
+            throw new RuntimeException("Student or Invoice records relevant to this payment are missing.");
         }
 
         return [

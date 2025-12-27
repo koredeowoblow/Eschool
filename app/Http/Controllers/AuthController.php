@@ -13,6 +13,7 @@ use App\Services\SuperAdmin\SchoolService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\ResponseHelper;
 
 class AuthController extends Controller
 {
@@ -63,7 +64,7 @@ class AuthController extends Controller
      */
     public function me(Request $request)
     {
-        return get_success_response(array_merge(
+        return ResponseHelper::success(array_merge(
             $request->user()->only(['id', 'name', 'email', 'school_id']),
             ['roles' => $request->user()->getRoleNames()]
         ), 'User retrieved successfully.');
@@ -96,7 +97,7 @@ class AuthController extends Controller
         }
 
         // For API/AJAX requests, return JSON with token
-        return get_success_response($result, 'User logged in successfully');
+        return ResponseHelper::success($result, 'User logged in successfully');
     }
 
     /**
@@ -126,7 +127,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return get_success_response(null, 'User logged out successfully');
+        return ResponseHelper::success(null, 'User logged out successfully');
     }
 
     /**
@@ -139,7 +140,7 @@ class AuthController extends Controller
     {
         // Pass validated data array
         $result = $this->authService->create($request->validated());
-        return get_success_response($result['user'], $result['message']);
+        return ResponseHelper::success($result['user'], $result['message']);
     }
 
     /**
@@ -154,7 +155,7 @@ class AuthController extends Controller
         // Pass validated data array
         $user = $this->authService->updateDetails($request->validated());
 
-        return get_success_response([
+        return ResponseHelper::success([
             'user' => $user
         ], 'Profile updated successfully');
     }
@@ -174,10 +175,10 @@ class AuthController extends Controller
         );
 
         if (!$success) {
-            return get_error_response('Invalid or expired password reset token', 400);
+            return ResponseHelper::error('Invalid or expired password reset token', 400);
         }
 
-        return get_success_response(null, 'Password reset successfully');
+        return ResponseHelper::success(null, 'Password reset successfully');
     }
 
     /**
@@ -191,7 +192,7 @@ class AuthController extends Controller
         $data = $request->validated();
         $school = $this->schoolService->createSchool($data);
 
-        return get_success_response($school, 'School created successfully');
+        return ResponseHelper::success($school, 'School created successfully');
     }
 
     /**
@@ -204,8 +205,8 @@ class AuthController extends Controller
     {
         $status = $this->authService->sendPasswordResetLink($request->validated('email'));
         if ($status) {
-            return get_success_response(null, 'Password reset link sent to your email');
+            return ResponseHelper::success(null, 'Password reset link sent to your email');
         }
-        return get_error_response('Unable to send password reset link', 400);
+        return ResponseHelper::error('Unable to send password reset link', 400);
     }
 }

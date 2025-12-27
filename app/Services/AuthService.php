@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Exception;
 
 use function Laravel\Prompts\error;
 
@@ -104,9 +107,9 @@ class AuthService
      */
     public function sendPasswordResetLink(string $email): bool
     {
-        $status = \Illuminate\Support\Facades\Password::sendResetLink(['email' => $email]);
+        $status = Password::sendResetLink(['email' => $email]);
 
-        return $status === \Illuminate\Support\Facades\Password::RESET_LINK_SENT;
+        return $status === Password::RESET_LINK_SENT;
     }
 
     /**
@@ -119,7 +122,7 @@ class AuthService
      */
     public function resetPassword(string $email, string $password, string $token): bool
     {
-        $status = \Illuminate\Support\Facades\Password::reset(
+        $status = Password::reset(
             ['email' => $email, 'password' => $password, 'password_confirmation' => $password, 'token' => $token],
             function ($user, $password) {
                 $user->forceFill([
@@ -128,11 +131,11 @@ class AuthService
 
                 $user->save();
 
-                event(new \Illuminate\Auth\Events\PasswordReset($user));
+                event(new PasswordReset($user));
             }
         );
 
-        return $status === \Illuminate\Support\Facades\Password::PASSWORD_RESET;
+        return $status === Password::PASSWORD_RESET;
     }
 
     /**
@@ -220,7 +223,7 @@ class AuthService
     {
         $user = User::find($userId);
         if (! $user) {
-            throw new \Exception("User not found: {$userId}");
+            throw new Exception("User not found: {$userId}");
         }
         return $user;
     }

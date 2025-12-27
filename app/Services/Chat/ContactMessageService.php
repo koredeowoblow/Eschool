@@ -17,11 +17,7 @@ class ContactMessageService
 
     public function get(int|string $id): ContactMessage
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Contact message not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
     public function create(array $data): ContactMessage
@@ -31,11 +27,7 @@ class ContactMessageService
 
     public function update(int|string $id, array $data): ContactMessage
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Contact message not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

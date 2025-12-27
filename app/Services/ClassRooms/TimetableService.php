@@ -15,27 +15,19 @@ class TimetableService
         return $this->repo->list($filters);
     }
 
-    public function get(int|string $id): \App\Models\Timetable
+    public function get(int|string $id): Timetable
     {
-        $model = $this->repo->findById($id);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Timetable not found");
-        }
-        return $model;
+        return $this->repo->findById($id);
     }
 
-    public function create(array $data): \App\Models\Timetable
+    public function create(array $data): Timetable
     {
         return $this->repo->create($data);
     }
 
-    public function update(int|string $id, array $data): \App\Models\Timetable
+    public function update(int|string $id, array $data): Timetable
     {
-        $model = $this->repo->update($id, $data);
-        if (!$model) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Timetable not found");
-        }
-        return $model;
+        return $this->repo->update($id, $data);
     }
 
     public function delete(int|string $id): bool

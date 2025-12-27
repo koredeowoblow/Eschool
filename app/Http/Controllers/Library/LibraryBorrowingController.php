@@ -27,41 +27,25 @@ class LibraryBorrowingController extends Controller
 
     public function store(LibraryBorrowingRequest $request)
     {
-        try {
-            $model = $this->service->create($request->validated());
-            return ResponseHelper::success($model, 'Borrowing created successfully', 201);
-        } catch (\RuntimeException $e) {
-            return ResponseHelper::error($e->getMessage(), 422);
-        }
+        $model = $this->service->create($request->validated());
+        return ResponseHelper::success($model, 'Borrowing created successfully', 201);
     }
 
     public function show(string $id)
     {
-        try {
-            $model = $this->service->get($id);
-            return ResponseHelper::success($model, 'Borrowing fetched successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $model = $this->service->get($id);
+        return ResponseHelper::success($model, 'Borrowing fetched successfully');
     }
 
     public function update(LibraryBorrowingRequest $request, string $id)
     {
-        try {
-            $updated = $this->service->update($id, $request->validated());
-            return ResponseHelper::success($updated, 'Borrowing updated successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $updated = $this->service->update($id, $request->validated());
+        return ResponseHelper::success($updated, 'Borrowing updated successfully');
     }
 
     public function destroy(string $id)
     {
-        try {
-            $this->service->delete($id);
-            return ResponseHelper::success(null, 'Borrowing deleted successfully');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return ResponseHelper::notFound($e->getMessage());
-        }
+        $this->service->delete($id);
+        return ResponseHelper::success(null, 'Borrowing deleted successfully');
     }
 }

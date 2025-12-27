@@ -11,7 +11,7 @@ class StoreGuardianRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreGuardianRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required|uuid|exists:users,id',
+            'relation' => 'required|string|max:100',
+            'occupation' => 'nullable|string|max:255',
+            'student_ids' => 'nullable|array',
+            'student_ids.*' => 'integer|exists:students,id',
         ];
     }
 }

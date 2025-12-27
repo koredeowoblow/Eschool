@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Helpers\ResponseHelper;
 
 class Controller extends BaseController
 {
@@ -15,7 +16,7 @@ class Controller extends BaseController
      */
     protected function success($data = null, string $message = 'Operation successful', int $statusCode = 200, array $meta = [])
     {
-        return get_success_response($data, $message, $statusCode, $meta);
+        return ResponseHelper::success($data, $message, $statusCode, $meta);
     }
 
     /**
@@ -23,6 +24,6 @@ class Controller extends BaseController
      */
     protected function error(string $message = 'Error', int $statusCode = 400, $errors = null, array $meta = [])
     {
-        return get_error_response($message, $statusCode, $errors, $meta);
+        return ResponseHelper::error($message, $statusCode, $errors, $meta);
     }
 }

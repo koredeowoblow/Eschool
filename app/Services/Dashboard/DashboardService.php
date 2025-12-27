@@ -11,6 +11,8 @@ use App\Models\ClassRoom;
 use App\Models\Assignment;
 use App\Models\School;
 use App\Models\User;
+use App\Models\Attendance;
+use App\Models\Result;
 use Carbon\Carbon;
 
 class DashboardService
@@ -30,7 +32,7 @@ class DashboardService
             'assignments' => $applySchool(Assignment::query())
                 ->where('due_date', '>=', now())
                 ->count(),
-            'attendance_today' => \App\Models\Attendance::whereHas('student', fn($q) => $applySchool($q))
+            'attendance_today' => Attendance::whereHas('student', fn($q) => $applySchool($q))
                 ->whereDate('date', today())
                 ->where('status', 'present')
                 ->count(),
@@ -282,10 +284,10 @@ class DashboardService
                 'performance_distribution' => [
                     'labels' => ['Excellent (75+)', 'Good (60-74)', 'Average (45-59)', 'Below Avg (<45)'],
                     'data' => [
-                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '>=', 75)->count(),
-                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [60, 74])->count(),
-                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [45, 59])->count(),
-                        \App\Models\Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '<', 45)->count(),
+                        Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '>=', 75)->count(),
+                        Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [60, 74])->count(),
+                        Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->whereBetween('marks_obtained', [45, 59])->count(),
+                        Result::whereHas('student', fn($q) => $q->where('school_id', $schoolId))->where('marks_obtained', '<', 45)->count(),
                     ]
                 ],
                 'attendance_by_class' => [
