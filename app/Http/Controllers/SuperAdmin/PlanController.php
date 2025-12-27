@@ -28,7 +28,6 @@ class PlanController extends Controller
     public function store(StorePlanRequest $request)
     {
         $data = $request->validated();
-
         $plan = $this->planService->createPlan($data);
         return ResponseHelper::success($plan, 'Plan created successfully.');
     }
@@ -36,7 +35,6 @@ class PlanController extends Controller
     public function update(UpdatePlanRequest $request, $id)
     {
         $data = $request->validated();
-
         $plan = $this->planService->updatePlan($id, $data);
         return ResponseHelper::success($plan, 'Plan updated successfully.');
     }

@@ -31,7 +31,7 @@ Eschool is a high-performance, multi-tenant Education Management System (EMS) de
 ### 💰 Financial Integrity
 - **Flex-Billing**: Automated invoice generation for fees with support for discounts and installments.
 - **Audit Ledger**: A permanent, unchangeable record of all financial transactions and administrative changes.
-
+                    
 ---
 
 ## 🏗 Architecture & Design

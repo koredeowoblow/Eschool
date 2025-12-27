@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\Guardian\GuardianDashboardController;
+use App\Http\Controllers\Roles\RoleManagementController;
 
 // Public routes (rate-limited to reduce abuse/brute force)
 Route::post('/create-school', [AuthController::class, 'createSchool'])
@@ -46,20 +47,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Guardian API (Permission-protected)
     Route::prefix('guardian')->middleware('role:Guardian')->group(function () {
-        Route::get('/children', [\App\Http\Controllers\Guardian\GuardianDashboardController::class, 'getChildren'])->name('api.guardian.children');
-        Route::get('/children/{studentId}/results', [\App\Http\Controllers\Guardian\GuardianDashboardController::class, 'getChildResults'])->name('api.guardian.results');
-        Route::get('/children/{studentId}/attendance', [\App\Http\Controllers\Guardian\GuardianDashboardController::class, 'getChildAttendance'])->name('api.guardian.attendance');
-        Route::get('/children/{studentId}/fees', [\App\Http\Controllers\Guardian\GuardianDashboardController::class, 'getChildFees'])->name('api.guardian.fees');
-        Route::get('/receipts/{paymentId}', [\App\Http\Controllers\Guardian\GuardianDashboardController::class, 'downloadReceipt'])->name('api.guardian.receipt');
+        Route::get('/children', [GuardianDashboardController::class, 'getChildren'])->name('api.guardian.children');
+        Route::get('/children/{studentId}/results', [GuardianDashboardController::class, 'getChildResults'])->name('api.guardian.results');
+        Route::get('/children/{studentId}/attendance', [GuardianDashboardController::class, 'getChildAttendance'])->name('api.guardian.attendance');
+        Route::get('/children/{studentId}/fees', [GuardianDashboardController::class, 'getChildFees'])->name('api.guardian.fees');
+        Route::get('/receipts/{paymentId}', [GuardianDashboardController::class, 'downloadReceipt'])->name('api.guardian.receipt');
     });
 
     // Role Management API (Admin only)
     Route::prefix('roles')->middleware('role:School Admin|super_admin')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Roles\RoleManagementController::class, 'index'])->name('api.roles.index');
-        Route::get('/permissions', [\App\Http\Controllers\Roles\RoleManagementController::class, 'getPermissions'])->name('api.roles.permissions');
-        Route::post('/', [\App\Http\Controllers\Roles\RoleManagementController::class, 'store'])->name('api.roles.store');
-        Route::put('/{id}', [\App\Http\Controllers\Roles\RoleManagementController::class, 'update'])->name('api.roles.update');
-        Route::delete('/{id}', [\App\Http\Controllers\Roles\RoleManagementController::class, 'destroy'])->name('api.roles.destroy');
-        Route::post('/assign', [\App\Http\Controllers\Roles\RoleManagementController::class, 'assignRole'])->name('api.roles.assign');
+        Route::get('/', [RoleManagementController::class, 'index'])->name('api.roles.index');
+        Route::get('/permissions', [RoleManagementController::class, 'getPermissions'])->name('api.roles.permissions');
+        Route::post('/', [RoleManagementController::class, 'store'])->name('api.roles.store');
+        Route::put('/{id}', [RoleManagementController::class, 'update'])->name('api.roles.update');
+        Route::delete('/{id}', [RoleManagementController::class, 'destroy'])->name('api.roles.destroy');
+        Route::post('/assign', [RoleManagementController::class, 'assignRole'])->name('api.roles.assign');
     });
 });
