@@ -44,6 +44,12 @@ export default [
         path: '/audit'
     },
     {
+        key: 'system-jobs',
+        label: 'System Jobs',
+        icon: 'bi bi-cpu',
+        path: '/super-admin/jobs'
+    },
+    {
         key: 'role-management',
         label: 'Role Management',
         icon: 'bi bi-person-badge',
