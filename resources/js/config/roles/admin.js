@@ -104,5 +104,12 @@ export default [
         label: 'Settings',
         icon: 'bi bi-gear',
         roles: ['super_admin', 'School Admin']
+    },
+    {
+        type: 'link',
+        key: 'system-jobs',
+        label: 'System Jobs',
+        icon: 'bi bi-cpu',
+        roles: ['super_admin']
     }
 ];
