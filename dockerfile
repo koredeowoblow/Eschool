@@ -46,11 +46,16 @@ RUN php artisan config:clear || true && \
 COPY nginx.conf /etc/nginx/sites-enabled/default
 
 # Configure Supervisor
+# Configure Supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+
+# Copy Entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose HTTP + Reverb WS
 EXPOSE 80
 EXPOSE 8080
 
-# Start Supervisor (manages all processes)
-CMD ["supervisord", "-n"]
+# Start via Entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
