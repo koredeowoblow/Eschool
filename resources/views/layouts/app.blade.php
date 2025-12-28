@@ -173,6 +173,17 @@
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js" defer></script>
 
     <script>
+        window.Laravel = {
+            reverb: {
+                key: "{{ env('VITE_REVERB_APP_KEY') }}",
+                host: "{{ env('VITE_REVERB_HOST') }}",
+                port: "{{ env('VITE_REVERB_PORT') ?? 443 }}",
+                scheme: "{{ env('VITE_REVERB_SCHEME') ?? 'https' }}"
+            }
+        };
+    </script>
+
+    <script>
         // document.addEventListener('DOMContentLoaded', () => {
         //     // Initialize Echo after scripts are loaded
         //     if (window.Pusher && window.Echo) {
