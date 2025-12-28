@@ -97,7 +97,9 @@
         async function retryJob(id) {
             if (!confirm('Are you sure you want to retry this job?')) return;
             try {
-                await axios.post(`{{ route('api.jobs.retry', '') }}/${id}`);
+                // Laravel route requires a parameter. We use 0 as placeholder.
+                const url = `{{ route('api.jobs.retry', 0) }}`.replace('/0', '/' + id);
+                await axios.post(url);
                 toastr.success('Job queued for retry');
                 fetchJobs();
             } catch (error) {
@@ -109,7 +111,8 @@
         async function deleteJob(id) {
             if (!confirm('Are you sure you want to delete this job?')) return;
             try {
-                await axios.delete(`{{ route('api.jobs.destroy', '') }}/${id}`);
+                const url = `{{ route('api.jobs.destroy', 0) }}`.replace('/0', '/' + id);
+                await axios.delete(url);
                 toastr.success('Job deleted successfully');
                 fetchJobs();
             } catch (error) {
