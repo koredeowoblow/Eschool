@@ -26,15 +26,11 @@ if [ ! -s /var/www/html/database/database.sqlite ]; then
   chown www-data:www-data /var/www/html/database/database.sqlite
 fi
 
-# Only rebuild caches if missing
-if [ ! -f bootstrap/cache/config.php ]; then
-  echo "Caching configuration..."
-  php artisan config:cache
-  php artisan route:cache
-  php artisan view:cache
-else
-  echo "Using existing cached configuration"
-fi
+echo "Caching configuration..."
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
 echo "Starting Supervisor..."
 exec supervisord -n -c /etc/supervisor/conf.d/supervisor.conf

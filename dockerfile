@@ -24,11 +24,6 @@ RUN mkdir -p database \
 RUN php artisan migrate --force --database=sqlite && \
     php artisan db:seed --force --database=sqlite
 
-# Cache config/routes/views
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
 # Permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
