@@ -195,5 +195,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', function () {
             return view('super_admin.settings.index');
         })->name('super_admin.settings.index');
+
+        Route::get('/jobs', function () {
+            return view('super_admin.jobs.index');
+        })->name('super_admin.jobs.index');
     });
 });

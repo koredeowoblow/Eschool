@@ -63,4 +63,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [RoleManagementController::class, 'destroy'])->name('api.roles.destroy');
         Route::post('/assign', [RoleManagementController::class, 'assignRole'])->name('api.roles.assign');
     });
+
+    // System Jobs API (Super Admin)
+    Route::prefix('jobs')->middleware('role:super_admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SuperAdmin\JobController::class, 'index'])->name('api.jobs.index');
+        Route::post('/retry/all', [\App\Http\Controllers\SuperAdmin\JobController::class, 'retryAll'])->name('api.jobs.retry.all');
+        Route::post('/retry/{id}', [\App\Http\Controllers\SuperAdmin\JobController::class, 'retry'])->name('api.jobs.retry');
+        Route::delete('/{id}', [\App\Http\Controllers\SuperAdmin\JobController::class, 'destroy'])->name('api.jobs.destroy');
+    });
 });

@@ -97,6 +97,14 @@ export const sidebarConfig = [
     },
     {
         type: 'link',
+        key: 'system-jobs',
+        label: 'System Jobs',
+        icon: 'bi bi-cpu',
+        path: '/super-admin/jobs',
+        roles: ['super_admin']
+    },
+    {
+        type: 'link',
         key: 'my-children',
         label: 'My Children',
         icon: 'bi bi-people-fill',
