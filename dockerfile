@@ -34,15 +34,17 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-# Clear caches
+# Clear caches and rebuild autoload to prevent "class not found" issues
 RUN php artisan config:clear && \
+    php artisan cache:clear && \
     php artisan route:clear && \
-    php artisan view:clear
+    php artisan view:clear && \
+    composer dump-autoload
 
 # Expose port 80 for Render
 EXPOSE 80
 
-# Start Laravel tasks: migrate, seed, Reverb, serve
+# Start Laravel tasks: migrate, seed, serve
 CMD sh -c "\
   echo '[1] Caching config...' && \
   php artisan config:cache && \
@@ -56,16 +58,14 @@ CMD sh -c "\
   php artisan db:seed --force && \
   echo '✓ Seeding complete' && \
   \
-#   echo '[4] Starting Reverb...' && \
-#   php artisan reverb:start & \
-#   REVERB_PID=$! && \
-#   sleep 3 && \
-#   if ! kill -0 $REVERB_PID 2>/dev/null; then \
-#       echo '✗ Reverb failed to start — stopping container'; \
-#       exit 1; \
-#   fi && \
-#   echo '✓ Reverb started' && \
-#   \
+  echo '[4] Clearing caches and rebuilding autoload...' && \
+  php artisan cache:clear && \
+  php artisan config:clear && \
+  php artisan route:clear && \
+  php artisan view:clear && \
+  composer dump-autoload && \
+  echo '✓ Autoload rebuilt — class issues fixed' && \
+  \
   echo '[5] Starting Laravel server...' && \
   php artisan serve --host=0.0.0.0 --port=80 \
 "
