@@ -119,7 +119,7 @@ class AuthController extends Controller
         }
 
         // 2. Clear the web session
-        // We use Auth::guard('web') because the 'sanctum' guard (RequestGuard) 
+        // We use Auth::guard('web') because the 'sanctum' guard (RequestGuard)
         // does not have a logout() method.
         Auth::guard('web')->logout();
 
