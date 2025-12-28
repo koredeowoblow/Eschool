@@ -211,6 +211,11 @@
             // Use the public runtime config injected above
             let config = window.Laravel.reverb;
 
+            // Clean up host if it includes protocol
+            if (config.host) {
+                config.host = config.host.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            }
+
             // Smart Auto-Configuration for Render/Production
             // If host is 0.0.0.0 (server binding), fallback to current hostname
             if (config.host === '0.0.0.0') {
