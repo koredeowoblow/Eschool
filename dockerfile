@@ -1,68 +1,48 @@
-# Use official PHP image with FPM
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libsqlite3-dev \
-    zip \
-    supervisor \
-    nginx \
+    git curl unzip libzip-dev libpng-dev libonig-dev \
+    libsqlite3-dev zip supervisor nginx \
     && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring zip bcmath pcntl
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy app files
 COPY . .
 
-# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create SQLite database file if it doesn't exist
-RUN mkdir -p database && \
-    touch database/database.sqlite && \
-    chmod 775 database/database.sqlite
+# Create SQLite DB
+RUN mkdir -p database \
+    && touch database/database.sqlite \
+    && chmod 775 database/database.sqlite
 
-# Run migrations and seeds during build
-# We set DB_CONNECTION=sqlite to ensure it uses the file we just created
-RUN php artisan migrate --force --database=sqlite && \
-    php artisan db:seed --force --database=sqlite && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# Generate app key during build
+RUN php artisan key:generate --force
 
-# Save the seeded database as a template for runtime usage
-RUN mkdir -p /var/www/seed && \
-    cp database/database.sqlite /var/www/seed/database.sqlite
+# Run migrations + seed ONCE during build
+RUN php artisan migrate --force --database=sqlite \
+    && php artisan db:seed --force --database=sqlite
 
-# Set Laravel storage permissions
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html && \
-    chmod -R 775 storage bootstrap/cache
+# Cache config/routes/views
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Configure Nginx
+# Permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
+
+# Copy seeded DB as baseline
+RUN mkdir -p /var/www/seed \
+    && cp database/database.sqlite /var/www/seed/database.sqlite
+
 COPY nginx.conf /etc/nginx/sites-enabled/default
-
-# Configure Supervisor
-# Configure Supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-
-# Copy Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Expose HTTP + Reverb WS
-EXPOSE 80
-EXPOSE 8080
+EXPOSE 80 8080
 
-# Start via Entrypoint
 ENTRYPOINT ["docker-entrypoint.sh"]
