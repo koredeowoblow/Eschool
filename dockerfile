@@ -39,26 +39,27 @@ EXPOSE 80
 
 # Start Laravel tasks at runtime
 CMD sh -c "\
-  echo '[1] Caching config...' && \
-  php artisan config:cache && \
-  echo '✓ Config cache complete' && \
-  \
-  echo '[2] Running migrations...' && \
-  php artisan migrate --force && \
-  echo '✓ Migrations complete' && \
-  \
-  echo '[3] Seeding database...' && \
-  php artisan db:seed --force && \
-  echo '✓ Seeding complete' && \
-  \
-  echo '[4] Clearing caches and rebuilding autoload...' && \
-  php artisan cache:clear || true && \
-  php artisan config:clear || true && \
-  php artisan route:clear || true && \
-  php artisan view:clear || true && \
-  composer dump-autoload && \
-  echo '✓ Autoload rebuilt — class issues fixed' && \
-  \
-  echo '[5] Starting Laravel server...' && \
-  php artisan serve --host=0.0.0.0 --port=80 \
-"
+    echo '[1] Caching config...' && \
+    php artisan config:cache && \
+    echo '✓ Config cache complete' && \
+    \
+    echo '[2] Running migrations...' && \
+    php artisan migrate --force && \
+    echo '✓ Migrations complete' && \
+    \
+    echo '[3] Seeding database...' && \
+    php artisan db:seed --force && \
+    echo '✓ Seeding complete' && \
+    \
+    echo '[4] Clearing caches and rebuilding autoload...' && \
+    php artisan cache:clear || true && \
+    php artisan config:clear || true && \
+    php artisan route:clear || true && \
+    php artisan view:clear || true && \
+    composer dump-autoload && \
+    echo '✓ Autoload rebuilt — class issues fixed' && \
+    \
+    php artisan reverb:start & \
+    echo '[5] Starting Laravel server...' && \
+    php artisan serve --host=0.0.0.0 --port=80 \
+    "
