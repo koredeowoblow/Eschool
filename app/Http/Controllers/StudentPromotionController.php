@@ -12,7 +12,7 @@ class StudentPromotionController extends Controller
     public function __construct(protected StudentPromotionService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher');
+        $this->middleware('role:super_admin|School Admin|Teacher');
     }
 
     public function index(PromotionRequest $request)

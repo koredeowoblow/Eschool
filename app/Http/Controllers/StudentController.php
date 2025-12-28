@@ -15,8 +15,8 @@ class StudentController extends Controller
     {
         // Apply role-based authorization middleware
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy']);
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show']);
 
         // Rate limiting: 60 requests per minute for create operations
         $this->middleware('throttle:60,1')->only(['store']);

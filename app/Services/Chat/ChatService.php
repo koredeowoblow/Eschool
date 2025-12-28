@@ -86,7 +86,7 @@ class ChatService
 
         // 1. Super Admin: can chat with all school admins
         if ($roles->contains('super_admin')) {
-            return User::whereHas('roles', fn($q) => $q->where('name', 'school_admin'))
+            return User::whereHas('roles', fn($q) => $q->where('name', 'School Admin'))
                 ->with('school:id,name')
                 ->select('id', 'name', 'email', 'school_id')
                 ->get()
@@ -97,7 +97,7 @@ class ChatService
         }
 
         // 2. School Admin: can chat with super admin + all users in THEIR school
-        if ($roles->contains('school_admin')) {
+        if ($roles->contains('School Admin')) {
             return User::where(function ($q) use ($user) {
                 $q->where('school_id', $user->school_id)
                     ->orWhereHas('roles', fn($rq) => $rq->where('name', 'super_admin'));
@@ -108,14 +108,14 @@ class ChatService
         }
 
         // 3. Teacher: can chat with Students (in their classes), Guardians (of those students), and School Admin
-        if ($roles->contains('teacher')) {
+        if ($roles->contains('Teacher')) {
             $classIds = TeacherSubject::where('teacher_id', $user->teacherProfile?->id ?? 0)
                 ->pluck('class_id')
                 ->unique();
 
             return User::where('school_id', $user->school_id)
                 ->where(function ($q) use ($classIds) {
-                    $q->whereHas('roles', fn($rq) => $rq->where('name', 'school_admin'))
+                    $q->whereHas('roles', fn($rq) => $rq->where('name', 'School Admin'))
                         ->orWhereHas('student', fn($sq) => $sq->whereIn('class_id', $classIds))
                         ->orWhereHas('guardian.students', fn($gq) => $gq->whereIn('class_id', $classIds));
                 })
@@ -125,11 +125,11 @@ class ChatService
         }
 
         // 4. Students & Guardians: Can see Teachers (of their class) and School Admin
-        if ($roles->contains('student') || $roles->contains('guardian')) {
+        if ($roles->contains('Student') || $roles->contains('Guardian')) {
             $studentId = $filters['student_id'] ?? null;
 
             // If guardian and no specific student selected, get classes for ALL their children
-            if ($roles->contains('guardian') && !$studentId) {
+            if ($roles->contains('Guardian') && !$studentId) {
                 $classIds = $user->guardian->students->pluck('class_id')->filter();
             } else {
                 // Specific student (or just the student user themselves)
@@ -139,7 +139,7 @@ class ChatService
 
             return User::where('school_id', $user->school_id)
                 ->where(function ($q) use ($classIds) {
-                    $q->whereHas('roles', fn($rq) => $rq->where('name', 'school_admin'))
+                    $q->whereHas('roles', fn($rq) => $rq->where('name', 'School Admin'))
                         ->orWhereHas('teacherProfile.subjects', fn($tpq) => $tpq->whereIn('class_id', $classIds));
                 })
                 ->where('id', '!=', $user->id)

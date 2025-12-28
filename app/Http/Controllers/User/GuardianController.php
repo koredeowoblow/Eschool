@@ -14,8 +14,8 @@ class GuardianController extends Controller
     public function __construct(private GuardianService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show']);
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy']);
     }
 
     public function index(Request $request)

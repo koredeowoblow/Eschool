@@ -15,8 +15,8 @@ class FeeTypeController extends Controller
     public function __construct(private FeeTypeService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show', 'getUsageStats', 'getFeeTypesSummary']);
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy', 'bulkCreate']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show', 'getUsageStats', 'getFeeTypesSummary']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy', 'bulkCreate']);
         $this->middleware('check.session')->only(['store', 'update', 'destroy', 'bulkCreate']);
     }
 

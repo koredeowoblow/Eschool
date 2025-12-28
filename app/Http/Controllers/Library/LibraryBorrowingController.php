@@ -14,9 +14,9 @@ class LibraryBorrowingController extends Controller
     public function __construct(private LibraryBorrowingService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show']);
-        $this->middleware('role:super_admin|school_admin|student')->only(['store']);
-        $this->middleware('role:super_admin|school_admin')->only(['update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher|Student')->only(['index', 'show']);
+        $this->middleware('role:super_admin|School Admin|Student')->only(['store']);
+        $this->middleware('role:super_admin|School Admin')->only(['update', 'destroy']);
     }
 
     public function index(Request $request)

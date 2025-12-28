@@ -16,8 +16,8 @@ class InvoiceController extends Controller
     public function __construct(private InvoiceService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show', 'getStudentInvoices']);
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy', 'bulkGenerate', 'markAsPaid']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show', 'getStudentInvoices']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy', 'bulkGenerate', 'markAsPaid']);
     }
 
     /**

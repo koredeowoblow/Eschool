@@ -17,8 +17,8 @@ class PaymentController extends Controller
     public function __construct(private PaymentService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show', 'getStudentPayments', 'getInvoicePayments']);
-        $this->middleware('role:super_admin|school_admin')->only(['store', 'update', 'destroy', 'verifyPayment', 'generateReceipt']);
+        $this->middleware('role:super_admin|School Admin|Teacher|Student')->only(['index', 'show', 'getStudentPayments', 'getInvoicePayments']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy', 'verifyPayment', 'generateReceipt']);
     }
 
     /**
@@ -39,7 +39,7 @@ class PaymentController extends Controller
         $validated['processed_by'] = $request->user()->id;
 
         // Security: Force pending status for non-admins to prevent self-approval
-        if (!$request->user()->hasRole(['super_admin', 'school_admin'])) {
+        if (!$request->user()->hasRole(['super_admin', 'School Admin'])) {
             $validated['status'] = 'pending';
         }
 
