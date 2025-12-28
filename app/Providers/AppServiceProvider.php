@@ -19,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
+        \Illuminate\Support\Facades\Mail::extend('brevo', function (array $config = []) {
+            return (new \Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory())
+                ->create(new \Symfony\Component\Mailer\Transport\Dsn(
+                    'brevo+api',
+                    'default',
+                    config('services.brevo.key')
+                ));
+        });
+
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
         // Only run when serving web requests, not Artisan or tests
