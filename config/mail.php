@@ -89,6 +89,10 @@ return [
             'retry_after' => 60,
         ],
 
+        'brevo' => [
+            'transport' => 'brevo',
+        ],
+
         'roundrobin' => [
             'transport' => 'roundrobin',
             'mailers' => [
