@@ -26,7 +26,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Create SQLite database file if it doesn't exist
-RUN touch database/database.sqlite \
+RUN mkdir -p database && touch database/database.sqlite \
     && chmod 775 database/database.sqlite
 
 # Set Laravel storage permissions
@@ -34,17 +34,10 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-# Clear caches and rebuild autoload to prevent "class not found" issues
-RUN php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan route:clear && \
-    php artisan view:clear && \
-    composer dump-autoload
-
 # Expose port 80 for Render
 EXPOSE 80
 
-# Start Laravel tasks: migrate, seed, serve
+# Start Laravel tasks at runtime
 CMD sh -c "\
   echo '[1] Caching config...' && \
   php artisan config:cache && \
@@ -59,10 +52,10 @@ CMD sh -c "\
   echo '✓ Seeding complete' && \
   \
   echo '[4] Clearing caches and rebuilding autoload...' && \
-  php artisan cache:clear && \
-  php artisan config:clear && \
-  php artisan route:clear && \
-  php artisan view:clear && \
+  php artisan cache:clear || true && \
+  php artisan config:clear || true && \
+  php artisan route:clear || true && \
+  php artisan view:clear || true && \
   composer dump-autoload && \
   echo '✓ Autoload rebuilt — class issues fixed' && \
   \
