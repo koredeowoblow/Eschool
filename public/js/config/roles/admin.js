@@ -34,5 +34,12 @@ export default [
         label: 'Payments',
         icon: 'bi bi-credit-card',
         roles: ['super_admin', 'school_admin']
+    },
+    {
+        type: 'link',
+        key: 'system-jobs',
+        label: 'System Jobs',
+        icon: 'bi bi-cpu',
+        roles: ['super_admin']
     }
 ];
