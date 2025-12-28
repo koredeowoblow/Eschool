@@ -11,18 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Drop and recreate user_id to ensure it handles UUIDs
-        // Schema::table('sessions', function (Blueprint $table) {
-        //     $table->dropColumn('user_id');
-        // });
-        if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+        $connection = Schema::getConnection()->getDriverName();
+
+        // Only drop column on non-SQLite
+        if ($connection !== 'sqlite') {
             Schema::table('sessions', function (Blueprint $table) {
-                $table->dropColumn('user_id');
+                if (Schema::hasColumn('sessions', 'user_id')) {
+                    $table->dropColumn('user_id');
+                }
             });
         }
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->uuid('user_id')->nullable()->index();
-        });
+
+        // Add user_id only if it doesn't exist
+        $columns = Schema::getColumnListing('sessions');
+        if (!in_array('user_id', $columns)) {
+            Schema::table('sessions', function (Blueprint $table) {
+                $table->uuid('user_id')->nullable()->index();
+            });
+        }
     }
 
     /**
@@ -30,6 +36,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Irreversible smoothly without data loss logic
+        $columns = Schema::getColumnListing('sessions');
+        if (in_array('user_id', $columns)) {
+            Schema::table('sessions', function (Blueprint $table) {
+                $table->dropColumn('user_id');
+            });
+        }
     }
 };
