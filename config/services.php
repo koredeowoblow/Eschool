@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'reverb' => [
+        'app_key' => env('VITE_REVERB_APP_KEY'),
+        'host' => env('VITE_REVERB_HOST'),
+        'port' => env('VITE_REVERB_PORT', 443),
+        'scheme' => env('VITE_REVERB_SCHEME', 'https'),
+    ],
+
 ];

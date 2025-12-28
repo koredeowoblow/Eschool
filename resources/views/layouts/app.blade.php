@@ -175,10 +175,10 @@
     <script>
         window.Laravel = {
             reverb: {
-                key: "{{ env('VITE_REVERB_APP_KEY') }}",
-                host: "{{ env('VITE_REVERB_HOST') }}",
-                port: "{{ env('VITE_REVERB_PORT') ?? 443 }}",
-                scheme: "{{ env('VITE_REVERB_SCHEME') ?? 'https' }}"
+                key: "{{ config('services.reverb.app_key') }}",
+                host: "{{ config('services.reverb.host') }}",
+                port: "{{ config('services.reverb.port') }}",
+                scheme: "{{ config('services.reverb.scheme') }}"
             }
         };
     </script>
