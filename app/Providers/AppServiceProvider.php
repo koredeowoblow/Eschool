@@ -15,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
         // Only run when serving web requests, not Artisan or tests
