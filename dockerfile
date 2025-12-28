@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     zip \
     supervisor \
+    nginx \
     && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring zip bcmath pcntl
 
 # Install Composer
@@ -41,7 +42,10 @@ RUN php artisan config:clear || true && \
     php artisan route:clear || true && \
     php artisan view:clear || true
 
-# Copy Supervisor config
+# Configure Nginx
+COPY nginx.conf /etc/nginx/sites-enabled/default
+
+# Configure Supervisor
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 # Expose HTTP + Reverb WS
