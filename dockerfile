@@ -18,12 +18,11 @@ RUN mkdir -p database \
     && touch database/database.sqlite \
     && chmod 775 database/database.sqlite
 
-# Generate app key during build
-RUN php artisan key:generate --force
-
-# Run migrations + seed ONCE during build
-RUN php artisan migrate --force --database=sqlite \
-    && php artisan db:seed --force --database=sqlite
+# Run migrations and seeds during build
+# We set DB_CONNECTION=sqlite to ensure it uses the file we just created
+# We use a dummy APP_KEY just for the build step (migrations don't strictly need it, but Laravel might check)
+RUN php artisan migrate --force --database=sqlite && \
+    php artisan db:seed --force --database=sqlite
 
 # Cache config/routes/views
 RUN php artisan config:cache \
