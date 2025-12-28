@@ -12,10 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         // Drop and recreate user_id to ensure it handles UUIDs
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-        });
-        
+        // Schema::table('sessions', function (Blueprint $table) {
+        //     $table->dropColumn('user_id');
+        // });
+        if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+            Schema::table('sessions', function (Blueprint $table) {
+                $table->dropColumn('user_id');
+            });
+        }
         Schema::table('sessions', function (Blueprint $table) {
             $table->uuid('user_id')->nullable()->index();
         });
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-       // Irreversible smoothly without data loss logic
+        // Irreversible smoothly without data loss logic
     }
 };
