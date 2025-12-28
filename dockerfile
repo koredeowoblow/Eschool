@@ -40,6 +40,10 @@ RUN php artisan migrate --force --database=sqlite && \
     php artisan route:cache && \
     php artisan view:cache
 
+# Save the seeded database as a template for runtime usage
+RUN mkdir -p /var/www/seed && \
+    cp database/database.sqlite /var/www/seed/database.sqlite
+
 # Set Laravel storage permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
