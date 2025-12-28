@@ -26,6 +26,7 @@ class UpdateRequest extends FormRequest
             'contact_person' => 'sometimes|string|max:255',
             'contact_person_phone' => 'sometimes|string|max:20',
             'status' => 'sometimes|string|in:active,pending,suspended',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 }
