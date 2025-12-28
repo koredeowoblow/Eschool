@@ -208,25 +208,31 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (!window.Pusher) return;
 
-            const host = "{{ config('broadcasting.connections.reverb.options.host') }}";
-            const port = {{ config('broadcasting.connections.reverb.options.port', 6001) }};
-            const key = "{{ config('broadcasting.connections.reverb.key') }}";
-            const useTLS = {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }};
+            // Use the public runtime config injected above
+            let config = window.Laravel.reverb;
 
-            console.log('Echo Init:', {
-                host,
-                port,
-                key,
-                useTLS
-            });
+            // Smart Auto-Configuration for Render/Production
+            // If host is 0.0.0.0 (server binding), fallback to current hostname
+            if (config.host === '0.0.0.0') {
+                console.warn('Echo: Detected 0.0.0.0 host, falling back to window.location.hostname');
+                config.host = window.location.hostname;
+            }
+
+            // Force WSS and Port 443 if on HTTPS
+            if (window.location.protocol === 'https:') {
+                config.scheme = 'https';
+                config.port = 443;
+            }
+
+            console.log('Echo Init (Smart Config):', config);
 
             window.Echo = new Echo({
                 broadcaster: 'reverb',
-                key: key,
-                wsHost: host,
-                wsPort: port,
-                wssPort: port,
-                forceTLS: useTLS === 'true',
+                key: config.key,
+                wsHost: config.host,
+                wsPort: config.port,
+                wssPort: config.port,
+                forceTLS: config.scheme === 'https',
                 enabledTransports: ['ws', 'wss'],
                 disableStats: true,
             });
