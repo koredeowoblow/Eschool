@@ -14,18 +14,8 @@ if [ ! -f /var/www/html/database/database.sqlite ]; then
     chown www-data:www-data /var/www/html/database/database.sqlite
 fi
 
-# Run migrations and seeds
-echo "Running migrations..."
-php artisan migrate --force
-
-echo "Seeding database..."
-php artisan db:seed --force
-
-echo "Clearing caches..."
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
+# Migration and seeding are handled at build time.
+# If you need to run them manually in production, use the console.
 
 # Start Supervisor
 echo "Starting Supervisor..."

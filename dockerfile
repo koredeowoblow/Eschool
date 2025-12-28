@@ -32,15 +32,18 @@ RUN mkdir -p database && \
     touch database/database.sqlite && \
     chmod 775 database/database.sqlite
 
+# Run migrations and seeds during build
+# We set DB_CONNECTION=sqlite to ensure it uses the file we just created
+RUN php artisan migrate --force --database=sqlite && \
+    php artisan db:seed --force --database=sqlite && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
+
 # Set Laravel storage permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
     chmod -R 775 storage bootstrap/cache
-
-# Build caches at runtime to avoid build-time DB errors
-RUN php artisan config:clear || true && \
-    php artisan route:clear || true && \
-    php artisan view:clear || true
 
 # Configure Nginx
 COPY nginx.conf /etc/nginx/sites-enabled/default
