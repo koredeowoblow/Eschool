@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\PlanController;
 
+Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+
 Route::middleware(['auth:sanctum', 'role:super_admin'])->group(function () {
-    Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+    // Route::get('/plans', [PlanController::class, 'index'])->name('plans.index'); // Commented out or removed to avoid duplicate names if I just move it.
+    // Actually, I'll just remove it from here and place it outside.
     Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
     Route::put('/plans/{id}', [PlanController::class, 'update'])->name('plans.update');
     Route::delete('/plans/{id}', [PlanController::class, 'destroy'])->name('plans.destroy');

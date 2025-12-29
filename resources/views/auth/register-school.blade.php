@@ -145,15 +145,9 @@
 
                                 <div class="col-12">
                                     <label class="form-label">Select Plan <span class="text-danger">*</span></label>
-                                    <select name="plan" class="form-select @error('plan') is-invalid @enderror"
-                                        required>
-                                        <option value="">Choose a plan...</option>
-                                        <option value="basic" {{ old('plan') == 'basic' ? 'selected' : '' }}>Basic -
-                                            $29/month</option>
-                                        <option value="standard" {{ old('plan') == 'standard' ? 'selected' : '' }}>
-                                            Standard - $59/month</option>
-                                        <option value="premium" {{ old('plan') == 'premium' ? 'selected' : '' }}>Premium
-                                            - $99/month</option>
+                                    <select name="plan" id="create_plan"
+                                        class="form-select @error('plan') is-invalid @enderror" required>
+                                        <option value="">Select Plan</option>
                                     </select>
                                     @error('plan')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -183,6 +177,11 @@
 
 @section('scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            App.loadOptions('/api/v1/plans', 'create_plan', @json(old('plan')), 'id', 'name',
+                'Select Plan');
+        });
+
         document.getElementById('schoolRegistrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
 

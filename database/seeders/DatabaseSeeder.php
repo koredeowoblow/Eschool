@@ -18,5 +18,9 @@ class DatabaseSeeder extends Seeder
         // 2. Run App Owner Seeder (Super Admin)
         $this->call(AppOwnerSeeder::class);
         echo "✅ Super Admin user seeded.\n";
+
+        // 3. Run Plan Seeder
+        $this->call(PlanSeeder::class);
+        echo "✅ Plans seeded.\n";
     }
 }
