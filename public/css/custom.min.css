@@ -243,6 +243,13 @@ body {
   }
 }
 
+/* Mobile Sidebar Width Constraint */
+@media (max-width: 991.98px) {
+  #sidebarMenu {
+    width: var(--sidebar-width) !important;
+  }
+}
+
 .admin-sidebar::before {
   content: "";
   position: absolute;

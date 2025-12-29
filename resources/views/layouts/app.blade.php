@@ -82,6 +82,13 @@
 
                 <div class="d-flex align-items-center gap-3">
                     <div id="guardian-student-selector-container"></div>
+
+                    {{-- Layout Toggle (Fluid/Boxed) --}}
+                    <button class="btn btn-light rounded-circle p-2 position-relative shadow-sm d-none d-lg-block"
+                        type="button" id="layoutToggle" title="Toggle Expanded View">
+                        <i class="bi bi-arrows-angle-expand" id="layoutToggleIcon"></i>
+                    </button>
+
                     <div class="dropdown">
                         <button class="btn btn-light rounded-circle p-2 position-relative shadow-sm" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false" id="notificationBell">
@@ -94,6 +101,7 @@
                         <div class="dropdown-menu dropdown-menu-end shadow border-0 py-0 overflow-hidden"
                             style="width: 300px; max-height: 400px; font-size: 0.85rem;"
                             aria-labelledby="notificationBell">
+                            {{-- ... --}}
                             <div
                                 class="p-2 border-bottom bg-light fw-bold d-flex justify-content-between align-items-center">
                                 <span>Notifications</span>
@@ -150,10 +158,56 @@
 
             <!-- Page Content -->
             <section class="admin-content flex-fill bg-light-noise">
-                <div class="container-xxl px-3 px-md-4 py-4">
+                {{-- ID added for JS targeting --}}
+                <div class="container-xxl px-3 px-md-4 py-4" id="mainContentContainer">
                     @yield('content')
                 </div>
             </section>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const toggleBtn = document.getElementById('layoutToggle');
+                    const icon = document.getElementById('layoutToggleIcon');
+                    const container = document.getElementById('mainContentContainer');
+                    const STORAGE_KEY = 'layout_preference_fluid';
+
+                    // 1. Check preference on load
+                    const isFluid = localStorage.getItem(STORAGE_KEY) === 'true';
+                    if (isFluid) {
+                        applyFluidMode();
+                    }
+
+                    // 2. Toggle Handler
+                    if (toggleBtn) {
+                        toggleBtn.addEventListener('click', () => {
+                            const currentIsFluid = container.classList.contains('container-fluid');
+                            if (currentIsFluid) {
+                                disableFluidMode();
+                            } else {
+                                applyFluidMode();
+                            }
+                        });
+                    }
+
+                    function applyFluidMode() {
+                        container.classList.remove('container-xxl');
+                        container.classList.add('container-fluid');
+                        icon.classList.remove('bi-arrows-angle-expand');
+                        icon.classList.add('bi-arrows-angle-contract');
+                        localStorage.setItem(STORAGE_KEY, 'true');
+                        toggleBtn.title = "Switch to Boxed View";
+                    }
+
+                    function disableFluidMode() {
+                        container.classList.remove('container-fluid');
+                        container.classList.add('container-xxl');
+                        icon.classList.remove('bi-arrows-angle-contract');
+                        icon.classList.add('bi-arrows-angle-expand');
+                        localStorage.setItem(STORAGE_KEY, 'false');
+                        toggleBtn.title = "Switch to Expanded View";
+                    }
+                });
+            </script>
 
             <!-- Footer -->
             <footer class="text-center py-3 border-top text-muted bg-white">
