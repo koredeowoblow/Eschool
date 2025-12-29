@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: eschool-app
     container_name: eschool_app_1
-    restart: unless-stopped
+    restart: "no"
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
