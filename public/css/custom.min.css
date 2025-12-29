@@ -5,18 +5,19 @@
  */
 
 :root {
-  /* Primary - Soothing & Fine Blue (Sky Blue) */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  /* Harmonious Blue */
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* Primary - Deep Indigo & Vibrant Accents (Human-Picked Palette) */
+  --color-primary-50: #f5f7ff;
+  --color-primary-100: #ebf0fe;
+  --color-primary-200: #ced9fb;
+  --color-primary-300: #a3b6f8;
+  --color-primary-400: #7189f2;
+  --color-primary-500: #4f46e5;
+  /* The "Brand" Indigo */
+  --color-primary-600: #4338ca;
+  --color-primary-700: #3730a3;
+  --color-primary-800: #1e1b4b;
+  --color-primary-900: #0f172a;
+  /* Deep Navy */
 
   /* Neutral Grays - Clean Slate Scale */
   --color-gray-50: #f8fafc;
@@ -31,12 +32,12 @@
   --color-gray-900: #0f172a;
 
   /* Semantic Colors - Sophisticated & Muted */
-  --color-success: #10b981;
-  /* Emerald 500 (Softened) */
+  --color-success: #059669;
+  /* Emerald 600 */
   --color-success-light: #ecfdf5;
-  --color-warning: #f97316;
-  /* Standard Orange */
-  --color-warning-light: #fff7ed;
+  --color-warning: #d97706;
+  /* Amber 600 */
+  --color-warning-light: #fffbeb;
   --color-danger: #dc2626;
   /* Red 600 */
   --color-danger-light: #fef2f2;
@@ -46,8 +47,7 @@
 
   /* Brand Aliases */
   --brand-primary: var(--color-primary-500);
-  --brand-secondary: #f59e0b;
-  /* Golden Amber */
+  --brand-secondary: var(--color-gray-800);
   --brand-accent: var(--color-info);
   --brand-danger: var(--color-danger);
   --brand-warning: var(--color-warning);
@@ -128,8 +128,8 @@ body {
   line-height: 1.6;
 }
 
-/* 
- * Layout Structure 
+/*
+ * Layout Structure
  */
 .admin-wrapper {
   display: flex;
@@ -209,8 +209,8 @@ body {
   background-attachment: local;
 }
 
-/* 
- * Components 
+/*
+ * Components
  */
 .card-premium {
   background: var(--surface-base);
@@ -352,12 +352,12 @@ body {
   color: var(--color-primary-700);
 }
 
-/* 
+/*
 flex-grow: 1;
 } */
 
-/* 
- * Collapsed Sidebar State (Desktop) 
+/*
+ * Collapsed Sidebar State (Desktop)
  */
 body.sidebar-collapsed .admin-sidebar {
   width: 70px;
@@ -412,8 +412,8 @@ body.sidebar-collapsed .admin-main {
   border-radius: 4px;
 }
 
-/* 
- * Tables & Responsiveness 
+/*
+ * Tables & Responsiveness
  */
 .table-premium th {
   background-color: var(--color-gray-50);
@@ -540,8 +540,8 @@ body.sidebar-collapsed .admin-main {
   -webkit-text-fill-color: transparent;
 }
 
-/* 
- * Timetable Calendar Grid Layout 
+/*
+ * Timetable Calendar Grid Layout
  */
 .timetable-grid {
   display: grid;
@@ -671,8 +671,8 @@ body.sidebar-collapsed .admin-main {
   background-blend-mode: soft-light;
 }
 
-/* 
- * Entry Animations 
+/*
+ * Entry Animations
  */
 .animate-in {
   animation: fadeInUp 0.5s var(--ease-out-expo) both;
@@ -751,8 +751,8 @@ body.sidebar-collapsed .admin-main {
   }
 }
 
-/* 
- * Modern Messaging Interface 
+/*
+ * Modern Messaging Interface
  */
 .messaging-container {
   display: grid;
@@ -804,5 +804,401 @@ body.sidebar-collapsed .admin-main {
 
 .conversation-item.active {
   background: var(--color-primary-50);
-  border-left: 3px solid var(--color-primary-500);
+  border-left: 3px solid var(--color-primary-600);
+}
+
+.conversation-item .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.conversation-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversation-info .name {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-info .last-message {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-item .timestamp {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.conversation-item .unread-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--color-primary-600);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Messages Panel (Right) */
+.messages-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-gray-50);
+  height: 100%;
+  min-height: 0;
+}
+
+.messages-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.messages-header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.messages-header .name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.messages-header .status {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.messages-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.messages-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+}
+
+.messages-empty i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 0.5rem;
+  animation: messageSlideIn 0.2s ease;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message.received {
+  justify-content: flex-start;
+}
+
+.message-content {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-xs);
+  position: relative;
+}
+
+.message.sent .message-content {
+  background: var(--color-primary-600);
+  color: white;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.message.received .message-content {
+  background: white;
+  color: var(--text-primary);
+  border-bottom-left-radius: 0.25rem;
+}
+
+.message-text {
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  text-align: right;
+}
+
+.message.received .message-time {
+  color: var(--text-tertiary);
+}
+
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Message Input Footer */
+.messages-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: white;
+  align-items: center;
+}
+
+.messages-footer textarea {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  transition: all 0.15s ease;
+  resize: none;
+  min-height: 44px;
+  max-height: 120px;
+}
+
+.messages-footer textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.messages-footer button {
+  background: var(--color-primary-600);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.messages-footer button:hover {
+  background: var(--color-primary-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.messages-footer button:active {
+  transform: scale(0.95);
+}
+
+/* Date Divider */
+.message-date-divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.message-date-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.message-date-divider span {
+  background: var(--color-gray-50);
+  padding: 0.25rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .messaging-container {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .messaging-container {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+
+  .conversations-panel {
+    display: block;
+  }
+
+  .messages-panel {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  .messages-panel.active {
+    display: flex;
+  }
+
+  .conversation-item.active {
+    border-left: none;
+  }
+}
+
+/* Empty State */
+.messaging-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  padding: 2rem;
+  text-align: center;
+}
+
+.messaging-empty-state i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+
+.messaging-empty-state h5 {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.messaging-empty-state p {
+  color: var(--text-tertiary);
+  font-size: 0.9375rem;
+}
+
+/* Skeleton Loader */
+.skeleton-row td {
+  padding: 1rem;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  width: 80%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.sidebar-skeleton {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-skeleton-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  background: var(--color-gray-100);
+  border-radius: 4px;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.sidebar-skeleton-text {
+  height: 12px;
+  background: var(--color-gray-100);
+  border-radius: 4px;
+  flex: 1;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Animation Optimizations */
+.animate-in {
+  animation: fade-in-up 0.5s var(--ease-out-expo) forwards;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.transition-all-premium {
+  transition: all 0.3s var(--ease-smooth);
+  will-change: transform, opacity, box-shadow;
+}
+
+.transition-transform-gpu {
+  transition: transform 0.3s var(--ease-smooth);
+  will-change: transform;
+  transform: translateZ(0);
+  /* Force GPU composite layer */
 }
