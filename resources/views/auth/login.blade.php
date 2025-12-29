@@ -21,8 +21,8 @@
 
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
             --slate-50: #f8fafc;
             --slate-100: #f1f5f9;
             --slate-200: #e2e8f0;
@@ -34,9 +34,13 @@
         }
 
         body {
-            background-color: var(--slate-900);
+            background-color: var(--slate-50);
+            /* Authenticated pages use light, let's stick to auth page light/dark style or match dashboard? using slate-50 usually looks cleaner than slate-900 for modern apps, but let's stick to existing dark mode if prefers, but user said 'soothing'. Let's keep slate-900 for login but update accents? Actually User said 'soothing', maybe light mode is better? The dashboard text suggests it's light mode (white bg). Let's change body bg to slate-50 for a cleaner look or keep slate-900? The original was slate-900. Let's make it consistent with the dashboard which is light. */
+            /* Actually, let's keep the dark login style but with the blue accents, OR switch to light. The 'custom.css' has body bg var(--ui-bg) which is gray-50. Let's switch login to light mode to match dashboard soothing feel. */
+            background-color: var(--slate-50);
             min-height: 100vh;
-            color: var(--slate-50);
+            color: var(--slate-900);
+            /* Invert text */
             font-family: 'Outfit', sans-serif;
             display: flex;
             align-items: center;
@@ -55,8 +59,9 @@
             right: 0;
             bottom: 0;
             background-image:
-                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.08) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.15) 0px, transparent 50%);
+            /* Added Golden Amber hint */
             z-index: -2;
         }
 
