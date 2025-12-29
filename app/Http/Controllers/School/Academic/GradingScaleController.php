@@ -33,6 +33,10 @@ class GradingScaleController extends Controller
         }
 
         if (!$schoolId) {
+            // For super admin, if no school selected, just return empty list or handle gracefully
+            if ($user->hasRole('super_admin')) {
+                return ResponseHelper::success([], 'Select a school to view grading scales.');
+            }
             return ResponseHelper::error('School context required', 400);
         }
 

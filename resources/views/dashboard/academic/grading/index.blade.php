@@ -38,6 +38,15 @@
         </div>
     </div>
 
+    <div class="row mb-4" id="schoolSelectorRow" style="display: none;">
+        <div class="col-md-4">
+            <label for="schoolSelect" class="form-label">Select School (Super Admin)</label>
+            <select class="form-select" id="schoolSelect" onchange="handleSchoolChange()">
+                <option value="">-- Select School --</option>
+            </select>
+        </div>
+    </div>
+
     <!-- Modal -->
     <div class="modal fade" id="gradingModal" tabindex="-1" aria-labelledby="gradingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -91,8 +100,24 @@
 
 @section('scripts')
     <script>
+        let currentSchoolId = null;
+        let isSuperAdmin = false;
+
         document.addEventListener('DOMContentLoaded', function() {
-            fetchGradingScales();
+            const appConfig = window.AppConfig || {};
+            const user = appConfig.user || {};
+
+            // Roles in AppConfig are already strings (getRoleNames())
+            const roles = (user.roles || []).map(r => String(r).toLowerCase().replace(/\s+/g, '_'));
+
+            // Strict Check: Only Super Admin sees the selector
+            if (roles.includes('super_admin')) {
+                isSuperAdmin = true;
+                document.getElementById('schoolSelectorRow').style.display = 'block';
+                fetchSchools();
+            } else {
+                fetchGradingScales();
+            }
         });
 
         const headers = {
@@ -101,8 +126,47 @@
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         };
 
+        function fetchSchools() {
+            fetch('/api/v1/schools', {
+                    headers: headers
+                }) // Assuming this endpoint exists for super admins
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('schoolSelect');
+                    if (data.success || Array.isArray(data)) {
+                        const schools = data.data || data;
+                        schools.forEach(school => {
+                            const option = document.createElement('option');
+                            option.value = school.id;
+                            option.textContent = school.name;
+                            select.appendChild(option);
+                        });
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function handleSchoolChange() {
+            currentSchoolId = document.getElementById('schoolSelect').value;
+            if (currentSchoolId) {
+                fetchGradingScales();
+            } else {
+                document.getElementById('gradingTableBody').innerHTML = '';
+            }
+        }
+
         function fetchGradingScales() {
-            fetch('/api/v1/grading-scales', {
+            let url = '/api/v1/grading-scales';
+            if (isSuperAdmin && currentSchoolId) {
+                url += `?school_id=${currentSchoolId}`;
+            } else if (isSuperAdmin && !currentSchoolId) {
+                // If super admin hasn't selected a school, don't fetch or fetch empty
+                document.getElementById('gradingTableBody').innerHTML =
+                    '<tr><td colspan="6" class="text-center">Select a school to view data</td></tr>';
+                return;
+            }
+
+            fetch(url, {
                     headers: headers
                 })
                 .then(res => res.json())
@@ -110,7 +174,11 @@
                     if (data.success) {
                         renderTable(data.data);
                     } else {
-                        console.error('Failed to fetch grading scales');
+                        console.error('Failed to fetch grading scales', data.message);
+                        if (isSuperAdmin && !currentSchoolId) {
+                            document.getElementById('gradingTableBody').innerHTML =
+                                '<tr><td colspan="6" class="text-center">Select a school to view data</td></tr>';
+                        }
                     }
                 })
                 .catch(err => console.error(err));
@@ -119,6 +187,11 @@
         function renderTable(scales) {
             const tbody = document.getElementById('gradingTableBody');
             tbody.innerHTML = '';
+
+            if (!scales || scales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No grading scales found</td></tr>';
+                return;
+            }
 
             scales.forEach(scale => {
                 const tr = document.createElement('tr');
@@ -162,6 +235,11 @@
         function handleGradingSubmit(e) {
             e.preventDefault();
 
+            if (isSuperAdmin && !currentSchoolId) {
+                alert('Please select a school first.');
+                return;
+            }
+
             const id = document.getElementById('gradeId').value;
             const data = {
                 grade_label: document.getElementById('gradeLabel').value,
@@ -170,6 +248,10 @@
                 remark: document.getElementById('remark').value,
                 is_pass: document.getElementById('isPass').checked ? 1 : 0
             };
+
+            if (isSuperAdmin) {
+                data.school_id = currentSchoolId;
+            }
 
             const url = id ?
                 `/api/v1/grading-scales/${id}` :
@@ -191,7 +273,6 @@
                         if (modal) {
                             modal.hide();
                         } else {
-                            // Fallback if instance not found but it is open
                             const btnClose = modalEl.querySelector('.btn-close');
                             if (btnClose) btnClose.click();
                         }
@@ -234,5 +315,4 @@
                 .catch(err => console.error(err));
         }
     </script>
-@endsection
 @endsection
