@@ -158,6 +158,11 @@ Route::middleware(['auth'])->group(function () {
         // Settings
         Route::get('/settings', 'settingsIndex')->name('web.settings.index');
 
+        // Grading System
+        Route::get('/grading-scales', function () {
+            return view('dashboard.academic.grading.index');
+        })->name('web.grading.index');
+
         // Audit Logs (Admin only or super_admin)
         Route::get('/audit', function () {
             return view('audit.index');

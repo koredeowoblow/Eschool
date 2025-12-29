@@ -171,6 +171,13 @@ export default [
                 icon: 'bi bi-building',
                 roles: ['super_admin', 'school_admin']
             },
+            {
+                key: 'grading-scales',
+                label: 'Grading System',
+                icon: 'bi bi-percent',
+                path: '/grading-scales',
+                roles: ['super_admin', 'school_admin']
+            }
 
         ]
     }
