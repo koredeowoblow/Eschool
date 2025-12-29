@@ -5,21 +5,28 @@
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Grading System</h1>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#gradingModal"
-                onclick="resetForm()">
-                <i class="fas fa-plus"></i> Add Grading Scale
-            </button>
+            <h1 class="h3 mb-0 text-gray-800" style="color: #0d6efd !important;">Grading System</h1>
+            <div class="d-flex gap-2">
+                <div id="schoolSelectorRow" style="display: none; min-width: 250px;">
+                    <select class="form-select border-warning" id="schoolSelect" onchange="handleSchoolChange()">
+                        <option value="">-- Select School --</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-warning text-dark fw-bold shadow-sm" data-bs-toggle="modal"
+                    data-bs-target="#gradingModal" onclick="resetForm()">
+                    <i class="fas fa-plus"></i> Add Grading Scale
+                </button>
+            </div>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
+        <div class="card shadow mb-4 border-top-primary">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center bg-white">
                 <h6 class="m-0 font-weight-bold text-primary">Grading Scales</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="gradingTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered table-hover" id="gradingTable" width="100%" cellspacing="0">
+                        <thead class="bg-primary text-white">
                             <tr>
                                 <th>Grade</th>
                                 <th>Min Score</th>
@@ -38,22 +45,14 @@
         </div>
     </div>
 
-    <div class="row mb-4" id="schoolSelectorRow" style="display: none;">
-        <div class="col-md-4">
-            <label for="schoolSelect" class="form-label">Select School (Super Admin)</label>
-            <select class="form-select" id="schoolSelect" onchange="handleSchoolChange()">
-                <option value="">-- Select School --</option>
-            </select>
-        </div>
-    </div>
-
     <!-- Modal -->
     <div class="modal fade" id="gradingModal" tabindex="-1" aria-labelledby="gradingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="gradingModalLabel">Add Grading Scale</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form id="gradingForm" onsubmit="handleGradingSubmit(event)">
                     <div class="modal-body">
@@ -202,7 +201,7 @@
                 <td>${scale.remark || '-'}</td>
                 <td><span class="badge bg-${scale.is_pass ? 'success' : 'danger'}">${scale.is_pass ? 'Pass' : 'Fail'}</span></td>
                 <td>
-                    <button class="btn btn-sm btn-info" onclick="editGrade(${scale.id}, '${scale.grade_label}', ${scale.min_score}, ${scale.max_score}, '${scale.remark || ''}', ${scale.is_pass})">
+                    <button class="btn btn-sm btn-warning" onclick="editGrade(${scale.id}, '${scale.grade_label}', ${scale.min_score}, ${scale.max_score}, '${scale.remark || ''}', ${scale.is_pass})">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="deleteGrade(${scale.id})">
