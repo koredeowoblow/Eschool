@@ -750,8 +750,20 @@ body.sidebar-collapsed .admin-main {
 
 .bg-light-noise {
   background-color: var(--color-gray-50);
+  position: relative;
+}
+
+.bg-light-noise::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image: var(--bg-noise);
-  background-blend-mode: soft-light;
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* 
