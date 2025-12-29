@@ -176,7 +176,7 @@ const App = (() => {
 
     const createStatCard = (label, value, icon = 'bi-graph-up') => {
         const col = document.createElement('div');
-        col.className = 'col-12 col-sm-6 col-lg-4 mb-4 animate-in';
+        col.className = 'col-md-4 mb-4 animate-in';
 
         const card = document.createElement('div');
         card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3 transition-all-premium';
@@ -207,7 +207,7 @@ const App = (() => {
 
     const createStatSkeleton = () => {
         const col = document.createElement('div');
-        col.className = 'col-12 col-sm-6 col-lg-4 mb-4';
+        col.className = 'col-md-4 mb-4';
 
         const card = document.createElement('div');
         card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3';
