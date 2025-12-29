@@ -150,7 +150,7 @@
 
             <!-- Page Content -->
             <section class="admin-content flex-fill bg-light-noise">
-                <div class="container-fluid px-3 px-md-4 py-4">
+                <div class="container-xxl px-3 px-md-4 py-4">
                     @yield('content')
                 </div>
             </section>
