@@ -67,6 +67,48 @@
 
   --ui-card-bg: #ffffff;
   --ui-border: var(--color-gray-200);
+
+  /* Brand Utility Classes - Motivational Orange */
+  .text-brand-secondary {
+    color: var(--brand-secondary) !important;
+  }
+
+  .bg-brand-secondary {
+    background-color: var(--brand-secondary) !important;
+    color: white;
+  }
+
+  .bg-brand-secondary-subtle {
+    background-color: var(--color-orange-100) !important;
+    color: var(--color-orange-800) !important;
+  }
+
+  .border-brand-secondary {
+    border-color: var(--brand-secondary) !important;
+  }
+
+  .btn-brand-secondary {
+    background-color: var(--brand-secondary);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .btn-brand-secondary:hover {
+    background-color: var(--color-orange-600);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-brand-secondary:focus {
+    box-shadow: 0 0 0 3px var(--color-orange-200);
+  }
+
   --ui-text-primary: var(--color-gray-900);
   --ui-text-secondary: var(--color-gray-600);
   --ui-text-tertiary: var(--color-gray-500);
@@ -95,13 +137,13 @@
   /* Shadows - Sophisticated Natural Depth */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
-    0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-soft: 0 12px 24px -10px rgba(0, 0, 0, 0.08),
-    0 4px 12px -5px rgba(0, 0, 0, 0.02);
+  0 4px 12px -5px rgba(0, 0, 0, 0.02);
   --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 
   /* Texture & Effects */
@@ -129,6 +171,28 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
+
+  /* Bootstrap Overrides (Global) */
+  --bs-primary: var(--color-primary-600);
+  --bs-primary-rgb: 37,
+  99,
+  235;
+  /* #2563eb */
+  --bs-secondary: var(--color-gray-600);
+  /* Neutral Gray */
+  --bs-secondary-rgb: 71,
+  85,
+  105;
+  --bs-success: var(--color-success);
+  --bs-info: var(--color-info);
+  --bs-warning: var(--color-warning);
+  --bs-danger: var(--color-danger);
+  --bs-light: var(--color-gray-50);
+  --bs-dark: var(--color-gray-900);
+  --bs-body-bg: var(--ui-bg);
+  --bs-link-color: var(--color-primary-600);
+  --bs-link-hover-color: var(--color-primary-700);
+  --bs-focus-ring-color: var(--ui-focus-ring);
 }
 
 body {
@@ -330,13 +394,20 @@ body {
   cursor: pointer;
 }
 
-.nav-link-premium:hover,
+/* Sidebar Link Active State - Motivational Orange Emphasis */
 .nav-link-premium.active,
-.sidebar-link:hover,
 .sidebar-link.active {
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-700);
+  background-color: var(--color-orange-50) !important;
+  color: var(--color-orange-700) !important;
+  border-right: 3px solid var(--brand-secondary);
 }
+
+.nav-link-premium:hover,
+.sidebar-link:hover {
+  background-color: var(--color-orange-50);
+  color: var(--color-orange-600);
+}
+
 
 .nav-link-premium i,
 .sidebar-link i {

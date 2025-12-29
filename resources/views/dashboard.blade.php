@@ -66,7 +66,7 @@
                                 onclick="App.switchLinkStep(1)">
                                 Back
                             </button>
-                            <button type="button" class="btn btn-success w-50 py-2 fw-bold" onclick="App.verifyLinking()">
+                            <button type="button" class="btn btn-primary w-50 py-2 fw-bold" onclick="App.verifyLinking()">
                                 Verify & Link
                             </button>
                         </div>

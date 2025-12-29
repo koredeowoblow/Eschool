@@ -47,7 +47,7 @@
         <!-- Sidebar: Offcanvas on mobile, static on desktop -->
         <div class="offcanvas-lg offcanvas-start bg-white border-end" tabindex="-1" id="sidebarMenu">
             <div class="offcanvas-header border-bottom">
-                <h5 class="offcanvas-title fw-bold text-gradient">{{ config('app.name', 'eSchool') }}</h5>
+                <h5 class="offcanvas-title fw-bold text-primary">{{ config('app.name', 'eSchool') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                     data-bs-target="#sidebarMenu"></button>
             </div>
@@ -71,11 +71,11 @@
                     <a href="{{ route('dashboard') }}"
                         class="d-none d-md-flex align-items-center gap-2 text-decoration-none">
                         <i class="bi bi-mortarboard-fill text-primary fs-3"></i>
-                        <span class="fs-4 fw-bold text-gradient">{{ config('app.name', 'eSchool') }}</span>
+                        <span class="fs-4 fw-bold text-primary">{{ config('app.name', 'eSchool') }}</span>
                     </a>
                     <div class="vr d-none d-md-block"></div>
                     <div>
-                        <h5 class="m-0 fw-bold text-gradient">@yield('header_title', 'Dashboard')</h5>
+                        <h5 class="m-0 fw-bold text-primary">@yield('header_title', 'Dashboard')</h5>
                         <small class="text-muted d-none d-sm-block">Manage your school activities at a glance</small>
                     </div>
                 </div>
