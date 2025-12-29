@@ -58,46 +58,46 @@
         </div>
     </div>
 
-    <!-- Create Grade Modal -->
-    <div class="modal fade" id="createGradeModal" tabindex="-1">
+    <!-- Grading Modal -->
+    <div class="modal fade" id="gradingModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="createGradeForm" action="/api/v1/grading-system" method="POST"
-                    onsubmit="App.submitForm(event, reloadGradingSystem, 'grading', 'createGradeModal')">
-                    @csrf
+                <form id="gradingForm" onsubmit="handleGradingSubmit(event)">
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create Grade</h5>
+                        <h5 class="modal-title fw-bold" id="gradingModalLabel">Add Grading Scale</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
+                        <input type="hidden" id="gradeId">
+                        <input type="hidden" id="hiddenSchoolId">
+
                         <div class="mb-3">
                             <label class="form-label">Grade Name</label>
-                            <input type="text" name="grade" class="form-control" required placeholder="A, B, C">
+                            <input type="text" id="gradeLabel" class="form-control" required placeholder="A, B, C">
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Min Score</label>
-                                <input type="number" name="min_score" class="form-control" required>
+                                <input type="number" id="minScore" class="form-control" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Max Score</label>
-                                <input type="number" name="max_score" class="form-control" required>
+                                <input type="number" id="maxScore" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="mt-3">
                             <label class="form-label">Remark</label>
-                            <input type="text" name="remark" class="form-control">
+                            <input type="text" id="remark" class="form-control">
                         </div>
 
                         <div class="mt-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isPass" checked>
+                                <label class="form-check-label" for="isPass">Is Pass Grade?</label>
+                            </div>
                         </div>
 
                     </div>
@@ -151,6 +151,9 @@
             if (roles.includes('super_admin')) {
                 isSuperAdmin = true;
                 document.getElementById('schoolSelectorRow').style.display = 'block';
+                // Show explicit message for super admin
+                document.getElementById('gradingTableBody').innerHTML =
+                    '<tr><td colspan="6" class="text-center py-4 text-muted">Please select a school to view grading scales</td></tr>';
                 fetchSchools();
             } else {
                 fetchGradingScales();
@@ -183,12 +186,17 @@
                 .catch(err => console.error(err));
         }
 
-        function handleSchoolChange() {
-            currentSchoolId = document.getElementById('schoolSelect').value;
+        function handleSchoolChange(val) {
+            currentSchoolId = val;
+            // Update hidden input for usage in modal
+            const hiddenInput = document.getElementById('hiddenSchoolId');
+            if (hiddenInput) hiddenInput.value = val || '';
+
             if (currentSchoolId) {
                 fetchGradingScales();
             } else {
-                document.getElementById('gradingTableBody').innerHTML = '';
+                document.getElementById('gradingTableBody').innerHTML =
+                    '<tr><td colspan="6" class="text-center py-4 text-muted">Please select a school to view grading scales</td></tr>';
             }
         }
 
@@ -197,11 +205,12 @@
             if (isSuperAdmin && currentSchoolId) {
                 url += `?school_id=${currentSchoolId}`;
             } else if (isSuperAdmin && !currentSchoolId) {
-                // If super admin hasn't selected a school, don't fetch or fetch empty
-                document.getElementById('gradingTableBody').innerHTML =
-                    '<tr><td colspan="6" class="text-center">Select a school to view data</td></tr>';
                 return;
             }
+
+            // Loading State
+            document.getElementById('gradingTableBody').innerHTML =
+                '<tr><td colspan="6" class="text-center py-4">Loading...</td></tr>';
 
             fetch(url, {
                     headers: headers
@@ -212,13 +221,15 @@
                         renderTable(data.data);
                     } else {
                         console.error('Failed to fetch grading scales', data.message);
-                        if (isSuperAdmin && !currentSchoolId) {
-                            document.getElementById('gradingTableBody').innerHTML =
-                                '<tr><td colspan="6" class="text-center">Select a school to view data</td></tr>';
-                        }
+                        document.getElementById('gradingTableBody').innerHTML =
+                            '<tr><td colspan="6" class="text-center text-danger">Failed to load data</td></tr>';
                     }
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('gradingTableBody').innerHTML =
+                        '<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>';
+                });
         }
 
         function renderTable(scales) {
@@ -254,6 +265,9 @@
         function resetForm() {
             document.getElementById('gradingForm').reset();
             document.getElementById('gradeId').value = '';
+            // Ensure school ID is kept if set
+            const hiddenInput = document.getElementById('hiddenSchoolId');
+            if (hiddenInput) hiddenInput.value = currentSchoolId || '';
             document.getElementById('gradingModalLabel').innerText = 'Add Grading Scale';
         }
 
@@ -264,6 +278,10 @@
             document.getElementById('maxScore').value = max;
             document.getElementById('remark').value = remark;
             document.getElementById('isPass').checked = isPass;
+
+            const hiddenInput = document.getElementById('hiddenSchoolId');
+            if (hiddenInput) hiddenInput.value = currentSchoolId || '';
+
             document.getElementById('gradingModalLabel').innerText = 'Edit Grading Scale';
 
             new bootstrap.Modal(document.getElementById('gradingModal')).show();
