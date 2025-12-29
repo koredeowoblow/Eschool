@@ -7,7 +7,8 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <div
+                    class="card-header bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <h5 class="mb-0 fw-bold">School Roles</h5>
                     <button class="btn btn-primary" onclick="openCreateRoleModal()">
                         <i class="bi bi-plus-lg me-1"></i> Create Custom Role
@@ -108,13 +109,13 @@
                             <i class="bi bi-eye"></i>
                         </button>
                         ${!isCoreRole ? `
-                                    <button class="btn btn-sm btn-outline-warning" onclick="editRole(${role.id})">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteRole(${role.id}, '${role.name}')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                    ` : ''}
+                                        <button class="btn btn-sm btn-outline-warning" onclick="editRole(${role.id})">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRole(${role.id}, '${role.name}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        ` : ''}
                     </td>
                 </tr>
             `;
@@ -137,13 +138,13 @@
                 <div class="mb-3">
                     <h6 class="text-capitalize">${category}</h6>
                     ${perms.map(p => `
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="${p.name}" id="perm-${p.id}">
-                                        <label class="form-check-label" for="perm-${p.id}">
-                                            ${p.name}
-                                        </label>
-                                    </div>
-                                `).join('')}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="${p.name}" id="perm-${p.id}">
+                                            <label class="form-check-label" for="perm-${p.id}">
+                                                ${p.name}
+                                            </label>
+                                        </div>
+                                    `).join('')}
                 </div>
             `;
                 }

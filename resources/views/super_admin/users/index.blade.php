@@ -5,9 +5,9 @@
 
 @section('content')
     <div class="card-premium p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
             <h5 class="mb-0">All System Users</h5>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 w-100 w-md-auto">
                 <input type="text" class="form-control" placeholder="Search users...">
                 <button class="btn btn-light"><i class="bi bi-filter"></i></button>
             </div>

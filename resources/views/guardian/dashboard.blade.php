@@ -146,28 +146,30 @@
                 }
 
                 content.innerHTML = `
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Subject</th>
-                        <th>Assessment</th>
-                        <th>Marks</th>
-                        <th>Grade</th>
-                        <th>Remark</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${results.map(r => `
-                            <tr>
-                                <td>${r.assessment?.subject?.name || 'N/A'}</td>
-                                <td>${r.assessment?.name || 'N/A'}</td>
-                                <td>${r.marks_obtained}</td>
-                                <td><span class="badge bg-${getGradeColor(r.grade)}">${r.grade}</span></td>
-                                <td>${r.remark || '-'}</td>
-                            </tr>
-                        `).join('')}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Subject</th>
+                            <th>Assessment</th>
+                            <th>Marks</th>
+                            <th>Grade</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${results.map(r => `
+                                    <tr>
+                                        <td>${r.assessment?.subject?.name || 'N/A'}</td>
+                                        <td>${r.assessment?.name || 'N/A'}</td>
+                                        <td>${r.marks_obtained}</td>
+                                        <td><span class="badge bg-${getGradeColor(r.grade)}">${r.grade}</span></td>
+                                        <td>${r.remark || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
             } catch (error) {
                 console.error('Failed to load results:', error);
@@ -189,22 +191,24 @@
                 }
 
                 content.innerHTML = `
-            <table class="table table-sm">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${attendance.map(a => `
-                            <tr>
-                                <td>${new Date(a.date).toLocaleDateString()}</td>
-                                <td><span class="badge bg-${a.status === 'present' ? 'success' : 'danger'}">${a.status}</span></td>
-                            </tr>
-                        `).join('')}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${attendance.map(a => `
+                                    <tr>
+                                        <td>${new Date(a.date).toLocaleDateString()}</td>
+                                        <td><span class="badge bg-${a.status === 'present' ? 'success' : 'danger'}">${a.status}</span></td>
+                                    </tr>
+                                `).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
             } catch (error) {
                 console.error('Failed to load attendance:', error);
@@ -245,26 +249,28 @@
                     </div>
                 </div>
             </div>
-            <table class="table">
-                <thead class="table-light">
-                    <tr>
-                        <th>Invoice #</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.invoices.map(inv => `
-                            <tr>
-                                <td>${inv.id}</td>
-                                <td>$${parseFloat(inv.amount).toFixed(2)}</td>
-                                <td><span class="badge bg-${inv.status === 'paid' ? 'success' : 'warning'}">${inv.status}</span></td>
-                                <td>${new Date(inv.created_at).toLocaleDateString()}</td>
-                            </tr>
-                        `).join('')}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.invoices.map(inv => `
+                                    <tr>
+                                        <td>${inv.id}</td>
+                                        <td>$${parseFloat(inv.amount).toFixed(2)}</td>
+                                        <td><span class="badge bg-${inv.status === 'paid' ? 'success' : 'warning'}">${inv.status}</span></td>
+                                        <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                                    </tr>
+                                `).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
             } catch (error) {
                 console.error('Failed to load fees:', error);

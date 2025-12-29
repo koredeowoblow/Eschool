@@ -4,22 +4,26 @@
 @section('header_title', 'Library')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex gap-2">
-            <button class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createBookForm']);" data-bs-toggle="modal" data-bs-target="#createBookModal">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+        <div class="d-flex gap-2 w-100 w-md-auto">
+            <button class="btn btn-primary-premium flex-fill flex-md-grow-0"
+                onclick="App.resetForm(document.forms['createBookForm']);" data-bs-toggle="modal"
+                data-bs-target="#createBookModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Book
             </button>
-            <button class="btn btn-outline-secondary"><i class="bi bi-arrow-left-right me-1"></i> Borrow/Return</button>
+            <button class="btn btn-outline-secondary flex-fill flex-md-grow-0"><i class="bi bi-arrow-left-right me-1"></i>
+                Borrow/Return</button>
         </div>
-        <div class="w-25">
-             <input type="text" id="bookSearch" class="form-control" placeholder="Search books..." oninput="reloadBooks()">
+        <div class="w-100 w-md-25">
+            <input type="text" id="bookSearch" class="form-control" placeholder="Search books..."
+                oninput="reloadBooks()">
         </div>
     </div>
 
     <!-- Library Table -->
     <div class="card-premium">
         <div class="card-body p-0">
-             <div class="table-responsive">
+            <div class="table-responsive">
                 <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
                     <thead>
                         <tr>
@@ -42,14 +46,15 @@
     <div class="modal fade" id="createBookModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="createBookForm" action="/api/v1/library/books" method="POST" onsubmit="App.submitForm(event, reloadBooks, 'library', 'createBookModal')">
+                <form name="createBookForm" action="/api/v1/library/books" method="POST"
+                    onsubmit="App.submitForm(event, reloadBooks, 'library', 'createBookModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Add New Book</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                         <div class="mb-3">
+                        <div class="mb-3">
                             <label class="form-label">Title</label>
                             <input type="text" name="title" class="form-control" required>
                         </div>
@@ -81,14 +86,15 @@
     <div class="modal fade" id="editBookModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editBookForm" method="POST" onsubmit="App.submitForm(event, reloadBooks, 'library', 'editBookModal')">
+                <form id="editBookForm" method="POST"
+                    onsubmit="App.submitForm(event, reloadBooks, 'library', 'editBookModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Book</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                         <div class="mb-3">
+                        <div class="mb-3">
                             <label class="form-label">Title</label>
                             <input type="text" name="title" class="form-control" required>
                         </div>
@@ -118,23 +124,23 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Updated table type to 'library' to match renderer
-        App.renderTable('/api/v1/library/books', 'libraryTableBody', 'library');
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Updated table type to 'library' to match renderer
+            App.renderTable('/api/v1/library/books', 'libraryTableBody', 'library');
+        });
 
-    function reloadBooks() {
-        const query = document.getElementById('bookSearch').value;
-        App.renderTable('/api/v1/library/books?search=' + query, 'libraryTableBody', 'library');
-    }
+        function reloadBooks() {
+            const query = document.getElementById('bookSearch').value;
+            App.renderTable('/api/v1/library/books?search=' + query, 'libraryTableBody', 'library');
+        }
 
-    function editBook(book) {
-        const form = document.getElementById('editBookForm');
-        form.action = `/api/v1/library/books/${book.id}`;
-        App.populateForm(form, book);
-        const modal = new bootstrap.Modal(document.getElementById('editBookModal'));
-        modal.show();
-    }
-</script>
+        function editBook(book) {
+            const form = document.getElementById('editBookForm');
+            form.action = `/api/v1/library/books/${book.id}`;
+            App.populateForm(form, book);
+            const modal = new bootstrap.Modal(document.getElementById('editBookModal'));
+            modal.show();
+        }
+    </script>
 @endsection

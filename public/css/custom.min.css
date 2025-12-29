@@ -1282,6 +1282,11 @@ body.sidebar-collapsed .admin-main {
 .transition-transform-gpu {
   transition: transform 0.3s var(--ease-smooth);
   will-change: transform;
-  transform: translateZ(0);
   /* Force GPU composite layer */
+}
+
+@media (min-width: 768px) {
+  .w-md-auto {
+    width: auto !important;
+  }
 }

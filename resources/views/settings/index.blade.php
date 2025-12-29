@@ -29,7 +29,8 @@
     <div class="modal fade" id="createGradeModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createGradeForm" action="/api/v1/grades" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'createGradeModal')">
+                <form id="createGradeForm" action="/api/v1/grades" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'createGradeModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Grade</h5>
@@ -53,7 +54,8 @@
     <div class="modal fade" id="editGradeModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editGradeForm" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'editGradeModal')">
+                <form id="editGradeForm" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'editGradeModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Grade</h5>
@@ -78,7 +80,8 @@
     <div class="modal fade" id="createSectionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createSectionForm" action="/api/v1/sections" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'createSectionModal')">
+                <form id="createSectionForm" action="/api/v1/sections" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'createSectionModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Section</h5>
@@ -102,7 +105,8 @@
     <div class="modal fade" id="editSectionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editSectionForm" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'editSectionModal')">
+                <form id="editSectionForm" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'editSectionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Section</h5>
@@ -127,7 +131,8 @@
     <div class="modal fade" id="createSessionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createSessionForm" action="/api/v1/school-sessions" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'createSessionModal')">
+                <form id="createSessionForm" action="/api/v1/school-sessions" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'createSessionModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Session</h5>
@@ -151,7 +156,8 @@
     <div class="modal fade" id="editSessionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editSessionForm" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'editSessionModal')">
+                <form id="editSessionForm" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'editSessionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Session</h5>
@@ -176,7 +182,8 @@
     <div class="modal fade" id="createTermModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createTermForm" action="/api/v1/terms" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'createTermModal')">
+                <form id="createTermForm" action="/api/v1/terms" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'createTermModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Term</h5>
@@ -200,7 +207,8 @@
     <div class="modal fade" id="editTermModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editTermForm" method="POST" onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'editTermModal')">
+                <form id="editTermForm" method="POST"
+                    onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'editTermModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Term</h5>
@@ -225,7 +233,8 @@
     <div class="modal fade" id="createFeeTypeModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createFeeTypeForm" action="/api/v1/fee-types" method="POST" onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'createFeeTypeModal')">
+                <form id="createFeeTypeForm" action="/api/v1/fee-types" method="POST"
+                    onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'createFeeTypeModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Fee Type</h5>
@@ -249,7 +258,8 @@
     <div class="modal fade" id="editFeeTypeModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editFeeTypeForm" method="POST" onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'editFeeTypeModal')">
+                <form id="editFeeTypeForm" method="POST"
+                    onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'editFeeTypeModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Fee Type</h5>
@@ -274,7 +284,8 @@
     <div class="modal fade" id="createInvoiceItemModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="createInvoiceItemForm" action="/api/v1/invoice-items" method="POST" onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'createInvoiceItemModal')">
+                <form id="createInvoiceItemForm" action="/api/v1/invoice-items" method="POST"
+                    onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'createInvoiceItemModal')">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">New Invoice Item</h5>
@@ -298,7 +309,8 @@
     <div class="modal fade" id="editInvoiceItemModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editInvoiceItemForm" method="POST" onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'editInvoiceItemModal')">
+                <form id="editInvoiceItemForm" method="POST"
+                    onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'editInvoiceItemModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold">Edit Invoice Item</h5>
@@ -321,22 +333,22 @@
 @endsection
 
 @section('scripts')
-<script>
-    function openSettingsPanel(type) {
-        if (type === 'academic') {
-            renderAcademicTables();
-        } else if (type === 'fees') {
-            renderFeeSettings();
+    <script>
+        function openSettingsPanel(type) {
+            if (type === 'academic') {
+                renderAcademicTables();
+            } else if (type === 'fees') {
+                renderFeeSettings();
+            }
         }
-    }
 
-    function renderAcademicTables() {
-        const container = document.getElementById('settingsDetail');
-        container.innerHTML = `
+        function renderAcademicTables() {
+            const container = document.getElementById('settingsDetail');
+            container.innerHTML = `
             <div class="card-premium">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <h6 class="mb-0 fw-bold">Grades</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createGradeModal">New Grade</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createGradeModal">New Grade</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -351,9 +363,9 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex justify-content-between align-items-center border-top">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
                     <h6 class="mb-0 fw-bold">Sections</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createSectionModal">New Section</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSectionModal">New Section</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -368,9 +380,9 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex justify-content-between align-items-center border-top">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
                     <h6 class="mb-0 fw-bold">Sessions</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createSessionModal">New Session</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSessionModal">New Session</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -385,9 +397,9 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex justify-content-between align-items-center border-top">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
                     <h6 class="mb-0 fw-bold">Terms</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createTermModal">New Term</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createTermModal">New Term</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -404,19 +416,19 @@
                 </div>
             </div>`;
 
-        App.renderTable('/api/v1/grades', 'gradesTableBody', 'grade');
-        App.renderTable('/api/v1/sections', 'sectionsTableBody', 'section');
-        App.renderTable('/api/v1/school-sessions', 'sessionsTableBody', 'session');
-        App.renderTable('/api/v1/terms', 'termsTableBody', 'term');
-    }
+            App.renderTable('/api/v1/grades', 'gradesTableBody', 'grade');
+            App.renderTable('/api/v1/sections', 'sectionsTableBody', 'section');
+            App.renderTable('/api/v1/school-sessions', 'sessionsTableBody', 'session');
+            App.renderTable('/api/v1/terms', 'termsTableBody', 'term');
+        }
 
-    function renderFeeSettings() {
-        const container = document.getElementById('settingsDetail');
-        container.innerHTML = `
+        function renderFeeSettings() {
+            const container = document.getElementById('settingsDetail');
+            container.innerHTML = `
             <div class="card-premium">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                     <h6 class="mb-0 fw-bold">Fee Types</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createFeeTypeModal">New Fee Type</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createFeeTypeModal">New Fee Type</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -431,9 +443,9 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex justify-content-between align-items-center border-top">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
                     <h6 class="mb-0 fw-bold">Invoice Items</h6>
-                    <button class="btn btn-sm btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createInvoiceItemModal">New Invoice Item</button>
+                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createInvoiceItemModal">New Invoice Item</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -450,74 +462,74 @@
                 </div>
             </div>`;
 
-        App.renderTable('/api/v1/fee-types', 'feeTypesTableBody', 'feeType');
-        App.renderTable('/api/v1/invoice-items', 'invoiceItemsTableBody', 'invoiceItem');
-    }
+            App.renderTable('/api/v1/fee-types', 'feeTypesTableBody', 'feeType');
+            App.renderTable('/api/v1/invoice-items', 'invoiceItemsTableBody', 'invoiceItem');
+        }
 
-    function editGrade(data) {
-        const form = document.getElementById('editGradeForm');
-        form.action = `/api/v1/grades/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editGradeModal')).show();
-    }
+        function editGrade(data) {
+            const form = document.getElementById('editGradeForm');
+            form.action = `/api/v1/grades/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editGradeModal')).show();
+        }
 
-    function editSection(data) {
-        const form = document.getElementById('editSectionForm');
-        form.action = `/api/v1/sections/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editSectionModal')).show();
-    }
+        function editSection(data) {
+            const form = document.getElementById('editSectionForm');
+            form.action = `/api/v1/sections/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editSectionModal')).show();
+        }
 
-    function editSession(data) {
-        const form = document.getElementById('editSessionForm');
-        form.action = `/api/v1/school-sessions/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editSessionModal')).show();
-    }
+        function editSession(data) {
+            const form = document.getElementById('editSessionForm');
+            form.action = `/api/v1/school-sessions/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editSessionModal')).show();
+        }
 
-    function editTerm(data) {
-        const form = document.getElementById('editTermForm');
-        form.action = `/api/v1/terms/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editTermModal')).show();
-    }
+        function editTerm(data) {
+            const form = document.getElementById('editTermForm');
+            form.action = `/api/v1/terms/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editTermModal')).show();
+        }
 
-    function editFeeType(data) {
-        const form = document.getElementById('editFeeTypeForm');
-        form.action = `/api/v1/fee-types/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editFeeTypeModal')).show();
-    }
+        function editFeeType(data) {
+            const form = document.getElementById('editFeeTypeForm');
+            form.action = `/api/v1/fee-types/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editFeeTypeModal')).show();
+        }
 
-    function editInvoiceItem(data) {
-        const form = document.getElementById('editInvoiceItemForm');
-        form.action = `/api/v1/invoice-items/${data.id}`;
-        App.populateForm(form, data);
-        new bootstrap.Modal(document.getElementById('editInvoiceItemModal')).show();
-    }
+        function editInvoiceItem(data) {
+            const form = document.getElementById('editInvoiceItemForm');
+            form.action = `/api/v1/invoice-items/${data.id}`;
+            App.populateForm(form, data);
+            new bootstrap.Modal(document.getElementById('editInvoiceItemModal')).show();
+        }
 
-    function deleteGrade(id) {
-		App.deleteItem(`/api/v1/grades/${id}`, renderAcademicTables);
-    }
+        function deleteGrade(id) {
+            App.deleteItem(`/api/v1/grades/${id}`, renderAcademicTables);
+        }
 
-    function deleteSection(id) {
-		App.deleteItem(`/api/v1/sections/${id}`, renderAcademicTables);
-    }
+        function deleteSection(id) {
+            App.deleteItem(`/api/v1/sections/${id}`, renderAcademicTables);
+        }
 
-    function deleteSession(id) {
-		App.deleteItem(`/api/v1/school-sessions/${id}`, renderAcademicTables);
-    }
+        function deleteSession(id) {
+            App.deleteItem(`/api/v1/school-sessions/${id}`, renderAcademicTables);
+        }
 
-    function deleteTerm(id) {
-		App.deleteItem(`/api/v1/terms/${id}`, renderAcademicTables);
-    }
+        function deleteTerm(id) {
+            App.deleteItem(`/api/v1/terms/${id}`, renderAcademicTables);
+        }
 
-    function deleteFeeType(id) {
-		App.deleteItem(`/api/v1/fee-types/${id}`, renderFeeSettings);
-    }
+        function deleteFeeType(id) {
+            App.deleteItem(`/api/v1/fee-types/${id}`, renderFeeSettings);
+        }
 
-    function deleteInvoiceItem(id) {
-        App.deleteItem(`/api/v1/invoice-items/${id}`, renderFeeSettings);
-    }
-</script>
+        function deleteInvoiceItem(id) {
+            App.deleteItem(`/api/v1/invoice-items/${id}`, renderFeeSettings);
+        }
+    </script>
 @endsection

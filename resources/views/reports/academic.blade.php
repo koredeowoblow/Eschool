@@ -65,10 +65,10 @@
             </div>
 
             <div class="card-premium p-4 d-none" id="broadsheetPanel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
                     <h5 class="mb-0" id="broadsheetTitle">Academic Broadsheet</h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-soft-primary" onclick="window.print()">
+                    <div class="d-flex gap-2 w-100 w-md-auto">
+                        <button class="btn btn-sm btn-soft-primary w-100 w-md-auto" onclick="window.print()">
                             <i class="bi bi-printer me-2"></i>Print
                         </button>
                     </div>

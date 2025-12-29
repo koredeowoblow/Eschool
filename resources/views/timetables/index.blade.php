@@ -4,14 +4,15 @@
 @section('header_title', 'Class Schedules')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex gap-2">
-            <select id="classSelect" class="form-select" style="width: 200px;" onchange="loadTimetable()">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+        <div class="d-flex gap-2 w-100 w-md-auto">
+            <select id="classSelect" class="form-select w-100 w-md-auto" style="min-width: 200px;" onchange="loadTimetable()">
                 <option value="">Loading...</option>
             </select>
         </div>
         @hasrole('super_admin|School Admin|Teacher')
-            <button type="button" class="btn btn-primary-premium" data-bs-toggle="modal" data-bs-target="#createSlotModal">
+            <button type="button" class="btn btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal"
+                data-bs-target="#createSlotModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Slot
             </button>
         @endhasrole

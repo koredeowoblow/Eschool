@@ -62,9 +62,9 @@
         <main class="admin-main flex-fill d-flex flex-column">
 
             <!-- Top Bar -->
-            <header class="admin-header glass-effect d-flex align-items-center justify-content-between px-4">
-                <div class="d-flex align-items-center gap-3">
-                    <button id="sidebarToggle" class="btn btn-link p-0 text-dark me-3 d-lg-none"
+            <header class="admin-header glass-effect d-flex align-items-center justify-content-between px-3 px-md-4">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <button id="sidebarToggle" class="btn btn-link p-0 text-dark me-2 me-md-3 d-lg-none"
                         data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
                         <i class="bi bi-list fs-2"></i>
                     </button>

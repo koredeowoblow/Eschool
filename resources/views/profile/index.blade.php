@@ -25,7 +25,7 @@
                 <p class="text-muted mb-3">
                     <i class="bi bi-envelope me-1"></i>{{ $user->email }}
                 </p>
-                <div class="d-flex justify-content-center gap-2 mb-3">
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
                     @foreach ($user->roles as $role)
                         <span class="badge bg-primary-subtle text-primary px-3 py-2">
                             {{ ucfirst(str_replace('_', ' ', $role->name)) }}

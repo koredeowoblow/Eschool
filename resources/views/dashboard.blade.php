@@ -5,10 +5,10 @@
 
 @section('content')
     <!-- Header Actions -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <h2 class="h4 fw-bold text-dark mb-0">Dashboard Overview</h2>
-        <button class="btn btn-primary-premium d-flex align-items-center gap-2" data-bs-toggle="modal"
-            data-bs-target="#linkAccountModal">
+        <button class="btn btn-primary-premium w-100 w-md-auto d-flex align-items-center justify-content-center gap-2"
+            data-bs-toggle="modal" data-bs-target="#linkAccountModal">
             <i class="bi bi-link-45deg fs-5"></i>
             <span>Link Account</span>
         </button>

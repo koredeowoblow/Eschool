@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
                 <h4 class="mb-0 fw-bold text-gradient">System Jobs</h4>
                 <button class="btn btn-primary-premium" onclick="retryAllJobs()">
                     <i class="bi bi-arrow-clockwise me-2"></i> Retry All
