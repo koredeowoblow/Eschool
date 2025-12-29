@@ -10,13 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-        }
-
-        body {
-            background: #f8fafc;
+        <style>body {
+            background: var(--ui-bg, #f8fafc);
             min-height: 100vh;
             font-family: 'Outfit', sans-serif;
             position: relative;
@@ -31,36 +26,40 @@
             right: 0;
             bottom: 0;
             background-image:
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.10) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.10) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.08) 0px, transparent 50%);
             z-index: -1;
             pointer-events: none;
         }
 
         .login-card {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 1rem;
         }
 
         .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+            border-color: var(--color-orange-400);
+            box-shadow: 0 0 0 4px var(--ui-focus-ring);
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--color-primary-600);
+            /* Trust Blue */
             border: none;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+            transition: all 0.2s;
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
+            background: var(--color-primary-500);
             transform: translateY(-1px);
         }
 
         .text-primary {
-            color: var(--primary) !important;
+            color: var(--color-primary-600) !important;
         }
     </style>
 </head>

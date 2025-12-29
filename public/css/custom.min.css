@@ -5,38 +5,40 @@
  */
 
 :root {
-  /* Primary - Deep Indigo & Vibrant Accents (Human-Picked Palette) */
-  --color-primary-50: #f5f7ff;
-  --color-primary-100: #ebf0fe;
-  --color-primary-200: #ced9fb;
-  --color-primary-300: #a3b6f8;
-  --color-primary-400: #7189f2;
-  --color-primary-500: #4f46e5;
-  /* The "Brand" Indigo */
-  --color-primary-600: #4338ca;
-  --color-primary-700: #3730a3;
-  --color-primary-800: #1e1b4b;
-  --color-primary-900: #0f172a;
-  /* Deep Navy */
+  /* Primary - Trust Blue (Action, Commitment, Clarity) */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  /* Trust Base */
+  --color-primary-600: #2563eb;
+  /* Commitment/Hover */
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
-  /* Neutral Grays - Clean Slate Scale */
-  --color-gray-50: #f8fafc;
-  --color-gray-100: #f1f5f9;
-  --color-gray-200: #e2e8f0;
-  --color-gray-300: #cbd5e1;
-  --color-gray-400: #94a3b8;
-  --color-gray-500: #64748b;
-  --color-gray-600: #475569;
-  --color-gray-700: #334155;
-  --color-gray-800: #1e293b;
-  --color-gray-900: #0f172a;
+  /* Secondary - Motivational Orange (Support, Focus, Emphasis) */
+  /* NOT for Error/Destructive */
+  --color-orange-50: #fff7ed;
+  --color-orange-100: #ffedd5;
+  --color-orange-200: #fed7aa;
+  --color-orange-300: #fdba74;
+  --color-orange-400: #fb923c;
+  --color-orange-500: #f97316;
+  /* Motivation Base */
+  --color-orange-600: #ea580c;
+  --color-orange-700: #c2410c;
+  --color-orange-800: #9a3412;
+  --color-orange-900: #7c2d12;
 
-  /* Semantic Colors - Sophisticated & Muted */
+  /* Semantic Colors */
   --color-success: #059669;
   /* Emerald 600 */
   --color-success-light: #ecfdf5;
-  --color-warning: #d97706;
-  /* Amber 600 */
+  --color-warning: #f59e0b;
+  /* Amber 500 - Keep for actual Warnings, distinct from Orange? User said "Do not use orange for destructive states, warnings". So keep Warning as Amber/Yellow, Orange is for Support. */
   --color-warning-light: #fffbeb;
   --color-danger: #dc2626;
   /* Red 600 */
@@ -46,17 +48,22 @@
   --color-info-light: #ecfeff;
 
   /* Brand Aliases */
-  --brand-primary: var(--color-primary-500);
-  --brand-secondary: var(--color-gray-800);
+  --brand-primary: var(--color-primary-600);
+  /* Stronger Commitment Blue */
+  --brand-secondary: var(--color-orange-500);
+  /* Motivational Orange */
+  --brand-support: var(--color-orange-500);
   --brand-accent: var(--color-info);
   --brand-danger: var(--color-danger);
   --brand-warning: var(--color-warning);
   --brand-success: var(--color-success);
-  --brand-dark: var(--color-gray-900);
-  --brand-light: var(--color-gray-50);
 
-  /* UI Colors */
-  --ui-bg: var(--color-gray-50);
+  /* UI Roles */
+  --ui-focus-ring: rgba(249, 115, 22, 0.4);
+  /* Orange Focus */
+  --ui-bg: #f8fafc;
+  /* Clean Slate 50 */
+
   --ui-card-bg: #ffffff;
   --ui-border: var(--color-gray-200);
   --ui-text-primary: var(--color-gray-900);
@@ -86,10 +93,14 @@
 
   /* Shadows - Sophisticated Natural Depth */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-  --shadow-soft: 0 12px 24px -10px rgba(0, 0, 0, 0.08), 0 4px 12px -5px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-soft: 0 12px 24px -10px rgba(0, 0, 0, 0.08),
+    0 4px 12px -5px rgba(0, 0, 0, 0.02);
   --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 
   /* Texture & Effects */
@@ -128,8 +139,8 @@ body {
   line-height: 1.6;
 }
 
-/*
- * Layout Structure
+/* 
+ * Layout Structure 
  */
 .admin-wrapper {
   display: flex;
@@ -209,8 +220,8 @@ body {
   background-attachment: local;
 }
 
-/*
- * Components
+/* 
+ * Components 
  */
 .card-premium {
   background: var(--surface-base);
@@ -352,12 +363,12 @@ body {
   color: var(--color-primary-700);
 }
 
-/*
+/* 
 flex-grow: 1;
 } */
 
-/*
- * Collapsed Sidebar State (Desktop)
+/* 
+ * Collapsed Sidebar State (Desktop) 
  */
 body.sidebar-collapsed .admin-sidebar {
   width: 70px;
@@ -412,8 +423,8 @@ body.sidebar-collapsed .admin-main {
   border-radius: 4px;
 }
 
-/*
- * Tables & Responsiveness
+/* 
+ * Tables & Responsiveness 
  */
 .table-premium th {
   background-color: var(--color-gray-50);
@@ -540,8 +551,8 @@ body.sidebar-collapsed .admin-main {
   -webkit-text-fill-color: transparent;
 }
 
-/*
- * Timetable Calendar Grid Layout
+/* 
+ * Timetable Calendar Grid Layout 
  */
 .timetable-grid {
   display: grid;
@@ -671,8 +682,8 @@ body.sidebar-collapsed .admin-main {
   background-blend-mode: soft-light;
 }
 
-/*
- * Entry Animations
+/* 
+ * Entry Animations 
  */
 .animate-in {
   animation: fadeInUp 0.5s var(--ease-out-expo) both;
@@ -751,8 +762,8 @@ body.sidebar-collapsed .admin-main {
   }
 }
 
-/*
- * Modern Messaging Interface
+/* 
+ * Modern Messaging Interface 
  */
 .messaging-container {
   display: grid;

@@ -55,8 +55,10 @@
         }
 
         .form-floating>.form-control:focus {
-            border-color: var(--color-primary-400, #3b82f6);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            border-color: var(--color-orange-400);
+            /* Motivational Orange Border */
+            box-shadow: 0 0 0 4px var(--ui-focus-ring);
+            /* Orange Ring */
         }
 
         .form-floating>label {
@@ -281,7 +283,7 @@
                                     <p class="text-muted">
                                         Already have an account? <a href="{{ route('login') }}"
                                             class="fw-bold text-decoration-none"
-                                            style="color: var(--color-primary-600);">Login Here</a>
+                                            style="color: var(--color-orange-600);">Login Here</a>
                                     </p>
                                 </div>
                             </div>
