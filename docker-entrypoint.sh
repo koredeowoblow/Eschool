@@ -27,14 +27,14 @@ fi
 export DB_CONNECTION=sqlite
 export DB_DATABASE="$DB_PATH"
 
+echo "Running migrations..."
+php artisan migrate --force
+
 echo "Clearing and caching app config..."
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-
-echo "Running migrations..."
-php artisan migrate --force
 
 echo "Starting Supervisor..."
 exec supervisord -n -c /etc/supervisor/conf.d/supervisor.conf
