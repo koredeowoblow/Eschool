@@ -1,0 +1,140 @@
+# View to API Mappings
+
+This document maps each Blade view to its primary UI components, specific API endpoints, and the **form data structures** required for operations.
+
+> [!NOTE]
+> All views follow a consistent pattern:
+> - **App.renderTable**: For initial data loading and search/filtering.
+> - **App.loadOptions**: For fetching dropdown data in modals.
+> - **App.submitForm**: For creating and updating records.
+
+---
+
+## 1. Core People Management
+
+### Students (`students.index`)
+- **API**: `GET /api/v1/students`, `POST /api/v1/students`, `PUT /api/v1/students/{id}`
+- **Payload**: `name`, `email`, `gender`, `date_of_birth`, `admission_number`, `admission_date`, `class_id`, `section_id`, `school_session_id`, `term_id`, `password`, `guardian[name]`, `guardian[email]`, `guardian[relation]`, `guardian[occupation]`, `guardian[password]`, `guardian_id` (optional lookup for existing guardian)
+- **Edit Only**: `status`
+
+### Teachers (`teachers.index`)
+- **API**: `GET /api/v1/teachers`, `POST /api/v1/teachers`, `PUT /api/v1/teachers/{id}`
+- **Payload**: `name`, `email`, `phone`, `employee_number`, `hire_date`, `qualification`, `department`, `bio`
+- **Edit Only**: `status`, `user_id`
+
+### Guardians (`guardians.index`)
+- **API**: `GET /api/v1/guardians`, `POST /api/v1/guardians`, `PUT /api/v1/guardians/{id}`
+- **Payload**: `name`, `email`, `phone`, `relation`, `occupation`, `role` (fixed value: "guardian")
+
+---
+
+## 2. Academic Infrastructure
+
+### Classes (`classes.index`)
+- **API**: `GET /api/v1/classes`, `POST /api/v1/classes`, `PUT /api/v1/classes/{id}`
+- **Payload**: `name`, `section_id`, `session_id`, `term_id`, `class_teacher_id`
+- **Subject Assignment**: `POST /api/v1/teacher-subjects` with `class_id`, `subject_id`, `teacher_id`
+
+### Subjects (`subjects.index`)
+- **API**: `GET /api/v1/subjects`, `POST /api/v1/subjects`, `PUT /api/v1/subjects/{id}`
+- **Payload**: `name`, `code`
+
+### Enrollments (`enrollments.index`)
+- **API**: `GET /api/v1/enrollments`, `POST /api/v1/enrollments`, `PUT /api/v1/enrollments/{id}`
+- **Payload**: `student_id`, `grade_id`, `session_id`, `term_id`
+
+---
+
+## 3. Learning Management
+
+### Assessments (`assessments.index`)
+- **API**: `GET /api/v1/assessments`, `POST /api/v1/assessments`, `PUT /api/v1/assessments/{id}`
+- **Payload**: `title`, `class_room_id`, `term_id`, `max_score`
+
+### Assignments (`assignments.index`)
+- **API**: `GET /api/v1/assignments`, `POST /api/v1/assignments`, `PUT /api/v1/assignments/{id}`
+- **Payload**: `title`, `class_id`, `subject_id`, `due_date`, `status`, `description`
+- **Submission**: `POST /api/v1/assignment-submissions` with `assignment_id`, `answer`, `file` (multipart)
+
+### Results (`results.index`)
+- **API**: `GET /api/v1/results`, `POST /api/v1/results`, `PUT /api/v1/results/{id}`
+- **Payload**: `student_id`, `assessment_id`, `marks_obtained`, `grade`, `remark`
+
+### Lesson Notes (`lesson-notes.index`)
+- **API**: `GET /api/v1/lesson-notes`, `POST /api/v1/lesson-notes`, `PUT /api/v1/lesson-notes/{id}`
+- **Payload**: `title`, `class_room_id`, `subject_id`, [date](file:///C:/Users/pc/Videos/eschool1/app/Http/Controllers/Assignment/ResultController.php#40-45), `content`
+
+---
+
+## 4. Finance Module
+
+### Fees (`fees.index`)
+- **API**: `POST /api/v1/fees`, `PUT /api/v1/fees/{id}`
+- **Payload**: `title`, `amount`, `fee_type`, `session_id`, `term_id`, `class_id`, `due_date`, `is_mandatory` (0/1), `description`
+
+### Invoices (`invoices.index`)
+- **API**: `GET /api/v1/invoices`, `POST /api/v1/invoices`
+- **Payload**: `student_id`, `due_date`, `session_id`, `term_id`, `items[index][name]`, `items[index][amount]`, `notes`
+- **Actions**: `POST /api/v1/invoices/bulk-generate`, `POST /api/v1/invoices/{id}/mark-as-paid`
+
+### Payments (`payments.index`)
+- **API**: `GET /api/v1/payments`, `POST /api/v1/payments`
+- **Payload**: `student_id`, `amount`, `payment_date`, `method`, `type` (Fee Type)
+- **Verify**: `POST /api/v1/payments/{id}/verify`
+
+---
+
+## 5. System & Settings
+
+### General Settings (`settings.index`)
+This view manages core academic and financial lookup data via modals.
+- **Grades**: `POST/PUT /api/v1/grades` (Payload: `name`)
+- **Sections**: `POST/PUT /api/v1/sections` (Payload: `name`)
+- **Sessions**: `POST/PUT /api/v1/school-sessions` (Payload: `name`)
+- **Terms**: `POST/PUT /api/v1/terms` (Payload: `name`)
+- **Fee Types**: `POST/PUT /api/v1/fee-types` (Payload: `name`)
+- **Invoice Items**: `POST/PUT /api/v1/invoice-items` (Payload: `description`)
+
+### Staff Management (`staff.index`)
+- **API**: `GET /api/v1/staff`, `POST /api/v1/staff`, `PUT /api/v1/staff/{id}`
+- **Payload**: `name`, `role` (Finance Officer, Exams Officer, School Admin), `email`, `phone`, `password`, `status`
+
+### User Profile (`profile`)
+- **Update Info**: `PUT /api/v1/profile` (Payload: `name`, `email`, `phone`, `gender`, `date_of_birth`)
+- **Update Address**: `PUT /api/v1/profile` (Payload: `address`, `city`, `state`, `zip`, `country`)
+- **Update Password**: `PUT /api/v1/profile/password` (Payload: `current_password`, `password`, `password_confirmation`)
+
+---
+
+## 6. Communication & Utilities
+
+### Messaging (`chats.index`)
+- **Conversations**: `GET /api/v1/chats`
+- **Send Message**: `POST /api/v1/chats` (Payload: `receiver_id`, `message`)
+- **Mark Read**: `PATCH /api/v1/chats/mark-as-read` (Payload: `partner_id`)
+- **Contacts**: `GET /api/v1/chats/available-contacts`
+
+### Timetables (`timetables.index`)
+- **Fetch**: `GET /api/v1/timetables?class_id={id}`
+- **Add Slot**: `POST /api/v1/timetables` (Payload: `class_room_id`, `subject_id`, `day`, `start_time`, `end_time`)
+
+### Attachments (`attachments.index`)
+- **Upload**: `POST /api/v1/attachments` (Payload: `file`, `type`, `related_id`)
+- **Update Meta**: `PUT /api/v1/attachments/{id}` (Payload: `type`, `related_id`)
+
+---
+
+## 7. Reporting & Audit
+
+### Academic Reports (`reports.academic`)
+- **Collate**: `POST /api/v1/reports/collate` (Payload: `session_id`, `term_id`, `class_id`)
+- **Broadsheet**: `GET /api/v1/reports/broadsheet?session_id={id}&term_id={id}&class_id={id}`
+- **Missing Marks**: `GET /api/v1/reports/missing?session_id={id}&term_id={id}&class_id={id}`
+
+### Audit Logs (`audit`)
+- **Fetch**: `GET /api/v1/audit?page={n}&entity={type}&action={a}`
+- **Details**: `GET /api/v1/audit/{id}`
+
+### Dashboard (`dashboard.index`)
+- **Stats**: `GET /api/v1/dashboard/stats`
+- **Account Linking**: `POST /api/v1/account/link/initiate`, `POST /api/v1/account/link/verify`

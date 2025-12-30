@@ -13,28 +13,16 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Create SQLite DB
-RUN mkdir -p database \
-    && touch database/database.sqlite \
-    && chmod 775 database/database.sqlite
+# Do NOT create or migrate DB during build
+# DB must live on persistent disk at runtime
 
-# Run migrations and seeds during build
-# We set DB_CONNECTION=sqlite to ensure it uses the file we just created
-# We use a dummy APP_KEY just for the build step (migrations don't strictly need it, but Laravel might check)
-RUN php artisan migrate --force --database=sqlite && \
-    php artisan db:seed --force --database=sqlite
-
-# Permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
-
-# Copy seeded DB as baseline
-RUN mkdir -p /var/www/seed \
-    && cp database/database.sqlite /var/www/seed/database.sqlite
 
 COPY nginx.conf /etc/nginx/sites-enabled/default
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 COPY docker-entrypoint.sh /usr/local/bin/
+
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80 8080

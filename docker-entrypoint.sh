@@ -1,36 +1,40 @@
 #!/bin/sh
 set -e
 
-echo "Fixing permissions..."
+DB_PATH="/var/data/database.sqlite"
+
+echo "Ensuring correct permissions..."
 chown -R www-data:www-data \
   /var/www/html/storage \
-  /var/www/html/bootstrap/cache \
-  /var/www/html/database
+  /var/www/html/bootstrap/cache
 
 chmod -R 775 \
   /var/www/html/storage \
-  /var/www/html/bootstrap/cache \
-  /var/www/html/database
+  /var/www/html/bootstrap/cache
 
-# Ensure SQLite DB exists
-if [ ! -s /var/www/html/database/database.sqlite ]; then
-  if [ -f /var/www/seed/database.sqlite ]; then
-    echo "Restoring database from build seed..."
-    cp /var/www/seed/database.sqlite /var/www/html/database/database.sqlite
-  else
-    echo "Creating empty SQLite database..."
-    touch /var/www/html/database/database.sqlite
-  fi
-
-  chmod 775 /var/www/html/database/database.sqlite
-  chown www-data:www-data /var/www/html/database/database.sqlite
+# Persistent SQLite disk
+if [ ! -s "$DB_PATH" ]; then
+  echo "Creating persistent SQLite database at $DB_PATH"
+  mkdir -p /var/data
+  touch "$DB_PATH"
+  chown www-data:www-data "$DB_PATH"
+  chmod 775 "$DB_PATH"
+else
+  echo "Using existing persistent SQLite database"
 fi
 
-echo "Caching configuration..."
+# Point Laravel to persistent DB
+export DB_CONNECTION=sqlite
+export DB_DATABASE="$DB_PATH"
+
+echo "Clearing and caching app config..."
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+echo "Running migrations..."
+php artisan migrate --force
 
 echo "Starting Supervisor..."
 exec supervisord -n -c /etc/supervisor/conf.d/supervisor.conf
