@@ -3,14 +3,18 @@ set -e
 
 DB_PATH="/var/data/database.sqlite"
 
+mkdir -p /var/data
+
 echo "Ensuring correct permissions..."
 chown -R www-data:www-data \
   /var/www/html/storage \
-  /var/www/html/bootstrap/cache
+  /var/www/html/bootstrap/cache \
+  /var/data
 
 chmod -R 775 \
   /var/www/html/storage \
-  /var/www/html/bootstrap/cache
+  /var/www/html/bootstrap/cache \
+  /var/data
 
 # Persistent SQLite disk
 if [ ! -s "$DB_PATH" ]; then
