@@ -46,7 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withBroadcasting(
         __DIR__ . '/../routes/channels.php',
-        ['middleware' => ['web', 'auth']],
+        ['middleware' => ['api', 'auth:sanctum'], 'prefix' => 'api/v1'],
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();

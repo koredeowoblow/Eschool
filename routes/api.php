@@ -24,6 +24,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // User info
     Route::get('/user', [AuthController::class, 'me'])->name('api.user');
 
+    // Notifications API
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\NotificationController::class, 'index'])->name('api.notifications.index');
+        Route::get('/unread', [\App\Http\Controllers\Api\NotificationController::class, 'unread'])->name('api.notifications.unread');
+        Route::post('/{id}/read', [\App\Http\Controllers\Api\NotificationController::class, 'markAsRead'])->name('api.notifications.read');
+        Route::post('/read-all', [\App\Http\Controllers\Api\NotificationController::class, 'markAllAsRead'])->name('api.notifications.read.all');
+        Route::delete('/{id}', [\App\Http\Controllers\Api\NotificationController::class, 'destroy'])->name('api.notifications.destroy');
+    });
+
     // Dashboard stats
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('api.dashboard.stats');
 
