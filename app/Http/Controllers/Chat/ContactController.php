@@ -14,7 +14,7 @@ class ContactController extends Controller
 {
     public function __construct(private ContactMessageService $service)
     {
-        $this->middleware('auth');
+        $this->middleware('auth:sanctum');
         // Allow broader read for admins; creation can be any authenticated user in school
         $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show', 'update', 'destroy']);
     }
