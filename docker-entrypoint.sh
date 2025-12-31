@@ -33,6 +33,7 @@ export DB_DATABASE="$DB_PATH"
 
 echo "Running migrations..."
 php artisan migrate --force
+php artisan db:seed --force
 
 echo "Clearing and caching app config..."
 php artisan optimize:clear
