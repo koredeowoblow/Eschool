@@ -4,7 +4,7 @@ use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Chat\ContactController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // // Chat
     Route::get('chats/available-contacts', [ChatController::class, 'availableContacts']);
     Route::get('chats', [ChatController::class, 'index']);

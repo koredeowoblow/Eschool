@@ -294,6 +294,7 @@
                 forceTLS: config.scheme === 'https',
                 enabledTransports: ['ws', 'wss'],
                 disableStats: true,
+                authEndpoint: '/api/v1/broadcasting/auth',
             });
         });
     </script>

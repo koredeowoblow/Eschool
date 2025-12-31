@@ -14,7 +14,7 @@ class ChatController extends Controller
 {
     public function __construct(private ChatService $service)
     {
-        $this->middleware('auth:sanctum');
+        $this->middleware('auth');
         $this->middleware('role:super_admin|School Admin|Teacher|Student');
     }
 
