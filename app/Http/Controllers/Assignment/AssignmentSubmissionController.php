@@ -13,7 +13,7 @@ class AssignmentSubmissionController extends Controller
     public function __construct(private AssignmentSubmissionService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show', 'store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher|Student')->only(['index', 'show', 'store', 'update', 'destroy']);
         $this->middleware('check.session')->only(['store', 'update', 'destroy']);
     }
 

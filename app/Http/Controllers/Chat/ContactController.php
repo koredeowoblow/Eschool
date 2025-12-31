@@ -16,7 +16,7 @@ class ContactController extends Controller
     {
         $this->middleware('auth:sanctum');
         // Allow broader read for admins; creation can be any authenticated user in school
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show', 'update', 'destroy']);
     }
 
     public function index(Request $request)

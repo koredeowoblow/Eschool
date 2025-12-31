@@ -16,6 +16,8 @@ class FinanceController extends Controller
     public function __construct(FinanceService $financeService)
     {
         $this->financeService = $financeService;
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Finance Officer');
     }
 
     public function index()

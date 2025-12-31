@@ -15,7 +15,7 @@ class LessonNoteController extends Controller
     public function __construct(private LessonNoteService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['index', 'show', 'store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show', 'store', 'update', 'destroy']);
     }
 
     public function index(Request $request)

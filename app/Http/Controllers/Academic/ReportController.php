@@ -11,7 +11,11 @@ use App\Http\Requests\Academic\ReportCollationRequest;
 
 class ReportController extends Controller
 {
-    public function __construct(protected ReportService $service) {}
+    public function __construct(protected ReportService $service)
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Exams Officer');
+    }
 
     /**
      * Trigger collation for a class.

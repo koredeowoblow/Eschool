@@ -13,8 +13,8 @@ class AttendanceController extends Controller
     public function __construct(private AttendanceService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index']);
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['store', 'update', 'destroy', 'show']);
+        $this->middleware('role:super_admin|School Admin|Teacher|Student')->only(['index']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['store', 'update', 'destroy', 'show']);
     }
 
     /**

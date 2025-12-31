@@ -7,6 +7,11 @@ use App\Helpers\ResponseHelper;
 
 class SettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function gradingScale()
     {
         // Standard Nigerian Grading Scale

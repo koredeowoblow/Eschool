@@ -14,6 +14,8 @@ class FeeController extends Controller
     public function __construct(FeeService $feeService)
     {
         $this->feeService = $feeService;
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Finance Officer');
     }
 
     /**

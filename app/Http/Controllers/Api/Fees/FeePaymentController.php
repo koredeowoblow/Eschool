@@ -19,6 +19,9 @@ class FeePaymentController extends Controller
     public function __construct(FeePaymentService $paymentService)
     {
         $this->paymentService = $paymentService;
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Finance Officer')->only(['index', 'store']);
+        $this->middleware('role:super_admin|School Admin|Finance Officer|Student|Guardian')->only(['outstandingFees']);
     }
 
     /**

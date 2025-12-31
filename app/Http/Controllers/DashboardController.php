@@ -11,7 +11,10 @@ use App\Helpers\ResponseHelper;
 
 class DashboardController extends Controller
 {
-    public function __construct(private DashboardService $dashboardService) {}
+    public function __construct(private DashboardService $dashboardService)
+    {
+        $this->middleware('auth:sanctum');
+    }
 
     public function index()
     {

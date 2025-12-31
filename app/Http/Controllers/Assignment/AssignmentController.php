@@ -13,8 +13,8 @@ class AssignmentController extends Controller
     public function __construct(private AssignmentService $service)
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|school_admin|teacher|student')->only(['index', 'show']);
-        $this->middleware('role:super_admin|school_admin|teacher')->only(['store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin|Teacher|Student')->only(['index', 'show']);
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['store', 'update', 'destroy']);
         $this->middleware('check.session')->only(['store', 'update', 'destroy']);
     }
 

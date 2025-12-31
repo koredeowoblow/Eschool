@@ -16,6 +16,9 @@ class GradingScaleController extends Controller
     public function __construct(GradingScaleService $gradingService)
     {
         $this->gradingService = $gradingService;
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Teacher')->only(['index']);
+        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy']);
     }
 
     public function index(Request $request)

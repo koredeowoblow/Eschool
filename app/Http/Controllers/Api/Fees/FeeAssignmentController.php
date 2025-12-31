@@ -16,6 +16,8 @@ class FeeAssignmentController extends Controller
     public function __construct(FeeAssignmentService $assignmentService)
     {
         $this->assignmentService = $assignmentService;
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:super_admin|School Admin|Finance Officer');
     }
 
     /**
