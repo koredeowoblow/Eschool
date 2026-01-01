@@ -9,7 +9,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Total Invoiced</h6>
+                    <h6 class="text-muted text-uppercase mb-2">Total Revenue</h6>
                     <h3 class="fw-bold text-primary" id="total-invoiced">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
@@ -19,7 +19,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Total Collected</h6>
+                    <h6 class="text-muted text-uppercase mb-2">Outstanding</h6>
                     <h3 class="fw-bold text-success" id="total-collected">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
@@ -29,7 +29,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Pending</h6>
+                    <h6 class="text-muted text-uppercase mb-2">Pending Invoices</h6>
                     <h3 class="fw-bold text-warning" id="pending">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
@@ -77,22 +77,18 @@
                 const data = response.data.data;
 
                 document.getElementById('total-invoiced').textContent =
-                    '$' + parseFloat(data.total_invoiced || 0).toLocaleString('en-US', {
+                    '$' + parseFloat(data.total_revenue || 0).toLocaleString('en-US', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     });
 
                 document.getElementById('total-collected').textContent =
-                    '$' + parseFloat(data.total_collected || 0).toLocaleString('en-US', {
+                    '$' + parseFloat(data.total_outstanding || 0).toLocaleString('en-US', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     });
 
-                document.getElementById('pending').textContent =
-                    '$' + parseFloat(data.pending || 0).toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
+                document.getElementById('pending').textContent = data.pending_invoices_count || 0;
 
             } catch (error) {
                 console.error('Failed to load finance data:', error);

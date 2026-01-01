@@ -29,7 +29,8 @@ class LibraryBorrowingRequest extends BaseRequest
         if ($this->isMethod('POST')) {
             return [
                 'book_id' => 'required|integer|exists:library_books,id',
-                'user_id' => $isStudent ? 'nullable' : 'required|uuid|exists:users,id',
+                'student_id' => 'nullable|integer|exists:students,id',
+                'user_id' => $isStudent ? 'nullable' : 'nullable|uuid|exists:users,id',
                 'borrowed_at' => 'nullable|date',
                 'due_date' => 'nullable|date|after_or_equal:borrowed_at',
                 'status' => $isStudent ? 'nullable' : 'nullable|in:borrowed,returned',

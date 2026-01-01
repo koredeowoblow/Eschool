@@ -202,4 +202,10 @@ class ViewController extends Controller
     {
         return view('staff.index');
     }
+
+    // Noticeboard
+    public function noticeboardIndex()
+    {
+        return view('noticeboard.index');
+    }
 }

@@ -21,7 +21,10 @@ class AttachmentRequest extends BaseRequest
     {
         if ($this->isMethod('POST')) {
             return [
-                'note_id' => 'required|integer|exists:lesson_notes,id',
+                'note_id' => 'required_without:class_id|nullable|integer|exists:lesson_notes,id',
+                'class_id' => 'required_without:note_id|nullable|uuid|exists:grade_levels,id',
+                'subject_id' => 'required_with:class_id|nullable|integer|exists:subjects,id',
+                'title' => 'required_with:class_id|nullable|string|max:255',
                 'file_path' => 'required|string',
                 'file_type' => 'required|string|max:100',
             ];
@@ -29,6 +32,7 @@ class AttachmentRequest extends BaseRequest
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return [
+                'title' => 'sometimes|string|max:255',
                 'file_path' => 'sometimes|string',
                 'file_type' => 'sometimes|string|max:100',
             ];

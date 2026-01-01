@@ -24,11 +24,14 @@ class AttendanceRequest extends BaseRequest
     {
         if ($this->isMethod('POST')) {
             return [
-                'student_id' => 'required|integer|exists:students,id',
-                'class_id' => 'required|integer|exists:class_rooms,id',
+                'student_id' => 'required|array',
+                'student_id.*' => 'integer|exists:students,id',
+                'class_id' => 'required|integer|exists:classes,id',
                 'date' => 'required|date',
-                'status' => 'required|string|in:present,absent,late,excused',
-                'remarks' => 'nullable|string'
+                'status' => 'required|array',
+                'status.*' => 'string|in:present,absent,late,excused,Present,Absent,Late,Excused',
+                'remarks' => 'nullable|array',
+                'remarks.*' => 'nullable|string'
             ];
         }
 

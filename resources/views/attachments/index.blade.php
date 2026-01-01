@@ -55,16 +55,30 @@
                             <input type="file" name="file" class="form-control" required>
                         </div>
                         <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Title / Description</label>
+                                <input type="text" name="title" class="form-control"
+                                    placeholder="e.g. Weekly Lesson Plan" required>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Type</label>
-                                <input type="text" name="type" class="form-control"
-                                    placeholder="e.g. assignment, lesson_note">
+                                <label class="form-label">Class (Optional)</label>
+                                <select name="class_id" id="create_attachment_class_id" class="form-select">
+                                    <option value="">Select Class</option>
+                                </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Related ID</label>
-                                <input type="number" name="related_id" class="form-control"
-                                    placeholder="Related record ID">
+                                <label class="form-label">Subject (Optional)</label>
+                                <select name="subject_id" id="create_attachment_subject_id" class="form-select">
+                                    <option value="">Select Subject</option>
+                                </select>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" name="type" class="form-control"
+                                placeholder="e.g. Lesson Note, Assignment">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -115,10 +129,16 @@
             App.renderTable('/api/v1/attachments', 'attachmentsTableBody', 'attachment');
         });
 
+        const createModal = document.getElementById('createAttachmentModal');
+        createModal.addEventListener('show.bs.modal', () => {
+            App.loadOptions('/api/v1/classes', 'create_attachment_class_id');
+            App.loadOptions('/api/v1/subjects', 'create_attachment_subject_id');
+        });
+
         function reloadAttachments() {
             const query = document.getElementById('attachmentSearch').value;
             App.renderTable('/api/v1/attachments?search=' + encodeURIComponent(query), 'attachmentsTableBody',
-            'attachment');
+                'attachment');
         }
 
         function editAttachment(data) {

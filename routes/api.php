@@ -42,6 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Secure File Upload
     Route::post('/upload', [\App\Http\Controllers\UploadController::class, 'store'])->name('api.upload');
 
+    // Noticeboard API
+    Route::get('/noticeboard', [\App\Http\Controllers\Api\NoticeboardController::class, 'index'])->name('api.noticeboard.index');
+    Route::post('/noticeboard', [\App\Http\Controllers\Api\NoticeboardController::class, 'store'])->name('api.noticeboard.store');
+
     // Finance API (Permission-protected)
     Route::prefix('finance')->middleware('permission:finance.view.reports')->group(function () {
         Route::get('/overview', [\App\Http\Controllers\Finance\FinanceController::class, 'index'])->name('api.finance.overview');

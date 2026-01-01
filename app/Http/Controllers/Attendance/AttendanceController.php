@@ -31,8 +31,23 @@ class AttendanceController extends Controller
      */
     public function store(AttendanceRequest $request)
     {
-        $record = $this->service->create($request->validated());
-        return ResponseHelper::success($record, 'Attendance created successfully', 201);
+        $data = $request->validated();
+        $classId = $data['class_id'];
+        $date = $data['date'];
+        $records = [];
+
+        foreach ($data['student_id'] as $index => $studentId) {
+            $recordData = [
+                'student_id' => $studentId,
+                'class_id' => $classId,
+                'date' => $date,
+                'status' => $data['status'][$index] ?? 'absent',
+                'remarks' => $data['remarks'][$index] ?? null,
+            ];
+            $records[] = $this->service->create($recordData);
+        }
+
+        return ResponseHelper::success($records, 'Attendance records created successfully', 201);
     }
 
     /**

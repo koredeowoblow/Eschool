@@ -113,14 +113,17 @@ class FinanceService
 
         $totalInvoiced = Invoice::where('school_id', $schoolId)->sum('amount');
         $totalCollected = Payment::where('school_id', $schoolId)->sum('amount');
-        $pending = $totalInvoiced - $totalCollected;
+        $pendingAmount = $totalInvoiced - $totalCollected;
+        $pendingInvoicesCount = Invoice::where('school_id', $schoolId)->where('status', '!=', 'paid')->count();
 
-        AuditLogger::logCreate('finance_report_view', $user, ['type' => 'overview']); // Log view action? Optional but good for strict audit.
+        AuditLogger::logCreate('finance_report_view', $user, ['type' => 'overview']);
 
         return [
+            'total_revenue' => $totalCollected,
             'total_invoiced' => $totalInvoiced,
-            'total_collected' => $totalCollected,
-            'pending' => $pending
+            'total_outstanding' => $pendingAmount,
+            'pending_invoices_count' => $pendingInvoicesCount,
+            'revenue_trend' => '+12%' // Placeholder trend
         ];
     }
 }

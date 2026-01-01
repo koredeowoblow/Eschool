@@ -25,7 +25,7 @@ class FeeRequest extends FormRequest
             'session_id' => 'required|exists:school_sessions,id',
             'title' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'fee_type' => 'required|string|in:tuition,exam,uniform,other',
+            'fee_type' => 'required|string',
             'due_date' => 'required|date|after_or_equal:today',
             'is_mandatory' => 'boolean',
             'description' => 'nullable|string|max:1000',

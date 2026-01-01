@@ -19,6 +19,19 @@ class LessonNoteRequest extends BaseRequest
     /**
      * Get the validation rules that apply to the request.
      */
+    protected function prepareForValidation()
+    {
+        if (!$this->has('teacher_id') && $this->user()->hasRole('Teacher')) {
+            $profile = $this->user()->teacher()->first();
+            if ($profile) {
+                $this->merge(['teacher_id' => $profile->id]);
+            }
+        }
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     */
     public function rules(): array
     {
         if ($this->isMethod('POST')) {

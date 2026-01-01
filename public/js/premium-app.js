@@ -814,6 +814,68 @@ const App = (() => {
             const dateTd = document.createElement('td');
             dateTd.textContent = item.hire_date ? new Date(item.hire_date).toLocaleDateString() : 'N/A';
             tr.appendChild(dateTd);
+        } else if (type === 'enrollment') {
+            const studentTd = document.createElement('td');
+            studentTd.className = 'fw-bold text-dark';
+            studentTd.textContent = item.student?.full_name || item.student_name || 'N/A';
+            tr.appendChild(studentTd);
+
+            const classTd = document.createElement('td');
+            classTd.textContent = item.class_room?.name || item.class?.name || 'N/A';
+            tr.appendChild(classTd);
+
+            const sessionTd = document.createElement('td');
+            sessionTd.textContent = item.session?.name || item.school_session?.name || 'N/A';
+            tr.appendChild(sessionTd);
+
+            const termTd = document.createElement('td');
+            termTd.textContent = item.term?.name || 'N/A';
+            tr.appendChild(termTd);
+
+        } else if (type === 'attachment') {
+            const titleTd = document.createElement('td');
+            titleTd.className = 'fw-bold text-dark';
+            titleTd.textContent = item.title || item.file_name || 'N/A';
+            tr.appendChild(titleTd);
+
+            const classTd = document.createElement('td');
+            classTd.textContent = item.class_room?.name || 'Global';
+            tr.appendChild(classTd);
+
+            const subjectTd = document.createElement('td');
+            subjectTd.textContent = item.subject?.name || 'N/A';
+            tr.appendChild(subjectTd);
+
+            const typeTd = document.createElement('td');
+            typeTd.textContent = item.type || 'General';
+            tr.appendChild(typeTd);
+
+            const dateTd = document.createElement('td');
+            dateTd.textContent = new Date(item.created_at).toLocaleDateString();
+            tr.appendChild(dateTd);
+
+        } else if (type === 'notice' || type === 'announcement') {
+            const titleTd = document.createElement('td');
+            titleTd.className = 'fw-bold text-dark';
+            titleTd.textContent = item.title;
+            tr.appendChild(titleTd);
+
+            const typeTd = document.createElement('td');
+            const typeBadge = document.createElement('span');
+            const color = item.type === 'Urgent' ? 'danger' : (item.type === 'Event' ? 'info' : 'primary');
+            typeBadge.className = `badge bg-${color}-subtle text-${color}`;
+            typeBadge.textContent = item.type;
+            typeTd.appendChild(typeBadge);
+            tr.appendChild(typeTd);
+
+            const authorTd = document.createElement('td');
+            authorTd.textContent = item.author_name || 'System';
+            tr.appendChild(authorTd);
+
+            const dateTd = document.createElement('td');
+            dateTd.textContent = item.created_at; // This is already diffForHumans in my controller
+            tr.appendChild(dateTd);
+
         } else if (type === 'plan') {
             const nameTd = document.createElement('td');
             const nameDiv = document.createElement('div');

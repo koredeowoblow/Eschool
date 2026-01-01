@@ -59,9 +59,9 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Grade</label>
-                                <select name="grade_id" id="create_enrollment_grade_id" class="form-select" required>
-                                    <option value="">Select Grade</option>
+                                <label class="form-label">Class Placement</label>
+                                <select name="class_id" id="create_enrollment_class_id" class="form-select" required>
+                                    <option value="">Select Class</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -107,9 +107,9 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Grade</label>
-                                <select name="grade_id" id="edit_enrollment_grade_id" class="form-select" required>
-                                    <option value="">Select Grade</option>
+                                <label class="form-label">Class Placement</label>
+                                <select name="class_id" id="edit_enrollment_class_id" class="form-select" required>
+                                    <option value="">Select Class</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -144,7 +144,7 @@
             const createModal = document.getElementById('createEnrollmentModal');
             createModal.addEventListener('show.bs.modal', () => {
                 App.loadOptions('/api/v1/students', 'create_enrollment_student_id');
-                App.loadOptions('/api/v1/grades', 'create_enrollment_grade_id');
+                App.loadOptions('/api/v1/classes', 'create_enrollment_class_id');
                 App.loadOptions('/api/v1/school-sessions', 'create_enrollment_session_id');
                 App.loadOptions('/api/v1/terms', 'create_enrollment_term_id');
             });
@@ -152,7 +152,7 @@
             const editModal = document.getElementById('editEnrollmentModal');
             editModal.addEventListener('show.bs.modal', () => {
                 App.loadOptions('/api/v1/students', 'edit_enrollment_student_id');
-                App.loadOptions('/api/v1/grades', 'edit_enrollment_grade_id');
+                App.loadOptions('/api/v1/classes', 'edit_enrollment_class_id');
                 App.loadOptions('/api/v1/school-sessions', 'edit_enrollment_session_id');
                 App.loadOptions('/api/v1/terms', 'edit_enrollment_term_id');
             });

@@ -181,6 +181,9 @@ Route::middleware(['auth'])->group(function () {
                 return view('roles.index');
             })->name('web.roles.index');
         });
+
+        // Noticeboard
+        Route::get('/noticeboard', [App\Http\Controllers\ViewController::class, 'noticeboardIndex'])->name('web.noticeboard.index');
     });
 
     // Super Admin View Routes

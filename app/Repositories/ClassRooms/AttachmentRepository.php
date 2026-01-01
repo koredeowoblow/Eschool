@@ -17,10 +17,18 @@ class AttachmentRepository extends BaseRepository
    */
   public function list(array $filters = []): \Illuminate\Database\Eloquent\Collection
   {
-    $query = $this->query();
+    $query = $this->query()->with(['note', 'classRoom', 'subject']);
 
     if (!empty($filters['note_id'])) {
       $query->where('note_id', $filters['note_id']);
+    }
+
+    if (!empty($filters['class_id'])) {
+      $query->where('class_id', $filters['class_id']);
+    }
+
+    if (!empty($filters['subject_id'])) {
+      $query->where('subject_id', $filters['subject_id']);
     }
 
     if (!empty($filters['file_type'])) {

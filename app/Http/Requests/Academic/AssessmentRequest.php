@@ -16,6 +16,16 @@ class AssessmentRequest extends BaseRequest
             \Illuminate\Support\Facades\Auth::user()->hasRole('Teacher');
     }
 
+    protected function prepareForValidation()
+    {
+        if (!$this->has('teacher_id') && $this->user()->hasRole('Teacher')) {
+            $profile = $this->user()->teacher()->first();
+            if ($profile) {
+                $this->merge(['teacher_id' => $profile->id]);
+            }
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      */
@@ -26,9 +36,10 @@ class AssessmentRequest extends BaseRequest
                 'class_id' => 'required|integer|exists:classes,id',
                 'subject_id' => 'required|integer|exists:subjects,id',
                 'teacher_id' => 'required|integer|exists:teacher_profiles,id',
+                'term_id' => 'required|integer|exists:terms,id',
                 'title' => 'required|string|max:255',
                 'type' => 'required|string|max:100',
-                'max_points' => 'required|integer|min:0',
+                'total_marks' => 'required|integer|min:0',
                 'date' => 'required|date',
                 'description' => 'nullable|string',
             ];
@@ -39,9 +50,10 @@ class AssessmentRequest extends BaseRequest
                 'class_id' => 'sometimes|integer|exists:classes,id',
                 'subject_id' => 'sometimes|integer|exists:subjects,id',
                 'teacher_id' => 'sometimes|integer|exists:teacher_profiles,id',
+                'term_id' => 'sometimes|integer|exists:terms,id',
                 'title' => 'sometimes|string|max:255',
                 'type' => 'sometimes|string|max:100',
-                'max_points' => 'sometimes|integer|min:0',
+                'total_marks' => 'sometimes|integer|min:0',
                 'date' => 'sometimes|date',
                 'description' => 'nullable|string',
             ];

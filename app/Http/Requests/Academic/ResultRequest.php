@@ -26,7 +26,7 @@ class ResultRequest extends BaseRequest
             return [
                 'assessment_id' => 'required|integer|exists:assessments,id',
                 'student_id' => 'required|integer|exists:students,id',
-                'score' => 'required|numeric|min:0',
+                'marks_obtained' => 'required|numeric|min:0',
                 'grade' => 'nullable|string|max:5',
                 'comments' => 'nullable|string',
             ];
@@ -34,7 +34,7 @@ class ResultRequest extends BaseRequest
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return [
-                'score' => 'sometimes|numeric|min:0',
+                'marks_obtained' => 'sometimes|numeric|min:0',
                 'grade' => 'sometimes|string|max:5',
                 'comments' => 'nullable|string',
             ];

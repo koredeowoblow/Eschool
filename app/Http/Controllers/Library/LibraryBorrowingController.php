@@ -27,7 +27,25 @@ class LibraryBorrowingController extends Controller
 
     public function store(LibraryBorrowingRequest $request)
     {
-        $model = $this->service->create($request->validated());
+        $data = $request->validated();
+
+        if (isset($data['student_id']) && empty($data['user_id'])) {
+            $student = \App\Models\Student::find($data['student_id']);
+            if ($student && $student->user_id) {
+                $data['user_id'] = $student->user_id;
+            }
+        }
+
+        if (empty($data['user_id'])) {
+            // Fallback or Error if no user identified
+            $data['user_id'] = $request->user()->id; // Fallback to current user if student? No, usually Admin issuing to Student.
+            // If Admin issuing, user_id MUST be the Borrower.
+            if (!isset($data['user_id'])) {
+                return ResponseHelper::error('Target user (Student) not found for this borrowing.', 422);
+            }
+        }
+
+        $model = $this->service->create($data);
         return ResponseHelper::success($model, 'Borrowing created successfully', 201);
     }
 
