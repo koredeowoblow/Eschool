@@ -34,11 +34,11 @@ export DB_CONNECTION=sqlite
 export DB_DATABASE="$DB_PATH"
 
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate 
 
 if [ "$NEW_DB" = true ]; then
   echo "New database detected. Running seeds..."
-  php artisan db:seed --force
+  php artisan db:seed
 else
   echo "Database already exists. Skipping seeds to prevent duplicates."
 fi
