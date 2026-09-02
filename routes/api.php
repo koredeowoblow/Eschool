@@ -16,10 +16,14 @@ Route::post('/login', [AuthController::class, 'login'])
     ->middleware('throttle:10,1')
     ->name('api.login');
 
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.password.email');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('api.password.update');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->middleware('throttle:3,1')
+    ->name('api.password.email');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->middleware('throttle:3,1')
+    ->name('api.password.update');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // User info
     // User info
     Route::get('/user', [AuthController::class, 'me'])->name('api.user');

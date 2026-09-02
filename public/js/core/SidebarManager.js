@@ -21,7 +21,6 @@ export class SidebarManager {
         // 1. Try to load from cache first for immediate rendering
         const cached = this.loadFromCache();
         if (cached) {
-            // console.log('Sidebar: Loaded from cache');
             this.items = cached;
             this.render();
         } else {
@@ -35,7 +34,6 @@ export class SidebarManager {
 
             // 3. Compare and update if different
             if (JSON.stringify(freshItems) !== JSON.stringify(this.items)) {
-                // console.log('Sidebar: Update detected, re-rendering');
                 this.items = freshItems;
                 this.render();
                 this.saveToCache(freshItems);
@@ -143,26 +141,20 @@ export class SidebarManager {
     showSkeleton() {
         this.root.replaceChildren();
 
-        const brand = document.createElement('div');
-        brand.className = 'sidebar-brand p-4 border-bottom';
-        const brandIcon = document.createElement('div');
-        brandIcon.className = 'sidebar-skeleton-icon';
-        const brandName = document.createElement('div');
-        brandName.className = 'sidebar-skeleton-text';
-        brand.append(brandIcon, brandName);
-        this.root.appendChild(brand);
-
         const nav = document.createElement('nav');
-        nav.className = 'sidebar-nav p-2';
+        nav.className = 'p-4 space-y-4';
 
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 6; i++) {
             const item = document.createElement('div');
-            item.className = 'sidebar-skeleton';
+            item.className = 'flex items-center gap-3 animate-pulse';
+            
             const icon = document.createElement('div');
-            icon.className = 'sidebar-skeleton-icon';
+            icon.className = 'w-5 h-5 bg-slate-200 rounded-md';
+            
             const text = document.createElement('div');
-            text.className = 'sidebar-skeleton-text';
+            text.className = 'h-4 bg-slate-200 rounded-md flex-1';
             if (i % 3 === 0) text.style.width = '60%';
+            
             item.append(icon, text);
             nav.appendChild(item);
         }
@@ -172,30 +164,13 @@ export class SidebarManager {
     render() {
         this.root.replaceChildren();
 
-        const brand = document.createElement('div');
-        brand.className = 'sidebar-brand p-4 border-bottom';
-        const brandLink = document.createElement('a');
-        brandLink.href = '/dashboard';
-        brandLink.className = 'd-flex align-items-center gap-2 text-decoration-none';
-
-        const brandIcon = document.createElement('i');
-        brandIcon.className = 'bi bi-mortarboard-fill text-primary fs-3';
-
-        const brandName = document.createElement('span');
-        brandName.className = 'fs-4 fw-bold text-gradient';
-        brandName.textContent = this.config.appName || 'eSchool';
-
-        brandLink.append(brandIcon, brandName);
-        brand.appendChild(brandLink);
-        this.root.appendChild(brand);
-
         const nav = document.createElement('nav');
-        nav.className = 'sidebar-nav';
+        nav.className = 'px-4 py-6 flex flex-col gap-1';
 
         this.items.forEach(item => {
             if (item.type === 'header') {
                 const header = document.createElement('div');
-                header.className = 'sidebar-header text-muted fw-bold small px-3 mt-3 mb-2 text-uppercase';
+                header.className = 'px-3 mt-6 mb-2 text-xs font-bold text-slate-400 uppercase tracking-wider';
                 header.textContent = item.label;
                 nav.appendChild(header);
                 return;
@@ -203,56 +178,49 @@ export class SidebarManager {
 
             if (item.children && item.children.length > 0) {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'sidebar-item-group mb-1';
+                wrapper.className = 'sidebar-item-group flex flex-col gap-1 mb-1';
 
                 const parent = document.createElement('a');
                 parent.href = '#';
-                parent.className = 'sidebar-link d-flex align-items-center justify-content-between';
+                parent.className = 'flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 hover:text-blue-600 transition-colors w-full cursor-pointer';
                 parent.dataset.action = 'toggle-submenu';
 
                 const leftPart = document.createElement('div');
-                leftPart.className = 'd-flex align-items-center gap-2';
+                leftPart.className = 'flex items-center gap-3';
                 const parentIcon = document.createElement('i');
-                parentIcon.className = item.icon || 'bi bi-circle';
+                parentIcon.className = (item.icon || 'bi bi-circle') + ' text-lg';
                 const parentLabel = document.createElement('span');
                 parentLabel.textContent = item.label;
                 leftPart.append(parentIcon, parentLabel);
 
                 const chevron = document.createElement('i');
-                chevron.className = 'bi bi-chevron-down small transition-transform-gpu';
+                chevron.className = 'bi bi-chevron-down text-sm transition-transform duration-300';
 
                 parent.append(leftPart, chevron);
 
                 const submenu = document.createElement('div');
-                submenu.className = 'collapse sidebar-submenu ps-3';
+                submenu.className = 'sidebar-submenu pl-9 pr-2 flex-col gap-1 hidden';
 
                 item.children.forEach(child => {
-                    submenu.appendChild(this.createLink(child));
+                    submenu.appendChild(this.createLink(child, true));
                 });
-
-                if (submenu.querySelector('.active')) {
-                    submenu.classList.add('show');
-                    parent.classList.add('expanded');
-                    const chevron = parent.querySelector('.bi-chevron-down');
-                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                }
 
                 wrapper.appendChild(parent);
                 wrapper.appendChild(submenu);
                 nav.appendChild(wrapper);
             } else {
-                nav.appendChild(this.createLink(item));
+                nav.appendChild(this.createLink(item, false));
             }
         });
 
         // Logout Link
         const logout = document.createElement('a');
         logout.href = '#';
-        logout.className = 'sidebar-link text-danger mt-auto mb-3';
+        logout.className = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-500 font-medium hover:bg-red-50 transition-colors mt-8';
         logout.dataset.action = 'logout';
 
         const logoutIcon = document.createElement('i');
-        logoutIcon.className = 'bi bi-box-arrow-left';
+        logoutIcon.className = 'bi bi-box-arrow-left text-lg';
         const logoutLabel = document.createElement('span');
         logoutLabel.textContent = 'Logout';
 
@@ -267,7 +235,8 @@ export class SidebarManager {
             this.delegatedListenerAttached = true;
         }
 
-        this.applyActiveState();
+        // Wait a tick for DOM to render then apply active state
+        setTimeout(() => this.applyActiveState(), 50);
     }
 
     handleDelegatedClick(e) {
@@ -281,15 +250,20 @@ export class SidebarManager {
             const group = trigger.closest('.sidebar-item-group');
             const submenu = group?.querySelector('.sidebar-submenu');
             if (submenu) {
-                // Check if already animating to prevent jank
-                if (submenu.classList.contains('collapsing')) return;
+                const isExpanding = submenu.classList.contains('hidden');
+                
+                if (isExpanding) {
+                    submenu.classList.remove('hidden');
+                    submenu.classList.add('flex');
+                    trigger.classList.add('bg-slate-50', 'text-blue-600');
+                    trigger.classList.remove('text-slate-600');
+                } else {
+                    submenu.classList.add('hidden');
+                    submenu.classList.remove('flex');
+                    trigger.classList.remove('bg-slate-50', 'text-blue-600');
+                    trigger.classList.add('text-slate-600');
+                }
 
-                const bsCollapse = bootstrap.Collapse.getInstance(submenu) || new bootstrap.Collapse(submenu);
-                bsCollapse.toggle();
-
-                // Track state for chevron/link
-                const isExpanding = !submenu.classList.contains('show');
-                trigger.classList.toggle('expanded', isExpanding);
                 const chevron = trigger.querySelector('.bi-chevron-down');
                 if (chevron) {
                     chevron.style.transform = isExpanding ? 'rotate(180deg)' : 'rotate(0deg)';
@@ -302,60 +276,62 @@ export class SidebarManager {
     }
 
     applyActiveState() {
-        const activeLinks = this.root.querySelectorAll('.sidebar-link.active');
+        const activeLinks = this.root.querySelectorAll('.sidebar-link-active');
         activeLinks.forEach(link => {
             const group = link.closest('.sidebar-item-group');
             if (group) {
-                const collapse = group.querySelector('.collapse');
-                const trigger = group.querySelector('[data-bs-toggle="collapse"]');
-                if (collapse && !collapse.classList.contains('show')) {
-                    // Use Bootstrap's own collapse for smooth entry
-                    const bsCollapse = bootstrap.Collapse.getInstance(collapse) || new bootstrap.Collapse(collapse, { toggle: false });
-                    bsCollapse.show();
-
-                    if (trigger) {
-                        trigger.classList.add('expanded');
-                        const chevron = trigger.querySelector('.bi-chevron-down');
-                        if (chevron) chevron.style.transform = 'rotate(180deg)';
-                    }
+                const submenu = group.querySelector('.sidebar-submenu');
+                const trigger = group.querySelector('[data-action="toggle-submenu"]');
+                if (submenu && trigger) {
+                    submenu.classList.remove('hidden');
+                    submenu.classList.add('flex');
+                    trigger.classList.add('bg-slate-50', 'text-blue-600');
+                    trigger.classList.remove('text-slate-600');
+                    const chevron = trigger.querySelector('.bi-chevron-down');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
                 }
             }
         });
     }
 
-    createLink(item) {
+    createLink(item, isChild) {
         const a = document.createElement('a');
 
-        if (item.action === 'logout') {
-            a.href = '#';
-            a.dataset.action = 'logout';
-        } else {
-            let href = '#';
-            if (item.path) {
-                href = item.path;
-            } else if (item.key) {
-                const slug = item.key
-                    .replace(/[A-Z]/g, m => '-' + m.toLowerCase())
-                    .replace(/_/g, '-');
-                href = `/${slug}`;
-            }
-            a.href = href;
+        let href = '#';
+        if (item.path) {
+            href = item.path;
+        } else if (item.key) {
+            const slug = item.key
+                .replace(/[A-Z]/g, m => '-' + m.toLowerCase())
+                .replace(/_/g, '-');
+            href = `/${slug}`;
         }
+        a.href = href;
+        
+        const baseClasses = isChild 
+            ? 'flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors text-sm'
+            : 'flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors mb-1';
 
-        a.className = 'sidebar-link';
         const i = document.createElement('i');
-        i.className = item.icon || 'bi bi-circle';
+        i.className = (item.icon || 'bi bi-circle') + (isChild ? ' text-sm' : ' text-lg');
         const span = document.createElement('span');
         span.textContent = item.label;
         a.append(i, span);
 
+        let isActive = false;
         try {
             const currentPath = window.location.pathname;
             const targetPath = new URL(a.href, window.location.href).pathname;
-            if (currentPath === targetPath || (currentPath === '/' && targetPath === '/dashboard')) {
-                a.classList.add('active');
+            if (currentPath === targetPath || (currentPath === '/' && targetPath === '/dashboard') || (currentPath.startsWith(targetPath) && targetPath !== '/')) {
+                isActive = true;
             }
         } catch (e) { }
+
+        if (isActive) {
+            a.className = baseClasses + (isChild ? ' text-blue-600 font-bold bg-blue-50/50 sidebar-link-active' : ' bg-blue-50 text-blue-600 font-bold sidebar-link-active');
+        } else {
+            a.className = baseClasses + ' text-slate-600 hover:bg-slate-100 hover:text-blue-600';
+        }
 
         return a;
     }

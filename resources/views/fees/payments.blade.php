@@ -5,26 +5,26 @@
 
 @section('content')
     <!-- Filters Toolbar -->
-    <div class="card-premium mb-4">
-        <div class="card-body py-3">
-            <form id="paymentFilterForm" class="row g-3 align-items-end" onsubmit="event.preventDefault(); reloadPayments();">
-                <div class="col-md-4">
-                    <label class="form-label small fw-bold">Search Student</label>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden  mb-6 ">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200  py-3">
+            <form id="paymentFilterForm" class="row  gap-4  align-items-end" onsubmit="event.preventDefault(); reloadPayments();">
+                <div class=" md:col-span-4 col-span-1 ">
+                    <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold">Search Student</label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                        <input type="text" id="paymentSearch" class="form-control border-start-0 ps-0"
+                        <input type="text" id="paymentSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                             placeholder="Name or admission #...">
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold">Filter Student</label>
-                    <select id="filterStudent" class="form-select" onchange="reloadPayments()">
+                <div class=" md:col-span-3 col-span-1 ">
+                    <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold">Filter Student</label>
+                    <select id="filterStudent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" onchange="reloadPayments()">
                         <option value="">All Students</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold">Payment Method</label>
-                    <select id="filterMethod" class="form-select" onchange="reloadPayments()">
+                <div class=" md:col-span-3 col-span-1 ">
+                    <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold">Payment Method</label>
+                    <select id="filterMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" onchange="reloadPayments()">
                         <option value="">All Methods</option>
                         <option value="cash">Cash</option>
                         <option value="bank_transfer">Bank Transfer</option>
@@ -32,8 +32,8 @@
                         <option value="online">Online</option>
                     </select>
                 </div>
-                <div class="col-md-2 text-end">
-                    <button type="button" class="btn btn-light w-100" onclick="resetFilters()">
+                <div class="col-md-2 text-right">
+                    <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium w-100" onclick="resetFilters()">
                         <i class="bi bi-arrow-clockwise me-1"></i> Reset
                     </button>
                 </div>
@@ -41,10 +41,10 @@
         </div>
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Transaction Ref</th>
@@ -53,7 +53,7 @@
                             <th>Amount Paid</th>
                             <th>Date / Method</th>
                             <th>Processed By</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="paymentsTableBody">
@@ -61,8 +61,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-3 border-top text-center" id="paginationInfo">
-                <small class="text-muted">Loading...</small>
+            <div class="p-3 border-top  text-center " id="paginationInfo">
+                <small class="text-gray-500">Loading...</small>
             </div>
         </div>
     </div>
@@ -91,15 +91,15 @@
                 return App.safeHTML`
                     <tr>
                         <td>
-                            <code class="text-primary fw-bold" style="font-size: 0.85rem;">${item.reference_number}</code>
+                            <code class="text-primary font-bold" style="font-size: 0.85rem;">${item.reference_number}</code>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
+                            <div class=" flex   items-center ">
                                 <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.student?.full_name)}&background=random" 
                                      class="avatar-xs rounded-circle me-2" width="24" alt="">
                                 <div>
                                     <div class="fw-semibold small">${item.student?.full_name}</div>
-                                    <div class="extra-small text-muted">${item.student?.admission_number}</div>
+                                    <div class="extra-small text-gray-500">${item.student?.admission_number}</div>
                                 </div>
                             </div>
                         </td>
@@ -107,17 +107,17 @@
                             <div class="small">${item.fee?.title}</div>
                         </td>
                         <td>
-                            <div class="fw-bold text-success">${App.formatCurrency(item.amount_paid)}</div>
+                            <div class="font-bold text-success">${App.formatCurrency(item.amount_paid)}</div>
                         </td>
                         <td>
                             <div class="small">${new Date(item.payment_date).toLocaleDateString()}</div>
                             <span class="badge bg-light text-dark extra-small border text-capitalize">${item.payment_method}</span>
                         </td>
                         <td>
-                            <div class="small text-muted italic">${item.processed_by?.name || 'System'}</div>
+                            <div class="small text-gray-500 italic">${item.processed_by?.name || 'System'}</div>
                         </td>
-                        <td class="text-end">
-                            <button class="btn btn-light btn-sm shadow-sm" onclick="printReceipt('${item.id}')" title="Print Receipt">
+                        <td class="text-right">
+                            <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium px-3 py-1.5 text-sm shadow-sm" onclick="printReceipt('${item.id}')" title="Print Receipt">
                                 <i class="bi bi-printer"></i>
                             </button>
                         </td>

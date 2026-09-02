@@ -5,33 +5,39 @@
 
 @section('content')
     <!-- Actions Toolbar -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="studentSearch" class="form-control border-start-0 ps-0" placeholder="Search students..."
+            <input type="text" id="studentSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search students..."
                 oninput="reloadStudents()">
         </div>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createStudentForm']);"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="App.resetForm(document.forms['createStudentForm']);"
                 data-bs-toggle="modal" data-bs-target="#createStudentModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Student
             </button>
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
-                            <th class="sortable-header" data-sort="full_name">Student</th>
-                            <th class="sortable-header" data-sort="admission_number">Admission #</th>
-                            <th class="sortable-header" data-sort="class_id">Class</th>
-                            <th class="sortable-header" data-sort="gender">Gender</th>
-                            <th class="sortable-header" data-sort="status">Status</th>
-                            <th class="text-end">Actions</th>
+                            {{-- H-7: role, scope, aria-sort, tabindex for accessibility --}}
+                            <th class="sortable-header" data-sort="full_name"
+                                role="columnheader" scope="col" aria-sort="none" tabindex="0">Student</th>
+                            <th class="sortable-header" data-sort="admission_number"
+                                role="columnheader" scope="col" aria-sort="none" tabindex="0">Admission #</th>
+                            <th class="sortable-header" data-sort="class_id"
+                                role="columnheader" scope="col" aria-sort="none" tabindex="0">Class</th>
+                            <th class="sortable-header" data-sort="gender"
+                                role="columnheader" scope="col" aria-sort="none" tabindex="0">Gender</th>
+                            <th class="sortable-header" data-sort="status"
+                                role="columnheader" scope="col" aria-sort="none" tabindex="0">Status</th>
+                            <th class="text-right" scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="studentsTableBody">
@@ -40,8 +46,8 @@
                 </table>
             </div>
             <!-- Pagination handled by JS if needed, or simple Load More -->
-            <div class="p-3 border-top text-center">
-                <small class="text-muted">Displaying recent records.</small>
+            <div class="p-3 border-top  text-center ">
+                <small class="text-gray-500">Displaying recent records.</small>
             </div>
         </div>
     </div>
@@ -50,133 +56,143 @@
     <div class="modal fade" id="createStudentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form name="createStudentForm" action="/api/v1/students" method="POST"
+                <form name="createStudentForm" action="/api/v1/students" method="POST" novalidate
                     onsubmit="App.submitForm(event, reloadStudents, 'student', 'createStudentModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add New Student</h5>
+                        <h5 class="modal-title font-bold">Add New Student</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Hidden role field -->
                         <input type="hidden" name="role" value="student">
 
-                        <!-- Student Information -->
-                        <h6 class="fw-bold mb-3">Student Information</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label">FULLNAME *</label>
-                                <input type="text" name="name" class="form-control" placeholder="John" required>
+                        <!-- Step 1: Student Information -->
+                        <div id="student-wizard-step-1">
+                            <h6 class="font-bold  mb-6 ">Step 1: Student Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                {{-- C-2: for/id pairs on all labels. M-5: Title Case labels --}}
+                                <label for="create-student-name" class="block text-sm font-medium text-gray-700  mb-6 ">Full Name *</label>
+                                <input id="create-student-name" type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="John Doe" required>
                             </div>
-                            {{-- <div class="col-md-6">
-                                <label class="form-label">Last Name *</label>
-                                <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
-                            </div> --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Email *</label>
-                                <input type="email" name="email" class="form-control" placeholder="student@example.com"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-student-email" class="block text-sm font-medium text-gray-700  mb-6 ">Email Address *</label>
+                                <input id="create-student-email" type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="student@example.com"
                                     required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Gender *</label>
-                                <select name="gender" id="genderSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="genderSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Gender *</label>
+                                <select name="gender" id="genderSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" name="date_of_birth" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-student-dob" class="block text-sm font-medium text-gray-700  mb-6 ">Date of Birth</label>
+                                <input id="create-student-dob" type="date" name="date_of_birth" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admission Number *</label>
-                                <input type="text" name="admission_number" class="form-control" placeholder="STU2025001"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-student-admission" class="block text-sm font-medium text-gray-700  mb-6 ">Admission Number *</label>
+                                <input id="create-student-admission" type="text" name="admission_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="STU2025001"
                                     required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admission Date *</label>
-                                <input type="date" name="admission_date" class="form-control" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-student-admission-date" class="block text-sm font-medium text-gray-700  mb-6 ">Admission Date *</label>
+                                <input id="create-student-admission-date" type="date" name="admission_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Class *</label>
-                                <select name="class_id" id="classSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="classSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Class *</label>
+                                <select name="class_id" id="classSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Section (Optional)</label>
-                                <select name="section_id" id="sectionSelect" class="form-select">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="sectionSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Section (Optional)</label>
+                                <select name="section_id" id="sectionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">No Section</option>
                                 </select>
-                                <small class="text-muted">Optional: Assign student to a section</small>
+                                <small class="text-gray-500">Optional: Assign student to a section</small>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">School Session *</label>
-                                <select name="school_session_id" id="sessionSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="sessionSelect" class="block text-sm font-medium text-gray-700  mb-6 ">School Session *</label>
+                                <select name="school_session_id" id="sessionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Session</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Term *</label>
-                                <select name="term_id" id="termSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="termSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Term *</label>
+                                <select name="term_id" id="termSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Term</option>
                                 </select>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Password (Optional)</label>
-                                <input type="password" name="password" class="form-control"
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label for="create-student-password" class="block text-sm font-medium text-gray-700  mb-6 ">Password (Optional)</label>
+                                <input id="create-student-password" type="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="Leave blank to auto-generate">
-                                <small class="text-muted">If left blank, a password will be auto-generated and sent via
+                                <small class="text-gray-500">If left blank, a password will be auto-generated and sent via
                                     email</small>
                             </div>
                         </div>
 
-                        <!-- Guardian Information -->
-                        <h6 class="fw-bold mb-3">Guardian Information</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Guardian Name *</label>
-                                <input type="text" name="guardian[name]" class="form-control" placeholder="Jane Doe"
+                        </div>
+
+                        <!-- Step 2: Guardian Information -->
+                        <div id="student-wizard-step-2" class=" hidden ">
+                            <h6 class="font-bold  mb-6 ">Step 2: Guardian Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-guardian-name" class="block text-sm font-medium text-gray-700  mb-6 ">Guardian Name *</label>
+                                <input id="create-guardian-name" type="text" name="guardian[name]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Jane Doe"
                                     required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Guardian Email *</label>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="guardianEmailInput" class="block text-sm font-medium text-gray-700  mb-6 ">Guardian Email *</label>
                                 <div class="input-group">
                                     <input type="email" id="guardianEmailInput" name="guardian[email]"
-                                        class="form-control" placeholder="guardian@example.com" required>
-                                    <button class="btn btn-outline-primary" type="button"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="guardian@example.com" required>
+                                    <button class=" px-4 py-2 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg transition-all inline-flex items-center gap-2 font-medium " type="button"
                                         id="btnCheckGuardian">Check</button>
-                                    <span class="input-group-text d-none" id="guardianStatusIcon">
-                                        <i class="bi bi-person-check-fill text-success"></i>
+                                    <span class="input-group-text  hidden " id="guardianStatusIcon">
+                                        <i class="bi bi-person-check-fill text-success" aria-hidden="true"></i>
                                     </span>
                                 </div>
                                 <input type="hidden" name="guardian_id" id="guardian_id_hidden">
-                                <small id="guardianHelp" class="form-text text-muted">Enter email and click Check to
-                                    lookup existing
-                                    siblings' guardian.</small>
+                                <small id="guardianHelp" class="form-text text-gray-500">Enter email and click Check to
+                                    lookup existing siblings' guardian.</small>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Relation *</label>
-                                <select name="guardian[relation]" id="relationSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="relationSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Relation *</label>
+                                <select name="guardian[relation]" id="relationSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Relation</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Occupation *</label>
-                                <input type="text" name="guardian[occupation]" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="create-guardian-occupation" class="block text-sm font-medium text-gray-700  mb-6 ">Occupation *</label>
+                                <input id="create-guardian-occupation" type="text" name="guardian[occupation]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. Engineer" required>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Guardian Password (Optional)</label>
-                                <input type="password" name="guardian[password]" class="form-control"
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label for="create-guardian-password" class="block text-sm font-medium text-gray-700  mb-6 ">Guardian Password (Optional)</label>
+                                <input id="create-guardian-password" type="password" name="guardian[password]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="Leave blank to auto-generate">
-                                <small class="text-muted">If left blank, a password will be auto-generated and sent via
+                                <small class="text-gray-500">If left blank, a password will be auto-generated and sent via
                                     email</small>
                             </div>
                         </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Student</button>
+                        <div id="student-wizard-footer-1" class="w-100  flex   justify-between ">
+                            <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="App.switchWizardStep(2, 'student')">Next Step <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                        <div id="student-wizard-footer-2" class="w-100  flex   justify-between   hidden ">
+                            <button type="button" class="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="App.switchWizardStep(1, 'student')"><i class="bi bi-arrow-left me-1"></i> Back</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Student</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -192,117 +208,117 @@
                     @csrf @method('PUT')
                     <!-- Hidden ID field if needed, but action is set in JS -->
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Student</h5>
+                        <h5 class="modal-title font-bold">Edit Student</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Student Information -->
-                        <h6 class="fw-bold mb-3">Student Information</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label">fullName *</label>
-                                <input type="text" name="name" class="form-control" placeholder="John" required>
+                        <h6 class="font-bold  mb-6 ">Student Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                {{-- C-2: for/id pairs. M-5: Title Case --}}
+                                <label for="edit-student-name" class="block text-sm font-medium text-gray-700  mb-6 ">Full Name *</label>
+                                <input id="edit-student-name" type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="John Doe" required>
                             </div>
-                            {{-- <div class="col-md-6">
-                                <label class="form-label">Last Name *</label>
-                                <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
-                            </div> --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Email *</label>
-                                <input type="email" name="email" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-student-email" class="block text-sm font-medium text-gray-700  mb-6 ">Email Address *</label>
+                                <input id="edit-student-email" type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="student@example.com" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Gender *</label>
-                                <select name="gender" id="editGenderSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editGenderSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Gender *</label>
+                                <select name="gender" id="editGenderSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" name="date_of_birth" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-student-dob" class="block text-sm font-medium text-gray-700  mb-6 ">Date of Birth</label>
+                                <input id="edit-student-dob" type="date" name="date_of_birth" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admission Number *</label>
-                                <input type="text" name="admission_number" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-student-admission" class="block text-sm font-medium text-gray-700  mb-6 ">Admission Number *</label>
+                                <input id="edit-student-admission" type="text" name="admission_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="STU2025001" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admission Date *</label>
-                                <input type="date" name="admission_date" class="form-control" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-student-admission-date" class="block text-sm font-medium text-gray-700  mb-6 ">Admission Date *</label>
+                                <input id="edit-student-admission-date" type="date" name="admission_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Class *</label>
-                                <select name="class_id" id="editClassSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editClassSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Class *</label>
+                                <select name="class_id" id="editClassSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Section (Optional)</label>
-                                <select name="section_id" id="editSectionSelect" class="form-select">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editSectionSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Section (Optional)</label>
+                                <select name="section_id" id="editSectionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">No Section</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">School Session *</label>
-                                <select name="school_session_id" id="editSessionSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editSessionSelect" class="block text-sm font-medium text-gray-700  mb-6 ">School Session *</label>
+                                <select name="school_session_id" id="editSessionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Session</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Term *</label>
-                                <select name="term_id" id="editTermSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editTermSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Term *</label>
+                                <select name="term_id" id="editTermSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Term</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-select">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-student-status" class="block text-sm font-medium text-gray-700  mb-6 ">Status</label>
+                                <select id="edit-student-status" name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Password (Optional)</label>
-                                <input type="password" name="password" class="form-control"
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label for="edit-student-password" class="block text-sm font-medium text-gray-700  mb-6 ">Password (Optional)</label>
+                                <input id="edit-student-password" type="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="Leave blank to keep current password">
                             </div>
                         </div>
 
                         <!-- Guardian Information -->
-                        <h6 class="fw-bold mb-3">Guardian Information</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Guardian Name *</label>
-                                <input type="text" name="guardian[name]" class="form-control" placeholder="Jane Doe"
+                        <h6 class="font-bold  mb-6 ">Guardian Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-guardian-name" class="block text-sm font-medium text-gray-700  mb-6 ">Guardian Name *</label>
+                                <input id="edit-guardian-name" type="text" name="guardian[name]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Jane Doe"
                                     required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Guardian Email *</label>
-                                <input type="email" name="guardian[email]" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-guardian-email" class="block text-sm font-medium text-gray-700  mb-6 ">Guardian Email *</label>
+                                <input id="edit-guardian-email" type="email" name="guardian[email]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="guardian@example.com" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Relation *</label>
-                                <select name="guardian[relation]" id="editRelationSelect" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="editRelationSelect" class="block text-sm font-medium text-gray-700  mb-6 ">Relation *</label>
+                                <select name="guardian[relation]" id="editRelationSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Relation</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Occupation *</label>
-                                <input type="text" name="guardian[occupation]" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label for="edit-guardian-occupation" class="block text-sm font-medium text-gray-700  mb-6 ">Occupation *</label>
+                                <input id="edit-guardian-occupation" type="text" name="guardian[occupation]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. Engineer" required>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Password (Optional)</label>
-                                <input type="password" name="guardian[password]" class="form-control"
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label for="edit-guardian-password" class="block text-sm font-medium text-gray-700  mb-6 ">Password (Optional)</label>
+                                <input id="edit-guardian-password" type="password" name="guardian[password]" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="Leave blank to keep current password">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Student</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Student</button>
                     </div>
                 </form>
             </div>
@@ -439,29 +455,31 @@
 
                 return App.safeHTML`
                     <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
+                        <td data-label="Student">{{-- C-4: data-label for mobile bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden view --}}
+                            <div class=" flex   items-center ">
                                 <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(item.full_name)}&background=2563eb&color=fff"
                                      class="avatar-sm rounded-circle me-3 shadow-sm" alt="${item.full_name}">
                                 <div>
-                                    <div class="fw-bold text-dark">${item.full_name}</div>
-                                    <small class="text-muted text-uppercase" style="font-size: 0.7rem;">${item.user?.email}</small>
+                                    <div class="font-bold text-dark">${item.full_name}</div>
+                                    <small class="text-gray-500 text-uppercase notif-sender-role">${item.user?.email}</small>
                                 </div>
                             </div>
                         </td>
-                        <td><code class="text-primary fw-bold">${item.admission_number}</code></td>
-                        <td>${item.current_class}</td>
-                        <td class="text-capitalize">${item.user?.gender || 'N/A'}</td>
-                        <td><span class="badge rounded-pill bg-${statusClass}-subtle text-${statusClass} px-3">${statusText}</span></td>
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2">
-                                <button class="btn btn-light shadow-sm btn-sm"
-                                    data-action="edit" data-entity="student" data-id="${item.id}" title="Edit">
-                                    <i class="bi bi-pencil-fill text-primary"></i>
+                        <td data-label="Admission #"><code class="text-primary font-bold">${item.admission_number}</code></td>
+                        <td data-label="Class">${item.current_class}</td>
+                        <td data-label="Gender" class="text-capitalize">${item.user?.gender || 'N/A'}</td>
+                        <td data-label="Status"><span class="badge rounded-pill bg-${statusClass}-subtle text-${statusClass} px-3">${statusText}</span></td>
+                        <td data-label="Actions" class="text-right">
+                            <div class=" flex   justify-end  gap-2">
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm"
+                                    data-action="edit" data-entity="student" data-id="${item.id}"
+                                    aria-label="Edit student ${item.full_name}" title="Edit">
+                                    <i class="bi bi-pencil-fill text-primary" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-light shadow-sm btn-sm"
-                                    data-action="delete" data-entity="student" data-id="${item.id}" title="Delete">
-                                    <i class="bi bi-trash text-danger"></i>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm"
+                                    data-action="delete" data-entity="student" data-id="${item.id}"
+                                    aria-label="Delete student ${item.full_name}" title="Delete">
+                                    <i class="bi bi-trash text-danger" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </td>

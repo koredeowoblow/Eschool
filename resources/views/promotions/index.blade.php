@@ -6,25 +6,25 @@
 @section('content')
     <div class="promotion-workflow">
         <!-- Step 1 & 3: Configuration Panel -->
-        <div class="row g-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-6 ">
             <div class="col-xl-4 col-lg-5">
                 <!-- Source Config Card -->
-                <div class="card card-premium mb-4 border-0 shadow-sm overflow-hidden animate-in" style="--delay: 0.1s">
-                    <div class="card-header bg-primary-subtle border-0 py-3">
-                        <h6 class="card-title mb-0 fw-bold text-primary">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden  mb-6  border-0 shadow-sm overflow-hidden animate-in" style="--delay: 0.1s">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-primary-subtle border-0 py-3">
+                        <h6 class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-title  mb-6  font-bold text-primary">
                             <i class="bi bi-funnel-fill me-2"></i> 1. Select Source
                         </h6>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-0">
-                            <label class="form-label small fw-bold text-muted text-uppercase">Current Class</label>
-                            <select id="fromClassSelect" class="form-select border-2" onchange="loadSourceStudents()">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 ">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold text-gray-500 text-uppercase">Current Class</label>
+                            <select id="fromClassSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white border-2" onchange="loadSourceStudents()">
                                 <option value="">Choose class...</option>
                             </select>
-                            <div id="selectionStats" class="mt-3 d-none">
-                                <div class="p-2 bg-light rounded text-center">
-                                    <span class="d-block small text-muted">Total Students</span>
-                                    <span id="totalClassStudents" class="h5 fw-bold text-primary mb-0">0</span>
+                            <div id="selectionStats" class="mt-4  hidden ">
+                                <div class="p-2 bg-light rounded  text-center ">
+                                    <span class="d-block small text-gray-500">Total Students</span>
+                                    <span id="totalClassStudents" class="h5 font-bold text-primary  mb-6 ">0</span>
                                 </div>
                             </div>
                         </div>
@@ -32,57 +32,57 @@
                 </div>
 
                 <!-- Destination Config Card -->
-                <div id="destinationCard" class="card card-premium border-0 shadow-sm overflow-hidden animate-in"
+                <div id="destinationCard" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden border-0 shadow-sm overflow-hidden animate-in"
                     style="--delay: 0.2s; opacity: 0.5; pointer-events: none;">
-                    <div class="card-header bg-success-subtle border-0 py-3">
-                        <h6 class="card-title mb-0 fw-bold text-success">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-success-subtle border-0 py-3">
+                        <h6 class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-title  mb-6  font-bold text-success">
                             <i class="bi bi-box-arrow-right me-2"></i> 2. Target Destination
                         </h6>
                     </div>
-                    <div class="card-body">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 ">
                         <form id="promotionForm" onsubmit="handlePromotion(event)">
                             @csrf
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted text-uppercase">Next Session *</label>
-                                <select name="to_session_id" id="toSessionSelect" class="form-select border-2" required>
+                            <div class=" mb-6 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold text-gray-500 text-uppercase">Next Session *</label>
+                                <select name="to_session_id" id="toSessionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white border-2" required>
                                     <option value="">Choose session...</option>
                                 </select>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted text-uppercase">Next Class *</label>
-                                <select name="to_class_id" id="toClassSelect" class="form-select border-2" required>
+                            <div class=" mb-6 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold text-gray-500 text-uppercase">Next Class *</label>
+                                <select name="to_class_id" id="toClassSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white border-2" required>
                                     <option value="">Choose class...</option>
                                 </select>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-muted text-uppercase">Action Type *</label>
+                            <div class=" mb-6 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold text-gray-500 text-uppercase">Action Type *</label>
                                 <div class="btn-group w-100" role="group">
                                     <input type="radio" class="btn-check" name="type" id="typePromote" value="promote"
                                         checked>
-                                    <label class="btn btn-outline-success py-2 fw-bold" for="typePromote">
+                                    <label class="btn btn-outline-success py-2 font-bold" for="typePromote">
                                         <i class="bi bi-graph-up-arrow me-1"></i> Promote
                                     </label>
 
                                     <input type="radio" class="btn-check" name="type" id="typeRepeat" value="repeat">
-                                    <label class="btn btn-outline-warning py-2 fw-bold" for="typeRepeat">
+                                    <label class="btn btn-outline-warning py-2 font-bold" for="typeRepeat">
                                         <i class="bi bi-arrow-repeat me-1"></i> Repeat
                                     </label>
                                 </div>
                             </div>
 
-                            <div class="summary-card p-3 mb-4 rounded-3 d-none" id="promotionSummary">
-                                <h6 class="fw-bold mb-2 small text-uppercase">Execution Summary</h6>
-                                <div class="d-flex align-items-center mb-1">
+                            <div class="summary-bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-3  mb-6  rounded-3  hidden " id="promotionSummary">
+                                <h6 class="font-bold  mb-6  small text-uppercase">Execution Summary</h6>
+                                <div class=" flex   items-center   mb-6 ">
                                     <span class="badge bg-primary rounded-pill me-2" id="summaryCount">0</span>
-                                    <span class="small text-muted">Students selected for processing</span>
+                                    <span class="small text-gray-500">Students selected for processing</span>
                                 </div>
-                                <div class="small fw-bold text-success mt-2" id="summaryActionDesc"></div>
+                                <div class="small font-bold text-success mt-4" id="summaryActionDesc"></div>
                             </div>
 
                             <button type="submit" id="btnSubmitPromotion"
-                                class="btn btn-primary-premium w-100 py-3 fw-bold shadow-sm" disabled>
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium w-100 py-3 font-bold shadow-sm" disabled>
                                 <i class="bi bi-send-fill me-2"></i> Finalize Operation
                             </button>
                         </form>
@@ -92,55 +92,55 @@
 
             <!-- Step 2: Student Selection Panel -->
             <div class="col-xl-8 col-lg-7">
-                <div class="card card-premium h-100 border-0 shadow-sm overflow-hidden animate-in" style="--delay: 0.3s">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-100 border-0 shadow-sm overflow-hidden animate-in" style="--delay: 0.3s">
                     <div
-                        class="card-header bg-white border-bottom py-3 d-flex flex-sm-row flex-column justify-content-between align-items-center gap-2">
-                        <div class="d-flex align-items-center">
-                            <h5 class="fw-bold mb-0 me-3 text-dark">
+                        class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-white border-bottom py-3  flex  flex-sm-row flex-column  justify-between   items-center  gap-2">
+                        <div class=" flex   items-center ">
+                            <h5 class="font-bold  mb-6  me-3 text-dark">
                                 <i class="bi bi-people-fill text-primary me-2"></i> Eligible Students
                             </h5>
                             <span id="selectedCounterBadge" class="badge rounded-pill bg-primary ms-1"
                                 style="display:none">0 Selected</span>
                         </div>
 
-                        <div class="d-flex align-items-center gap-2 w-100 w-sm-auto">
+                        <div class="flex items-center gap-3 w-100 w-sm-auto">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
-                                <input type="text" id="innerStudentSearch" class="form-control border-start-0 bg-light"
+                                <input type="text" id="innerStudentSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all border-start-0 bg-light"
                                     placeholder="Filter current list...">
                             </div>
-                            <div class="form-check form-switch mb-0 text-nowrap">
+                            <div class="form-check form-switch  mb-6  text-nowrap">
                                 <input class="form-check-input" type="checkbox" id="selectAllStudents"
                                     onchange="toggleSelectAll(this)">
-                                <label class="form-check-label small fw-bold" for="selectAllStudents">Select All</label>
+                                <label class="form-check-label small font-bold" for="selectAllStudents">Select All</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card-body p-0">
-                        <div id="studentContainer" class="table-responsive"
+                    <div class="p-0">
+                        <div id="studentContainer" class="overflow-x-auto"
                             style="max-height: 650px; min-height: 400px;">
-                            <table class="table table-premium table-hover align-middle mb-0">
+                            <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                                 <thead class="bg-gray-50 border-bottom sticky-top">
                                     <tr>
                                         <th style="width: 50px;" class="ps-4">
-                                            <i class="bi bi-check-all text-muted"></i>
+                                            <i class="bi bi-check-all text-gray-500"></i>
                                         </th>
                                         <th>Student Details</th>
                                         <th>Admission #</th>
-                                        <th class="text-center">Academic Status</th>
-                                        <th class="text-end pe-4">Current Grade</th>
+                                        <th class=" text-center ">Academic Status</th>
+                                        <th class="text-right pe-4">Current Grade</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sourceStudentsTableBody">
                                     <tr>
-                                        <td colspan="5" class="text-center py-5">
+                                        <td colspan="5" class=" text-center  py-5">
                                             <div class="empty-state py-5">
-                                                <div class="mb-3 text-muted opacity-25">
+                                                <div class=" mb-6  text-gray-500 opacity-25">
                                                     <i class="bi bi-journal-text" style="font-size: 5rem;"></i>
                                                 </div>
-                                                <h5 class="fw-bold text-muted">No students to display</h5>
-                                                <p class="text-muted small">Select a source class from the left panel to
+                                                <h5 class="font-bold text-gray-500">No students to display</h5>
+                                                <p class="text-gray-500 small">Select a source class from the left panel to
                                                     begin.</p>
                                             </div>
                                         </td>
@@ -156,21 +156,21 @@
 
     @push('styles')
         <style>
-            .promotion-workflow .card-premium {
+            .promotion-workflow .bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden {
                 border-radius: var(--border-radius-lg);
             }
 
-            .summary-card {
+            .summary-bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden {
                 background: linear-gradient(45deg, var(--color-primary-50), white);
                 border: 1px dashed var(--color-primary-200);
             }
 
-            .form-select.border-2 {
+            .w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white.border-2 {
                 border-width: 2px !important;
                 transition: border-color 0.2s;
             }
 
-            .form-select.border-2:focus {
+            .w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white.border-2:focus {
                 border-color: var(--color-primary-500);
                 box-shadow: none;
             }
@@ -229,7 +229,7 @@
 
             if (!classId) {
                 tbody.innerHTML =
-                    `<tr><td colspan="5" class="text-center py-5 text-muted">Select a class to see students</td></tr>`;
+                    `<tr><td colspan="5" class=" text-center  py-5 text-gray-500">Select a class to see students</td></tr>`;
                 destPanel.style.opacity = '0.5';
                 destPanel.style.pointerEvents = 'none';
                 stats.classList.add('d-none');
@@ -242,7 +242,7 @@
             stats.classList.remove('d-none');
 
             tbody.innerHTML =
-                `<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary"></div></td></tr>`;
+                `<tr><td colspan="5" class=" text-center  py-5"><div class="spinner-border text-primary"></div></td></tr>`;
 
             axios.get(`/api/v1/students?class_id=${classId}`).then(res => {
                 allCurrentStudents = res.data.data || res.data;
@@ -250,7 +250,7 @@
                 renderStudentList(allCurrentStudents);
             }).catch(err => {
                 tbody.innerHTML =
-                    `<tr><td colspan="5" class="text-center py-5 text-danger">Failed to load students</td></tr>`;
+                    `<tr><td colspan="5" class=" text-center  py-5 text-danger">Failed to load students</td></tr>`;
             });
         }
 
@@ -258,7 +258,7 @@
             const tbody = document.getElementById('sourceStudentsTableBody');
             if (!students || students.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="5" class="text-center py-5 text-muted">No students found in this class</td></tr>`;
+                    `<tr><td colspan="5" class=" text-center  py-5 text-gray-500">No students found in this class</td></tr>`;
                 return;
             }
 
@@ -277,22 +277,22 @@
                         <input type="checkbox" name="student_ids[]" value="${item.id}" class="form-check-input student-checkbox border-2" onchange="handleRowToggle(this)">
                     </td>
                     <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-initials rounded-circle bg-primary-subtle text-primary fw-bold text-center me-3 shadow-sm">
+                        <div class=" flex   items-center ">
+                            <div class="avatar-initials rounded-circle bg-primary-subtle text-primary font-bold  text-center  me-3 shadow-sm">
                                 ${item.full_name?.charAt(0) || 'S'}
                             </div>
                             <div>
-                                <div class="fw-bold text-dark">${item.full_name}</div>
-                                <div class="small text-muted">${item.user?.email || 'No Email'}</div>
+                                <div class="font-bold text-dark">${item.full_name}</div>
+                                <div class="small text-gray-500">${item.user?.email || 'No Email'}</div>
                             </div>
                         </div>
                     </td>
-                    <td><code class="text-primary fw-bold">${item.admission_number}</code></td>
-                    <td class="text-center">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 rounded-pill">Active</span>
+                    <td><code class="text-primary font-bold">${item.admission_number}</code></td>
+                    <td class=" text-center ">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-success-subtle px-3 rounded-pill">Active</span>
                     </td>
-                    <td class="text-end pe-4">
-                        <span class="fw-bold text-muted">${item.current_class || 'N/A'}</span>
+                    <td class="text-right pe-4">
+                        <span class="font-bold text-gray-500">${item.current_class || 'N/A'}</span>
                     </td>
                 `;
                 fragment.appendChild(tr);

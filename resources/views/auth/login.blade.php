@@ -1,56 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>eSchool - Login</title>
-    <meta name="description"
-        content="Login to eSchool Management System. Secure access for students, teachers, and guardians.">
+    <meta name="description" content="Login to eSchool Management System. Secure access for students, teachers, and guardians.">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <!-- Tailwind & Alpine via Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --slate-50: #f8fafc;
-            --slate-100: #f1f5f9;
-            --slate-200: #e2e8f0;
-            --slate-400: #94a3b8;
-            --slate-500: #64748b;
-            --slate-600: #475569;
-            --slate-800: #1e293b;
-            --slate-900: #0f172a;
-        }
-
         body {
-            background-color: var(--slate-50);
-            /* Authenticated pages use light, let's stick to auth page light/dark style or match dashboard? using slate-50 usually looks cleaner than slate-900 for modern apps, but let's stick to existing dark mode if prefers, but user said 'soothing'. Let's keep slate-900 for login but update accents? Actually User said 'soothing', maybe light mode is better? The dashboard text suggests it's light mode (white bg). Let's change body bg to slate-50 for a cleaner look or keep slate-900? The original was slate-900. Let's make it consistent with the dashboard which is light. */
-            /* Actually, let's keep the dark login style but with the blue accents, OR switch to light. The 'custom.css' has body bg var(--ui-bg) which is gray-50. Let's switch login to light mode to match dashboard soothing feel. */
-            background-color: var(--slate-50);
-            min-height: 100vh;
-            color: var(--slate-900);
-            /* Invert text */
             font-family: 'Outfit', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 1rem;
-            position: relative;
-            overflow-x: hidden;
+            background-color: #f8fafc; /* slate-50 */
         }
-
+        
         body::before {
             content: "";
             position: fixed;
@@ -61,7 +32,6 @@
             background-image:
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.15) 0px, transparent 50%);
-            /* Added Golden Amber hint */
             z-index: -2;
         }
 
@@ -74,332 +44,184 @@
             bottom: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.025;
-            /* Subdued noise */
             pointer-events: none;
             z-index: -1;
         }
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-radius: 1.5rem;
-            width: 100%;
-            max-width: 440px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
+        .animate-in {
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .login-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header-gradient {
-            background: linear-gradient(135deg, var(--primary), #6366f1);
-            padding: 3rem 2rem;
-            text-align: center;
-            color: white;
-        }
-
-        .login-logo-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-        }
-
-        .card-body {
-            padding: 2.5rem 2rem;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: var(--slate-600);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .input-group {
-            border-radius: 0.75rem;
-            overflow: hidden;
-            border: 2px solid var(--slate-200);
-            transition: all 0.2s ease;
-        }
-
-        .input-group:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-
-        .input-group-text {
-            background: var(--slate-50);
-            border: none;
-            color: var(--slate-400);
-            padding-left: 1rem;
-        }
-
-        .form-control {
-            border: none !important;
-            padding: 0.75rem 1rem;
-            font-size: 0.95rem;
-            background: white !important;
-        }
-
-        .form-control:focus {
-            box-shadow: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            border: none;
-            border-radius: 0.75rem;
-            padding: 0.8rem;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            margin-top: 1rem;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-
-        .footer-links {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .footer-links a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 
-<body>
-    <div class="login-card animate-in">
-        <div class="card-header-gradient">
-            <i class="bi bi-mortarboard-fill login-logo-icon"></i>
-            <h2 class="mb-0 fw-bold">eSchool</h2>
-            <p class="mb-0 opacity-75">Smart Education Management</p>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden text-slate-900">
+    <div x-data="loginForm()" class="w-full max-w-[440px] bg-white/98 border border-white/10 shadow-2xl shadow-black/10 rounded-3xl overflow-hidden animate-in">
+        
+        <!-- Header Gradient -->
+        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 px-8 py-10  text-center  text-white">
+            <i class="bi bi-mortarboard-fill text-5xl  mb-6  inline-block drop-shadow-md"></i>
+            <h2 class="text-3xl font-bold mb-2 tracking-tight">eSchool</h2>
+            <p class="text-white/80 font-medium">Smart Education Management</p>
         </div>
 
-        <div class="card-body">
-            <form id="loginForm">
-                <div id="loginError" class="alert alert-danger d-none" role="alert">
-                    <i class="bi bi-exclamation-circle me-2"></i>
-                    <span id="errorMessage"></span>
+        <!-- Body -->
+        <div class="p-8">
+            <form @submit.prevent="handleLogin" class="space-y-6">
+                <!-- Error Alert -->
+                <div x-show="errorMessage" x-transition.opacity class="bg-red-50 text-red-700 p-4 rounded-lg flex items-start gap-3 border border-red-100" style="display: none;">
+                    <i class="bi bi-exclamation-circle-fill mt-0.5"></i>
+                    <span x-text="errorMessage" class="text-sm font-medium"></span>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">Email Address</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" id="email" name="email" required autofocus
-                            placeholder="name@school.com">
+                <!-- Email Field -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                    <div class="relative group" :class="{ 'ring-2 ring-red-500 rounded-lg': fieldErrors.email }">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-envelope text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                        </div>
+                        <input 
+                            type="email" 
+                            x-model="email" 
+                            @input="fieldErrors.email = ''"
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-blue-500 transition-all text-slate-900" 
+                            required 
+                            autofocus
+                            placeholder="name@school.com"
+                            autocomplete="username"
+                        >
                     </div>
-                    <div class="invalid-feedback"></div>
+                    <p x-show="fieldErrors.email" x-text="fieldErrors.email" class="mt-1 text-sm text-red-600 font-medium" style="display: none;"></p>
                 </div>
 
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label mb-0">Password</label>
-                        <a href="{{ route('password.request') }}" class="small text-decoration-none">Forgot?</a>
+                <!-- Password Field -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-medium text-slate-700">Password</label>
+                        <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium transition-colors">Forgot password?</a>
                     </div>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="password" name="password" required
-                            placeholder="Enter password">
-                        <button class="btn btn-link text-slate-400 pe-3 text-decoration-none" type="button"
-                            id="togglePassword">
-                            <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                    <div class="relative group" :class="{ 'ring-2 ring-red-500 rounded-lg': fieldErrors.password }">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-lock text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                        </div>
+                        <input 
+                            :type="showPassword ? 'text' : 'password'" 
+                            x-model="password" 
+                            @input="fieldErrors.password = ''"
+                            class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-blue-500 transition-all text-slate-900" 
+                            required
+                            placeholder="Enter password"
+                            autocomplete="current-password"
+                        >
+                        <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" :aria-label="showPassword ? 'Hide password' : 'Show password'">
+                            <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
                         </button>
                     </div>
-                    <div class="invalid-feedback"></div>
+                    <p x-show="fieldErrors.password" x-text="fieldErrors.password" class="mt-1 text-sm text-red-600 font-medium" style="display: none;"></p>
                 </div>
 
-                <div class="mb-4 form-check">
-                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                    <label class="form-check-label text-muted small" for="remember">Keep me signed in</label>
+                <!-- Remember Me -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember" x-model="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                    <label for="remember" class="ml-2 text-sm font-medium text-slate-600 cursor-pointer">Keep me signed in</label>
                 </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary" id="loginButton">
-                        <span id="loginText">Sign In</span>
-                    </button>
-                </div>
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    :disabled="loading"
+                    class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm shadow-blue-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                    <svg x-show="loading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="display: none;">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span x-text="loading ? 'Signing in...' : 'Sign In'">Sign In</span>
+                </button>
             </form>
 
-            <div class="footer-links">
-                <p class="text-muted mb-0">New here? <a href="{{ route('school.register') }}">Register your school</a>
-                </p>
+            <div class="mt-8  text-center  border-t border-slate-100 pt-6">
+                <p class="text-slate-500 text-sm">New here? <a href="{{ route('school.register') }}" class="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Create an account</a></p>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.5.0/dist/axios.min.js"></script>
 
     <script>
-        class LoginManager {
-            constructor() {
-                this.form = document.getElementById('loginForm');
-                this.emailInput = document.getElementById('email');
-                this.passwordInput = document.getElementById('password');
-                this.rememberInput = document.getElementById('remember');
-                this.loginButton = document.getElementById('loginButton');
-                this.loginText = document.getElementById('loginText');
-                this.errorDiv = document.getElementById('loginError');
-                this.errorMessage = document.getElementById('errorMessage');
-
-                this.initializeEventListeners();
-                this.initializePasswordToggle();
-            }
-
-            initializeEventListeners() {
-                this.form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleLogin();
-                });
-                this.emailInput.addEventListener('input', () => this.clearFieldError('email'));
-                this.passwordInput.addEventListener('input', () => this.clearFieldError('password'));
-            }
-
-            initializePasswordToggle() {
-                const toggleButton = document.getElementById('togglePassword');
-                const toggleIcon = document.getElementById('passwordToggleIcon');
-                toggleButton.addEventListener('click', () => {
-                    const isPassword = this.passwordInput.type === 'password';
-                    this.passwordInput.type = isPassword ? 'text' : 'password';
-                    toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
-                });
-            }
-
-            async handleLogin() {
-                this.hideError();
-                this.clearAllFieldErrors();
-
-                const email = this.emailInput.value.trim();
-                const password = this.passwordInput.value;
-
-                if (!email || !password) {
-                    if (!email) this.showFieldError('email', 'Email is required');
-                    if (!password) this.showFieldError('password', 'Password is required');
-                    return;
-                }
-
-                this.setLoadingState(true);
-
-                try {
-                    const response = await axios.post('/login', {
-                        email,
-                        password,
-                        remember: this.rememberInput.checked
-                    });
-
-                    const data = response.data.data || response.data;
-                    if (data.token) localStorage.setItem('auth_token', data.token);
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Redirecting to your dashboard...',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-
-                    setTimeout(() => window.location.href = '/dashboard', 1000);
-                } catch (err) {
-                    this.handleLoginError(err);
-                } finally {
-                    this.setLoadingState(false);
-                }
-            }
-
-            handleLoginError(error) {
-                if (error.response?.status === 422) {
-                    const errors = error.response.data.errors;
-                    Object.keys(errors).forEach(field => {
-                        this.showFieldError(field, errors[field][0]);
-                    });
-                } else {
-                    this.showError(error.response?.data?.message || 'Login failed. Please check your credentials.');
-                }
-            }
-
-            setLoadingState(loading) {
-                this.loginButton.disabled = loading;
-                this.loginText.textContent = loading ? 'Checking...' : 'Sign In';
-            }
-
-            showError(message) {
-                this.errorMessage.textContent = message;
-                this.errorDiv.classList.remove('d-none');
-            }
-
-            hideError() {
-                this.errorDiv.classList.add('d-none');
-            }
-
-            showFieldError(field, message) {
-                const input = document.getElementById(field);
-                if (input) {
-                    const group = input.closest('.input-group');
-                    group.classList.add('border-danger');
-                    const feedback = group.nextElementSibling;
-                    if (feedback) {
-                        feedback.textContent = message;
-                        feedback.style.display = 'block';
-                    }
-                }
-            }
-
-            clearFieldError(field) {
-                const input = document.getElementById(field);
-                if (input) {
-                    const group = input.closest('.input-group');
-                    group.classList.remove('border-danger');
-                    const feedback = group.nextElementSibling;
-                    if (feedback) feedback.style.display = 'none';
-                }
-            }
-
-            clearAllFieldErrors() {
-                ['email', 'password'].forEach(f => this.clearFieldError(f));
-            }
+        // Setup axios CSRF
+        if (window.axios) {
+            window.axios.defaults.withCredentials = true;
+            const token = document.querySelector('meta[name="csrf-token"]');
+            if (token) window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.axios) {
-                window.axios.defaults.withCredentials = true;
-                const token = document.querySelector('meta[name="csrf-token"]');
-                if (token) window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-            }
-            new LoginManager();
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('loginForm', () => ({
+                email: '',
+                password: '',
+                remember: false,
+                showPassword: false,
+                loading: false,
+                errorMessage: '',
+                fieldErrors: {
+                    email: '',
+                    password: ''
+                },
+                
+                async handleLogin() {
+                    this.errorMessage = '';
+                    this.fieldErrors = { email: '', password: '' };
+                    
+                    if (!this.email) this.fieldErrors.email = 'Email is required';
+                    if (!this.password) this.fieldErrors.password = 'Password is required';
+                    if (this.fieldErrors.email || this.fieldErrors.password) return;
+
+                    this.loading = true;
+
+                    try {
+                        const response = await axios.post('/login', {
+                            email: this.email,
+                            password: this.password,
+                            remember: this.remember
+                        });
+
+                        const data = response.data.data || response.data;
+                        if (data.token) localStorage.setItem('auth_token', data.token);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Welcome Back!',
+                            text: 'Redirecting to your dashboard...',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'top-end'
+                        });
+
+                        setTimeout(() => window.location.href = '/dashboard', 1000);
+                    } catch (err) {
+                        if (err.response?.status === 422) {
+                            const errors = err.response.data.errors;
+                            Object.keys(errors).forEach(field => {
+                                this.fieldErrors[field] = errors[field][0];
+                            });
+                        } else {
+                            this.errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials.';
+                        }
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }));
         });
     </script>
 </body>
-
 </html>

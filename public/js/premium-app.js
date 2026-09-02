@@ -1,19 +1,22 @@
-import { SidebarManager } from './core/SidebarManager.js';
+// import { SidebarManager } from "./core/SidebarManager.js?v=4";
 
 const App = (() => {
-
     /* ================= CORE ================= */
 
     // SETUP AXIOS GLOBALLY IMMEDIATELY
     const setupAxios = () => {
         const csrf = document.querySelector('meta[name="csrf-token"]');
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem("auth_token");
 
         if (window.axios) {
             axios.defaults.withCredentials = true;
-            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            if (csrf) axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
-            if (token) axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axios.defaults.headers.common["X-Requested-With"] =
+                "XMLHttpRequest";
+            if (csrf)
+                axios.defaults.headers.common["X-CSRF-TOKEN"] = csrf.content;
+            if (token)
+                axios.defaults.headers.common["Authorization"] =
+                    `Bearer ${token}`;
         }
     };
 
@@ -21,27 +24,28 @@ const App = (() => {
     setupAxios();
 
     const init = () => {
-        document.addEventListener('click', handleActionClicks);
+        document.addEventListener("click", handleActionClicks);
+        attachInlineValidation();
 
-        if (document.getElementById('dashboard-stats-root')) {
+        if (document.getElementById("dashboard-stats-root")) {
             loadDashboard();
         }
     };
 
     const escapeText = (val) => {
-        return String(val ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        return String(val ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     };
 
     const safeHTML = (strings, ...values) => {
         // Hardened: We no longer trust any string value as markup starting with '<'
         // Every dynamic value is escaped unless it's an instance of an HTMLElement we created ourselves
         const html = strings.reduce((acc, str, i) => {
-            const val = values[i] !== undefined ? values[i] : '';
+            const val = values[i] !== undefined ? values[i] : "";
             let escaped;
             if (val instanceof HTMLElement) {
                 escaped = val.outerHTML;
@@ -49,26 +53,30 @@ const App = (() => {
                 escaped = escapeText(val);
             }
             return acc + str + escaped;
-        }, '');
-        const template = document.createElement('template');
+        }, "");
+        const template = document.createElement("template");
         template.innerHTML = html.trim();
         return template.content.firstChild;
     };
+
 
     /* ================= DASHBOARD ================= */
 
     const parallelLoad = async (configs) => {
         const entries = Object.entries(configs);
-        const results = await Promise.allSettled(entries.map(([_, fn]) => fn()));
+        const results = await Promise.allSettled(
+            
+            entries.map(([_, fn]) => fn()),
+        );
         const data = {};
         results.forEach((res, i) => {
-            data[entries[i][0]] = res.status === 'fulfilled' ? res.value : null;
+            data[entries[i][0]] = res.status === "fulfilled" ? res.value : null;
         });
         return data;
     };
 
     const loadDashboard = async () => {
-        const root = document.getElementById('dashboard-stats-root');
+        const root = document.getElementById("dashboard-stats-root");
         if (!root) return;
 
         // Show individual skeletons
@@ -80,7 +88,7 @@ const App = (() => {
         try {
             // Parallel load stats and activity if they are separate endpoints (currently one)
             // But we can still simulate parallelism for future-proofing or if we split them
-            const res = await axios.get('/api/v1/dashboard/stats');
+            const res = await axios.get("/api/v1/dashboard/stats");
             if (!res?.data?.data) throw new Error();
 
             const data = res.data.data;
@@ -89,6 +97,9 @@ const App = (() => {
             // Use requestAnimationFrame for smooth transition
             requestAnimationFrame(() => {
                 root.replaceChildren();
+
+                const isOverallEmpty = data.platform?.is_empty || data.general?.is_empty || data.student?.is_empty || data.teacher?.is_empty || false;
+
                 if (data.platform) {
                     renderPlatformStats(root, data.platform);
                 } else if (data.student) {
@@ -101,104 +112,232 @@ const App = (() => {
 
                 // Render Charts if they exist
                 if (data.charts) {
-                    renderCharts(data.charts);
+                    renderCharts(data.charts, isOverallEmpty);
                 }
             });
-
         } catch (err) {
-            console.error('Dashboard load error:', err);
+            console.error("Dashboard load error:", err);
             root.replaceChildren();
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'col-12 text-center py-5 text-danger';
-            errorDiv.textContent = 'Failed to load dashboard data. Please try refreshing.';
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "col-12 text-center py-5 text-danger";
+            errorDiv.textContent =
+                "Failed to load dashboard data. Please try refreshing.";
             root.appendChild(errorDiv);
         }
     };
 
+    const createEmptyState = (title, message, btnText, btnAction) => {
+        const div = document.createElement('div');
+        div.className = 'col-12 text-center py-5 empty-state animate-in';
+        div.innerHTML = `
+            <div class="mb-4 text-muted">
+                <i class="bi bi-inbox" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="fw-bold text-dark">${escapeText(title)}</h4>
+            <p class="text-muted mb-4">${escapeText(message)}</p>
+            ${btnText ? `<button class="btn btn-primary-premium px-4 py-2" onclick="${escapeText(btnAction)}"><i class="bi bi-plus-lg me-2"></i>${escapeText(btnText)}</button>` : ''}
+        `;
+        return div;
+    };
+
     const renderPlatformStats = (root, stats) => {
         const cards = [
-            ['Total Schools', stats.total_schools, 'bi-building'],
-            ['Active Schools', stats.active_schools, 'bi-check-circle-fill'],
-            ['Total Users', stats.total_users, 'bi-people'],
-            ['Total Students', stats.total_students, 'bi-mortarboard'],
-            ['Total Teachers', stats.total_teachers, 'bi-person-badge'],
-            ['Platform Revenue', formatCurrency(stats.total_revenue), 'bi-cash-stack']
+            ["Total Schools", stats.total_schools, "bi-building"],
+            ["Active Schools", stats.active_schools, "bi-check-circle-fill"],
+            ["Total Users", stats.total_users, "bi-people"],
+            ["Total Students", stats.total_students, "bi-mortarboard"],
+            ["Total Teachers", stats.total_teachers, "bi-person-badge"],
+            [
+                "Platform Revenue",
+                formatCurrency(stats.total_revenue),
+                "bi-cash-stack",
+            ],
         ];
 
+        const isEmpty = stats.is_empty === true;
+
         cards.forEach(([label, value, icon]) => {
-            root.appendChild(createStatCard(label, value, icon));
+            root.appendChild(createStatCard(label, value, icon, isEmpty));
         });
     };
 
     const renderStudentStats = (root, stats) => {
-        root.appendChild(createStatCard('Attendance Rate', `${Math.round(stats.attendance)}%`, 'bi-calendar-check'));
-        root.appendChild(createStatCard('Active Assignments', stats.assignments, 'bi-journal-text'));
-        root.appendChild(createStatCard('Average Grade', stats.avg_marks.toFixed(1), 'bi-award'));
+        const isEmpty = stats.is_empty === true;
+        root.appendChild(
+            createStatCard(
+                "Attendance Rate",
+                `${Math.round(stats.attendance)}%`,
+                "bi-calendar-check",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Active Assignments",
+                stats.assignments,
+                "bi-journal-text",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Average Grade",
+                stats.avg_marks.toFixed(1),
+                "bi-award",
+                isEmpty
+            ),
+        );
 
-        const activityRoot = document.getElementById('dashboard-activity-root');
+        const activityRoot = document.getElementById("dashboard-activity-root");
         if (activityRoot && Array.isArray(stats.upcoming_assignments)) {
             renderActivity(activityRoot, stats.upcoming_assignments);
         }
     };
 
     const renderTeacherStats = (root, stats) => {
-        root.appendChild(createStatCard('Total Classes', stats.classes, 'bi-grid'));
-        root.appendChild(createStatCard('Total Students', stats.students, 'bi-people'));
-        root.appendChild(createStatCard('Pending Grading', stats.assignments, 'bi-clipboard-check'));
+        const isEmpty = stats.is_empty === true;
+        root.appendChild(
+            createStatCard("Total Classes", stats.classes, "bi-grid", isEmpty),
+        );
+        root.appendChild(
+            createStatCard("Total Students", stats.students, "bi-people", isEmpty),
+        );
+        root.appendChild(
+            createStatCard(
+                "Pending Grading",
+                stats.assignments,
+                "bi-clipboard-check",
+                isEmpty
+            ),
+        );
 
-        const activityRoot = document.getElementById('dashboard-activity-root');
+        const activityRoot = document.getElementById("dashboard-activity-root");
         if (activityRoot && stats.academic?.upcoming_assignments) {
             renderActivity(activityRoot, stats.academic.upcoming_assignments);
         }
     };
 
     const renderSchoolStats = (root, stats) => {
+        const isEmpty = stats.general?.is_empty === true;
         // Row 1: Academic Overview
-        root.appendChild(createStatCard('Total Students', stats.general?.students || 0, 'bi-people'));
-        root.appendChild(createStatCard('Active Teachers', stats.general?.teachers || 0, 'bi-person-badge'));
-        root.appendChild(createStatCard('Total Classes', stats.general?.classes || 0, 'bi-building'));
+        root.appendChild(
+            createStatCard(
+                "Total Students",
+                stats.general?.students || 0,
+                "bi-people",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Active Teachers",
+                stats.general?.teachers || 0,
+                "bi-person-badge",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Total Classes",
+                stats.general?.classes || 0,
+                "bi-building",
+                isEmpty
+            ),
+        );
 
         // Row 2: Engagement & Billing
-        root.appendChild(createStatCard('Assignments', stats.general?.assignments || 0, 'bi-journal-text'));
-        root.appendChild(createStatCard('Attendance Today', stats.general?.attendance_today || 0, 'bi-calendar-check'));
-        root.appendChild(createStatCard('Recent Reg (7d)', stats.general?.recent_registrations || 0, 'bi-person-plus'));
+        root.appendChild(
+            createStatCard(
+                "Assignments",
+                stats.general?.assignments || 0,
+                "bi-journal-text",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Attendance Today",
+                stats.general?.attendance_today || 0,
+                "bi-calendar-check",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Recent Reg (7d)",
+                stats.general?.recent_registrations || 0,
+                "bi-person-plus",
+                isEmpty
+            ),
+        );
 
         // Row 3: Financial Health
-        root.appendChild(createStatCard('Total Revenue', formatCurrency(stats.finance?.payments?.total_amount || 0), 'bi-cash-stack'));
-        root.appendChild(createStatCard('Outstanding Balance', formatCurrency(stats.finance?.outstanding_balance || 0), 'bi-piggy-bank'));
-        root.appendChild(createStatCard('Collectable Fees', formatCurrency(stats.general?.collectable_fees || 0), 'bi-wallet2'));
+        root.appendChild(
+            createStatCard(
+                "Total Revenue",
+                formatCurrency(stats.finance?.payments?.total_amount || 0),
+                "bi-cash-stack",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Outstanding Balance",
+                formatCurrency(stats.finance?.outstanding_balance || 0),
+                "bi-piggy-bank",
+                isEmpty
+            ),
+        );
+        root.appendChild(
+            createStatCard(
+                "Collectable Fees",
+                formatCurrency(stats.general?.collectable_fees || 0),
+                "bi-wallet2",
+                isEmpty
+            ),
+        );
 
-        const activityRoot = document.getElementById('dashboard-activity-root');
-        if (activityRoot && Array.isArray(stats.academic?.upcoming_assignments)) {
+        const activityRoot = document.getElementById("dashboard-activity-root");
+        if (
+            activityRoot &&
+            Array.isArray(stats.academic?.upcoming_assignments)
+        ) {
             renderActivity(activityRoot, stats.academic.upcoming_assignments);
         }
     };
 
-    const createStatCard = (label, value, icon = 'bi-graph-up') => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-4 animate-in';
+    const createStatCard = (label, value, icon = "bi-graph-up", isEmpty = false) => {
+        const col = document.createElement("div");
+        col.className = "col-span-1 animate-in";
 
-        const card = document.createElement('div');
-        card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3 transition-all-premium';
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full flex items-center gap-5 transition-all duration-300 hover:shadow-md hover:border-blue-300 group";
 
-        const iconBox = document.createElement('div');
-        iconBox.className = 'avatar-md bg-primary-subtle rounded-circle text-primary d-flex align-items-center justify-content-center flex-shrink-0';
-        iconBox.style.width = '48px';
-        iconBox.style.height = '48px';
-        iconBox.innerHTML = `<i class="bi ${icon} fs-4"></i>`;
+        const iconBox = document.createElement("div");
+        iconBox.className = "w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-600 flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm border border-blue-100/50";
+        iconBox.innerHTML = `<i class="bi ${icon} text-2xl drop-shadow-sm"></i>`;
 
-        const content = document.createElement('div');
-        content.className = 'overflow-hidden';
+        const content = document.createElement("div");
+        content.className = "overflow-hidden flex-1";
 
-        const p = document.createElement('p');
-        p.className = 'text-muted text-uppercase small mb-1 text-truncate';
+        const p = document.createElement("p");
+        p.className = "text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 truncate";
         p.textContent = label;
 
-        const h = document.createElement('h3');
-        h.className = 'h3 mb-0 text-truncate';
-        h.textContent = value;
+        const h = document.createElement("h3");
+        h.className = "text-3xl font-extrabold text-slate-900 truncate tracking-tight";
+        
+        if (isEmpty && (value === 0 || value === "0" || value === "$0.00" || value === "0%")) {
+            h.innerHTML = '<span class="text-slate-300">&mdash;</span>';
+            const hint = document.createElement("small");
+            hint.className = "text-slate-400 block text-xs mt-1 font-medium";
+            hint.textContent = "Data unavailable";
+            content.append(p, h, hint);
+        } else {
+            h.textContent = value;
+            content.append(p, h);
+        }
 
-        content.append(p, h);
         card.append(iconBox, content);
         col.appendChild(card);
 
@@ -206,36 +345,33 @@ const App = (() => {
     };
 
     const createStatSkeleton = () => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-4';
+        const col = document.createElement("div");
+        col.className = "col-span-1";
 
-        const card = document.createElement('div');
-        card.className = 'card-premium h-100 p-3 d-flex align-items-center gap-3';
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full flex items-center gap-4 animate-pulse";
 
-        const icon = document.createElement('div');
-        icon.className = 'sidebar-skeleton-icon';
-        icon.style.cssText = 'width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;';
+        const iconBox = document.createElement("div");
+        iconBox.className = "w-12 h-12 rounded-xl bg-slate-200 flex-shrink-0";
 
-        const content = document.createElement('div');
-        content.className = 'flex-grow-1';
+        const content = document.createElement("div");
+        content.className = "flex-1 space-y-3";
 
-        const t1 = document.createElement('div');
-        t1.className = 'sidebar-skeleton-text';
-        t1.style.width = '60%';
-        t1.style.marginBottom = '8px';
+        const label = document.createElement("div");
+        label.className = "h-3 bg-slate-200 rounded-md w-1/2";
+        
+        const val = document.createElement("div");
+        val.className = "h-6 bg-slate-200 rounded-md w-3/4";
 
-        const t2 = document.createElement('div');
-        t2.className = 'sidebar-skeleton-text';
-        t2.style.width = '40%';
-
-        content.append(t1, t2);
-        card.append(icon, content);
+        content.append(label, val);
+        card.append(iconBox, content);
         col.appendChild(card);
+
         return col;
     };
 
-    const renderCharts = (charts) => {
-        const root = document.getElementById('dashboard-charts-root');
+    const renderCharts = (charts, isOverallEmpty = false) => {
+        const root = document.getElementById("dashboard-charts-root");
         if (!root) return;
 
         root.replaceChildren();
@@ -243,31 +379,43 @@ const App = (() => {
         const queue = [];
 
         entries.forEach(([key, config]) => {
-            if (!config || !config.labels || !Array.isArray(config.data)) return;
+            if (!config || !config.labels || !Array.isArray(config.data))
+                return;
 
-            const colSize = config.labels.length > 7 ? 'col-12' : 'col-md-6';
-            const col = document.createElement('div');
-            col.className = `${colSize} mb-4 animate-in`;
+            const colSize = config.labels.length > 7 ? "col-span-1 lg:col-span-2" : "col-span-1";
+            const col = document.createElement("div");
+            col.className = `${colSize} animate-in`;
 
-            const card = document.createElement('div');
-            card.className = 'card-premium p-4 h-100 shadow-sm border-0';
+            const card = document.createElement("div");
+            card.className = "bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full flex flex-col";
 
-            const title = document.createElement('h6');
-            title.className = 'fw-bold mb-4 text-muted text-uppercase small';
-            title.textContent = key.replace(/_/g, ' ');
+            const title = document.createElement("h6");
+            title.className = "font-bold mb-6 text-slate-800 text-lg capitalize tracking-tight";
+            title.textContent = key.replace(/_/g, " ");
 
-            const canvasWrapper = document.createElement('div');
-            canvasWrapper.style.height = '300px';
-            canvasWrapper.className = 'position-relative';
+            const canvasWrapper = document.createElement("div");
+            canvasWrapper.style.height = "320px";
+            canvasWrapper.className = "relative flex-1";
 
-            const canvas = document.createElement('canvas');
-            canvasWrapper.appendChild(canvas);
+            const isChartEmpty = isOverallEmpty && config.data.every(v => v === 0);
+
+            if (isChartEmpty) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50/50 rounded-xl border border-dashed border-slate-200';
+                emptyDiv.innerHTML = `
+                    <i class="bi bi-bar-chart text-slate-300 mb-3" style="font-size: 3rem;"></i>
+                    <p class="mb-0 text-sm font-medium">No ${key.replace(/_/g, " ")} data yet</p>
+                `;
+                canvasWrapper.appendChild(emptyDiv);
+            } else {
+                const canvas = document.createElement("canvas");
+                canvasWrapper.appendChild(canvas);
+                queue.push({ canvas, key, config });
+            }
+
             card.append(title, canvasWrapper);
             col.appendChild(card);
             root.appendChild(col);
-
-            // Add to initialization queue
-            queue.push({ canvas, key, config });
         });
 
         // Staggered initialization
@@ -285,29 +433,36 @@ const App = (() => {
         if (!window.Chart) return;
 
         const colors = {
-            primary: '#4f46e5', // Deep Indigo
-            secondary: '#94a3b8', // Slate
-            success: '#10b981', // Emerald
-            warning: '#f59e0b', // Amber
-            danger: '#ef4444', // Red
-            info: '#06b6d4', // Cyan
-            palette: ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#6366f1']
+            primary: "#4f46e5", // Deep Indigo
+            secondary: "#94a3b8", // Slate
+            success: "#10b981", // Emerald
+            warning: "#f59e0b", // Amber
+            danger: "#ef4444", // Red
+            info: "#06b6d4", // Cyan
+            palette: [
+                "#4f46e5",
+                "#06b6d4",
+                "#10b981",
+                "#f59e0b",
+                "#ef4444",
+                "#6366f1",
+            ],
         };
 
         const typeMap = {
-            'distribution': 'doughnut',
-            'status': 'doughnut',
-            'demographics': 'doughnut',
-            'engagement': 'doughnut',
-            'growth': 'line',
-            'trends': 'line',
-            'flow': 'line',
-            'pulse': 'bar',
-            'performance': 'bar',
-            'by_class': 'bar'
+            distribution: "doughnut",
+            status: "doughnut",
+            demographics: "doughnut",
+            engagement: "doughnut",
+            growth: "line",
+            trends: "line",
+            flow: "line",
+            pulse: "bar",
+            performance: "bar",
+            by_class: "bar",
         };
 
-        let chartType = 'line';
+        let chartType = "line";
         for (const [key, val] of Object.entries(typeMap)) {
             if (type.toLowerCase().includes(key)) {
                 chartType = val;
@@ -315,30 +470,34 @@ const App = (() => {
             }
         }
 
-        const isDoughnut = chartType === 'doughnut';
-        const isBar = chartType === 'bar';
+        const isDoughnut = chartType === "doughnut";
+        const isBar = chartType === "bar";
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         new Chart(ctx, {
             type: chartType,
             data: {
                 labels: config.labels,
-                datasets: [{
-                    label: type.replace(/_/g, ' ').toUpperCase(),
-                    data: config.data,
-                    backgroundColor: isDoughnut
-                        ? colors.palette
-                        : (isBar ? colors.primary : 'rgba(79, 70, 229, 0.1)'),
-                    borderColor: isDoughnut ? '#ffffff' : colors.primary,
-                    borderWidth: isDoughnut ? 2 : 2.5,
-                    fill: chartType === 'line',
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: colors.primary,
-                    pointBorderWidth: 2,
-                    borderRadius: isBar ? 8 : 0
-                }]
+                datasets: [
+                    {
+                        label: type.replace(/_/g, " ").toUpperCase(),
+                        data: config.data,
+                        backgroundColor: isDoughnut
+                            ? colors.palette
+                            : isBar
+                              ? colors.primary
+                              : "rgba(79, 70, 229, 0.1)",
+                        borderColor: isDoughnut ? "#ffffff" : colors.primary,
+                        borderWidth: isDoughnut ? 2 : 2.5,
+                        fill: chartType === "line",
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: "#ffffff",
+                        pointBorderColor: colors.primary,
+                        pointBorderWidth: 2,
+                        borderRadius: isBar ? 8 : 0,
+                    },
+                ],
             },
             options: {
                 responsive: true,
@@ -346,75 +505,94 @@ const App = (() => {
                 plugins: {
                     legend: {
                         display: isDoughnut,
-                        position: 'bottom',
+                        position: "bottom",
                         labels: {
                             usePointStyle: true,
                             padding: 20,
-                            font: { family: 'Outfit', size: 12 }
-                        }
+                            font: { family: "Outfit", size: 12 },
+                        },
                     },
                     tooltip: {
-                        backgroundColor: '#0f172a',
+                        backgroundColor: "#0f172a",
                         padding: 12,
                         cornerRadius: 8,
-                        titleFont: { family: 'Outfit', size: 13, weight: 'bold' },
-                        bodyFont: { family: 'Outfit', size: 12 }
-                    }
-                },
-                scales: isDoughnut ? {} : {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [5, 5], color: '#e2e8f0', drawBorder: false },
-                        ticks: { font: { family: 'Outfit', size: 12 }, color: '#64748b' }
+                        titleFont: {
+                            family: "Outfit",
+                            size: 13,
+                            weight: "bold",
+                        },
+                        bodyFont: { family: "Outfit", size: 12 },
                     },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { family: 'Outfit', size: 11 }, color: '#64748b' }
-                    }
-                }
-            }
+                },
+                scales: isDoughnut
+                    ? {}
+                    : {
+                          y: {
+                              beginAtZero: true,
+                              grid: {
+                                  borderDash: [5, 5],
+                                  color: "#e2e8f0",
+                                  drawBorder: false,
+                              },
+                              ticks: {
+                                  font: { family: "Outfit", size: 12 },
+                                  color: "#64748b",
+                              },
+                          },
+                          x: {
+                              grid: { display: false },
+                              ticks: {
+                                  font: { family: "Outfit", size: 11 },
+                                  color: "#64748b",
+                              },
+                          },
+                      },
+            },
         });
     };
 
     const renderActivity = (root, assignments) => {
         root.replaceChildren();
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'card-premium p-3';
+        const wrapper = document.createElement("div");
+        wrapper.className = "card-premium p-3";
 
-        const title = document.createElement('h5');
-        title.textContent = 'Upcoming Deadlines';
-        title.className = 'mb-3 fw-bold';
+        const title = document.createElement("h5");
+        title.textContent = "Upcoming Deadlines";
+        title.className = "mb-3 fw-bold";
 
-        const list = document.createElement('div');
-        list.className = 'vstack gap-3';
+        const list = document.createElement("div");
+        list.className = "vstack gap-3";
 
         if (assignments.length === 0) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'text-center py-3 text-muted';
-            emptyDiv.textContent = 'No upcoming assignments';
+            const emptyDiv = document.createElement("div");
+            emptyDiv.className = "text-center py-3 text-muted";
+            emptyDiv.textContent = "No upcoming assignments";
             list.appendChild(emptyDiv);
         }
 
-        assignments.forEach(a => {
-            const row = document.createElement('div');
-            row.className = 'd-flex align-items-center gap-3 p-2 rounded-3 border bg-white';
+        assignments.forEach((a) => {
+            const row = document.createElement("div");
+            row.className =
+                "d-flex align-items-center gap-3 p-2 rounded-3 border bg-white";
 
-            const icon = document.createElement('div');
-            icon.className = 'avatar-sm bg-light rounded text-center d-flex align-items-center justify-content-center';
-            icon.style.width = '40px';
-            icon.style.height = '40px';
-            icon.innerHTML = '<i class="bi bi-file-earmark-text text-primary"></i>';
+            const icon = document.createElement("div");
+            icon.className =
+                "avatar-sm bg-light rounded text-center d-flex align-items-center justify-content-center";
+            icon.style.width = "40px";
+            icon.style.height = "40px";
+            icon.innerHTML =
+                '<i class="bi bi-file-earmark-text text-primary"></i>';
 
-            const text = document.createElement('div');
-            text.className = 'flex-grow-1';
+            const text = document.createElement("div");
+            text.className = "flex-grow-1";
 
-            const name = document.createElement('div');
-            name.className = 'fw-semibold';
+            const name = document.createElement("div");
+            name.className = "fw-semibold";
             name.textContent = a.title;
 
-            const date = document.createElement('div');
-            date.className = 'small text-muted';
+            const date = document.createElement("div");
+            date.className = "small text-muted";
             date.textContent = `Due: ${new Date(a.due_date).toLocaleDateString()}`;
 
             text.append(name, date);
@@ -464,7 +642,7 @@ const App = (() => {
             tbody.replaceChildren();
 
             if (!Array.isArray(items) || items.length === 0) {
-                tbody.appendChild(emptyRow('No records found'));
+                tbody.appendChild(emptyRow("No records found"));
                 return;
             }
 
@@ -481,12 +659,12 @@ const App = (() => {
                 for (; index < limit; index++) {
                     const item = items[index];
                     let row;
-                    if (typeof rendererOrType === 'function') {
+                    if (typeof rendererOrType === "function") {
                         const result = rendererOrType(item);
                         if (result instanceof HTMLElement) {
                             row = result;
-                        } else if (typeof result === 'string') {
-                            const template = document.createElement('template');
+                        } else if (typeof result === "string") {
+                            const template = document.createElement("template");
                             template.innerHTML = result.trim();
                             row = template.content.firstChild;
                         }
@@ -495,7 +673,7 @@ const App = (() => {
                     }
 
                     if (row) {
-                        row.classList.add('animate-in');
+                        row.classList.add("animate-in");
                         fragment.appendChild(row);
                     }
                 }
@@ -508,383 +686,429 @@ const App = (() => {
             };
 
             requestAnimationFrame(renderNextChunk);
-
         } catch (err) {
             if (activeRenders.get(tbodyId) !== currentTaskId) return;
-            console.error('Table render error:', err);
+            console.error("Table render error:", err);
             tbody.replaceChildren();
-            tbody.appendChild(emptyRow('Error loading data', true));
+            tbody.appendChild(emptyRow("Error loading data", true));
         }
     };
 
     const renderTableRow = (item, type) => {
-        const tr = document.createElement('tr');
+        const tr = document.createElement("tr");
         // Get role safely
         const userRole = window.AuthUser?.roles?.[0]; // default undefined, checks !== 'student' below
 
-        if (type === 'assignment') {
+        if (type === "assignment") {
             // Custom render for assignment to show Submit button for students
-            const titleTd = document.createElement('td');
+            const titleTd = document.createElement("td");
             titleTd.textContent = item.title;
             tr.appendChild(titleTd);
 
-            const classTd = document.createElement('td');
-            classTd.textContent = item.class_room?.name || 'N/A';
+            const classTd = document.createElement("td");
+            classTd.textContent = item.class_room?.name || "N/A";
             tr.appendChild(classTd);
 
-            const subjectTd = document.createElement('td');
-            subjectTd.textContent = item.subject?.name || 'N/A';
+            const subjectTd = document.createElement("td");
+            subjectTd.textContent = item.subject?.name || "N/A";
             tr.appendChild(subjectTd);
 
-            const dateTd = document.createElement('td');
+            const dateTd = document.createElement("td");
             dateTd.textContent = new Date(item.due_date).toLocaleDateString();
             tr.appendChild(dateTd);
 
-            const statusTd = document.createElement('td');
-            const isActive = item.status === 'active';
-            const statusBadge = document.createElement('span');
-            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
+            const statusTd = document.createElement("td");
+            const isActive = item.status === "active";
+            const statusBadge = document.createElement("span");
+            statusBadge.className = `badge bg-${isActive ? "success" : "secondary"}-subtle text-${isActive ? "success" : "secondary"} px-2`;
             statusBadge.textContent = item.status;
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
 
-            const actionTd = document.createElement('td');
-            actionTd.className = 'text-end';
+            const actionTd = document.createElement("td");
+            actionTd.className = "text-end";
 
-            if (userRole === 'student') {
+            if (userRole === "student") {
                 // Student Action: Submit
                 // Check if already submitted? (Ideally backend sends 'submission_status')
                 // For now, just show "Submit"
-                const submitBtn = document.createElement('button');
-                submitBtn.className = 'btn btn-sm btn-primary-premium ms-1';
-                const submitIcon = document.createElement('i');
-                submitIcon.className = 'bi bi-send';
-                submitBtn.append(submitIcon, document.createTextNode(' Submit'));
+                const submitBtn = document.createElement("button");
+                submitBtn.className = "btn btn-sm btn-primary-premium ms-1";
+                const submitIcon = document.createElement("i");
+                submitIcon.className = "bi bi-send";
+                submitBtn.append(
+                    submitIcon,
+                    document.createTextNode(" Submit"),
+                );
                 submitBtn.onclick = () => openSubmissionModal(item);
                 actionTd.appendChild(submitBtn);
             } else {
                 // Teacher/Admin Actions: Edit/Delete
                 actionTd.append(
-                    actionButton('<i class="bi bi-pencil-square"></i>', 'edit', type, item.id),
-                    actionButton('<i class="bi bi-trash"></i>', 'delete', type, item.id)
+                    actionButton(
+                        "bi-pencil-square",
+                        "edit",
+                        type,
+                        item.id,
+                    ),
+                    actionButton(
+                        "bi-trash",
+                        "delete",
+                        type,
+                        item.id,
+                    ),
                 );
             }
             tr.appendChild(actionTd);
             return tr;
         }
 
-        if (type === 'student') {
-            const studentTd = document.createElement('td');
-            const studentDiv = document.createElement('div');
-            studentDiv.className = 'd-flex align-items-center';
+        if (type === "student") {
+            const studentTd = document.createElement("td");
+            const studentDiv = document.createElement("div");
+            studentDiv.className = "d-flex align-items-center";
 
-            const avatarBox = document.createElement('div');
-            avatarBox.className = 'avatar-sm me-2 bg-light rounded text-center';
-            avatarBox.style.cssText = 'width:32px; height:32px; line-height:32px;';
+            const avatarBox = document.createElement("div");
+            avatarBox.className = "avatar-sm me-2 bg-light rounded text-center";
+            avatarBox.style.cssText =
+                "width:32px; height:32px; line-height:32px;";
             avatarBox.innerHTML = '<i class="bi bi-person text-primary"></i>';
 
-            const infoBox = document.createElement('div');
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'fw-bold text-dark';
-            nameDiv.textContent = item.full_name || item.name || 'N/A';
+            const infoBox = document.createElement("div");
+            const nameDiv = document.createElement("div");
+            nameDiv.className = "fw-bold text-dark";
+            nameDiv.textContent = item.full_name || item.name || "N/A";
 
-            const emailDiv = document.createElement('div');
-            emailDiv.className = 'small text-muted';
-            emailDiv.textContent = item.user?.email || item.email || '';
+            const emailDiv = document.createElement("div");
+            emailDiv.className = "small text-muted";
+            emailDiv.textContent = item.user?.email || item.email || "";
 
             infoBox.append(nameDiv, emailDiv);
             studentDiv.append(avatarBox, infoBox);
             studentTd.appendChild(studentDiv);
             tr.appendChild(studentTd);
 
-            const admissionTd = document.createElement('td');
-            const admissionBadge = document.createElement('span');
-            admissionBadge.className = 'badge bg-light text-dark border';
-            admissionBadge.textContent = item.admission_number || 'N/A';
+            const admissionTd = document.createElement("td");
+            const admissionBadge = document.createElement("span");
+            admissionBadge.className = "badge bg-light text-dark border";
+            admissionBadge.textContent = item.admission_number || "N/A";
             admissionTd.appendChild(admissionBadge);
             tr.appendChild(admissionTd);
 
-            const gradeTd = document.createElement('td');
-            gradeTd.textContent = item.current_grade || item.grade?.name || 'N/A';
+            const gradeTd = document.createElement("td");
+            gradeTd.textContent =
+                item.current_grade || item.grade?.name || "N/A";
             tr.appendChild(gradeTd);
 
-            const genderTd = document.createElement('td');
-            const genderSpan = document.createElement('span');
-            genderSpan.className = 'text-capitalize';
-            genderSpan.textContent = item.gender || item.user?.gender || 'N/A';
+            const genderTd = document.createElement("td");
+            const genderSpan = document.createElement("span");
+            genderSpan.className = "text-capitalize";
+            genderSpan.textContent = item.gender || item.user?.gender || "N/A";
             genderTd.appendChild(genderSpan);
             tr.appendChild(genderTd);
 
-            const statusTd = document.createElement('td');
-            const isActive = item.status === true || item.status === 1 || item.status === 'active';
-            const statusBadge = document.createElement('span');
-            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
-            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            const statusTd = document.createElement("td");
+            const isActive =
+                item.status === true ||
+                item.status === 1 ||
+                item.status === "active";
+            const statusBadge = document.createElement("span");
+            statusBadge.className = `badge bg-${isActive ? "success" : "secondary"}-subtle text-${isActive ? "success" : "secondary"} px-2`;
+            statusBadge.textContent = isActive ? "Active" : "Inactive";
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
-        } else if (type === 'staff') {
-            const staffTd = document.createElement('td');
-            const staffDiv = document.createElement('div');
-            staffDiv.className = 'd-flex align-items-center';
+        } else if (type === "staff") {
+            const staffTd = document.createElement("td");
+            const staffDiv = document.createElement("div");
+            staffDiv.className = "d-flex align-items-center";
 
-            const avatarBox = document.createElement('div');
-            avatarBox.className = 'avatar-sm me-2 bg-light rounded text-center';
-            avatarBox.style.cssText = 'width:32px; height:32px; line-height:32px;';
-            avatarBox.innerHTML = '<i class="bi bi-person-gear text-primary"></i>';
+            const avatarBox = document.createElement("div");
+            avatarBox.className = "avatar-sm me-2 bg-light rounded text-center";
+            avatarBox.style.cssText =
+                "width:32px; height:32px; line-height:32px;";
+            avatarBox.innerHTML =
+                '<i class="bi bi-person-gear text-primary"></i>';
 
-            const infoBox = document.createElement('div');
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'fw-bold text-dark';
-            nameDiv.textContent = item.name || 'N/A';
+            const infoBox = document.createElement("div");
+            const nameDiv = document.createElement("div");
+            nameDiv.className = "fw-bold text-dark";
+            nameDiv.textContent = item.name || "N/A";
 
             infoBox.append(nameDiv);
             staffDiv.append(avatarBox, infoBox);
             staffTd.appendChild(staffDiv);
             tr.appendChild(staffTd);
 
-            const roleTd = document.createElement('td');
-            const roleBadge = document.createElement('span');
-            roleBadge.className = 'badge bg-primary-subtle text-primary';
-            roleBadge.textContent = item.roles && item.roles.length ? item.roles[0].name : 'Staff';
+            const roleTd = document.createElement("td");
+            const roleBadge = document.createElement("span");
+            roleBadge.className = "badge bg-primary-subtle text-primary";
+            roleBadge.textContent =
+                item.roles && item.roles.length ? item.roles[0].name : "Staff";
             roleTd.appendChild(roleBadge);
             tr.appendChild(roleTd);
 
-            const emailTd = document.createElement('td');
-            emailTd.textContent = item.email || 'N/A';
+            const emailTd = document.createElement("td");
+            emailTd.textContent = item.email || "N/A";
             tr.appendChild(emailTd);
 
-            const phoneTd = document.createElement('td');
-            phoneTd.textContent = item.phone || 'N/A';
+            const phoneTd = document.createElement("td");
+            phoneTd.textContent = item.phone || "N/A";
             tr.appendChild(phoneTd);
 
-            const statusTd = document.createElement('td');
-            const isActive = item.status === true || item.status === 1 || item.status === 'active';
-            const statusBadge = document.createElement('span');
-            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
-            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            const statusTd = document.createElement("td");
+            const isActive =
+                item.status === true ||
+                item.status === 1 ||
+                item.status === "active";
+            const statusBadge = document.createElement("span");
+            statusBadge.className = `badge bg-${isActive ? "success" : "secondary"}-subtle text-${isActive ? "success" : "secondary"} px-2`;
+            statusBadge.textContent = isActive ? "Active" : "Inactive";
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
-        } else if (type === 'class') {
-            const nameTd = document.createElement('td');
-            nameTd.className = 'fw-bold text-dark';
+        } else if (type === "class") {
+            const nameTd = document.createElement("td");
+            nameTd.className = "fw-bold text-dark";
             nameTd.textContent = item.name;
             tr.appendChild(nameTd);
 
-            const teacherTd = document.createElement('td');
-            teacherTd.textContent = item.class_teacher?.user?.name || 'N/A';
+            const teacherTd = document.createElement("td");
+            teacherTd.textContent = item.class_teacher?.user?.name || "N/A";
             tr.appendChild(teacherTd);
 
-            const studentsTd = document.createElement('td');
-            const studentsBadge = document.createElement('span');
-            studentsBadge.className = 'badge bg-light text-dark border';
+            const studentsTd = document.createElement("td");
+            const studentsBadge = document.createElement("span");
+            studentsBadge.className = "badge bg-light text-dark border";
             studentsBadge.textContent = item.students_count || 0;
             studentsTd.appendChild(studentsBadge);
             tr.appendChild(studentsTd);
 
-            const subjectsTd = document.createElement('td');
-            const subjectsBadge = document.createElement('span');
-            subjectsBadge.className = 'badge bg-info-subtle text-info';
+            const subjectsTd = document.createElement("td");
+            const subjectsBadge = document.createElement("span");
+            subjectsBadge.className = "badge bg-info-subtle text-info";
             subjectsBadge.textContent = item.subjects_count || 0;
             subjectsTd.appendChild(subjectsBadge);
             tr.appendChild(subjectsTd);
 
-            const assignmentsTd = document.createElement('td');
-            const assignmentsBadge = document.createElement('span');
-            assignmentsBadge.className = 'badge bg-warning-subtle text-warning';
+            const assignmentsTd = document.createElement("td");
+            const assignmentsBadge = document.createElement("span");
+            assignmentsBadge.className = "badge bg-warning-subtle text-warning";
             assignmentsBadge.textContent = item.assignments_count || 0;
             assignmentsTd.appendChild(assignmentsBadge);
             tr.appendChild(assignmentsTd);
-        } else if (type === 'school') {
-            const nameTd = document.createElement('td');
-            const schoolName = document.createElement('div');
-            schoolName.className = 'fw-bold text-dark';
+        } else if (type === "school") {
+            const nameTd = document.createElement("td");
+            const schoolName = document.createElement("div");
+            schoolName.className = "fw-bold text-dark";
             schoolName.textContent = item.name;
 
-            const schoolEmail = document.createElement('div');
-            schoolEmail.className = 'small text-muted';
-            schoolEmail.textContent = item.email || '';
+            const schoolEmail = document.createElement("div");
+            schoolEmail.className = "small text-muted";
+            schoolEmail.textContent = item.email || "";
 
-            const schoolPhone = document.createElement('div');
-            schoolPhone.className = 'small text-muted';
-            schoolPhone.textContent = item.phone || '';
+            const schoolPhone = document.createElement("div");
+            schoolPhone.className = "small text-muted";
+            schoolPhone.textContent = item.phone || "";
 
             nameTd.append(schoolName, schoolEmail, schoolPhone);
             tr.appendChild(nameTd);
 
-            const locTd = document.createElement('td');
-            const addressDiv = document.createElement('div');
-            addressDiv.className = 'small text-wrap';
-            addressDiv.style.maxWidth = '200px';
-            addressDiv.textContent = item.address || '';
+            const locTd = document.createElement("td");
+            const addressDiv = document.createElement("div");
+            addressDiv.className = "small text-wrap";
+            addressDiv.style.maxWidth = "200px";
+            addressDiv.textContent = item.address || "";
 
-            const cityDiv = document.createElement('div');
-            cityDiv.className = 'small text-muted';
-            cityDiv.textContent = `${item.city || ''}, ${item.state || ''}`.replace(/^, /, '');
+            const cityDiv = document.createElement("div");
+            cityDiv.className = "small text-muted";
+            cityDiv.textContent =
+                `${item.city || ""}, ${item.state || ""}`.replace(/^, /, "");
 
             locTd.append(addressDiv, cityDiv);
             tr.appendChild(locTd);
 
-            const personTd = document.createElement('td');
-            const personName = document.createElement('div');
-            personName.textContent = item.contact_person || 'N/A';
+            const personTd = document.createElement("td");
+            const personName = document.createElement("div");
+            personName.textContent = item.contact_person || "N/A";
 
-            const personPhone = document.createElement('div');
-            personPhone.className = 'small text-muted';
-            personPhone.textContent = item.contact_person_phone || '';
+            const personPhone = document.createElement("div");
+            personPhone.className = "small text-muted";
+            personPhone.textContent = item.contact_person_phone || "";
 
             personTd.append(personName, personPhone);
             tr.appendChild(personTd);
 
-            const statsTd = document.createElement('td');
-            const usersBadge = document.createElement('span');
-            usersBadge.className = 'badge bg-light text-dark border me-1';
+            const statsTd = document.createElement("td");
+            const usersBadge = document.createElement("span");
+            usersBadge.className = "badge bg-light text-dark border me-1";
             usersBadge.innerHTML = `<i class="bi bi-people"></i> `;
             usersBadge.append(document.createTextNode(item.users_count || 0));
 
-            const studentsBadge = document.createElement('span');
-            studentsBadge.className = 'badge bg-light text-dark border';
+            const studentsBadge = document.createElement("span");
+            studentsBadge.className = "badge bg-light text-dark border";
             studentsBadge.innerHTML = `<i class="bi bi-mortarboard"></i> `;
-            studentsBadge.append(document.createTextNode(item.students_count || 0));
+            studentsBadge.append(
+                document.createTextNode(item.students_count || 0),
+            );
 
             statsTd.append(usersBadge, studentsBadge);
             tr.appendChild(statsTd);
 
-            const planTd = document.createElement('td');
-            const planBadge = document.createElement('span');
-            planBadge.className = 'badge bg-info-subtle text-info text-uppercase';
-            planBadge.textContent = item.school_plan?.name || item.plan || 'N/A';
+            const planTd = document.createElement("td");
+            const planBadge = document.createElement("span");
+            planBadge.className =
+                "badge bg-info-subtle text-info text-uppercase";
+            planBadge.textContent =
+                item.school_plan?.name || item.plan || "N/A";
             planTd.appendChild(planBadge);
             tr.appendChild(planTd);
 
-            const statusTd = document.createElement('td');
-            const isActive = item.is_active || item.status === 'active';
-            const statusBadge = document.createElement('span');
-            statusBadge.className = `badge bg-${isActive ? 'success' : 'danger'}-subtle text-${isActive ? 'success' : 'danger'} px-2`;
-            statusBadge.textContent = item.status_label || (isActive ? 'Active' : 'Inactive');
+            const statusTd = document.createElement("td");
+            const isActive = item.is_active || item.status === "active";
+            const statusBadge = document.createElement("span");
+            statusBadge.className = `badge bg-${isActive ? "success" : "danger"}-subtle text-${isActive ? "success" : "danger"} px-2`;
+            statusBadge.textContent =
+                item.status_label || (isActive ? "Active" : "Inactive");
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
-        } else if (type === 'teacher') {
+        } else if (type === "teacher") {
             // ... (keep teacher logic same)
-            const teacherTd = document.createElement('td');
-            const teacherDiv = document.createElement('div');
-            teacherDiv.className = 'd-flex align-items-center';
+            const teacherTd = document.createElement("td");
+            const teacherDiv = document.createElement("div");
+            teacherDiv.className = "d-flex align-items-center";
 
-            const teacherAvatar = document.createElement('div');
-            teacherAvatar.className = 'avatar-sm me-2 bg-light rounded text-center';
-            teacherAvatar.style.cssText = 'width:32px; height:32px; line-height:32px;';
-            teacherAvatar.innerHTML = '<i class="bi bi-person-workspace text-primary"></i>';
+            const teacherAvatar = document.createElement("div");
+            teacherAvatar.className =
+                "avatar-sm me-2 bg-light rounded text-center";
+            teacherAvatar.style.cssText =
+                "width:32px; height:32px; line-height:32px;";
+            teacherAvatar.innerHTML =
+                '<i class="bi bi-person-workspace text-primary"></i>';
 
-            const teacherInfo = document.createElement('div');
-            const teacherName = document.createElement('div');
-            teacherName.className = 'fw-bold text-dark';
-            teacherName.textContent = item.name || item.full_name || item.user?.name || 'N/A';
+            const teacherInfo = document.createElement("div");
+            const teacherName = document.createElement("div");
+            teacherName.className = "fw-bold text-dark";
+            teacherName.textContent =
+                item.name || item.full_name || item.user?.name || "N/A";
 
-            const teacherEmail = document.createElement('div');
-            teacherEmail.className = 'small text-muted';
-            teacherEmail.textContent = item.user?.email || item.email || '';
+            const teacherEmail = document.createElement("div");
+            teacherEmail.className = "small text-muted";
+            teacherEmail.textContent = item.user?.email || item.email || "";
 
             teacherInfo.append(teacherName, teacherEmail);
             teacherDiv.append(teacherAvatar, teacherInfo);
             teacherTd.appendChild(teacherDiv);
             tr.appendChild(teacherTd);
 
-            const employeeTd = document.createElement('td');
-            const employeeBadge = document.createElement('span');
-            employeeBadge.className = 'badge bg-light text-dark border';
-            employeeBadge.textContent = item.employee_number || 'N/A';
+            const employeeTd = document.createElement("td");
+            const employeeBadge = document.createElement("span");
+            employeeBadge.className = "badge bg-light text-dark border";
+            employeeBadge.textContent = item.employee_number || "N/A";
             employeeTd.appendChild(employeeBadge);
             tr.appendChild(employeeTd);
 
-            const statusTd = document.createElement('td');
-            const isActive = (item.status === 'active' || item.status === 1 || item.user?.status === 'active');
-            const statusBadge = document.createElement('span');
-            statusBadge.className = `badge bg-${isActive ? 'success' : 'secondary'}-subtle text-${isActive ? 'success' : 'secondary'} px-2`;
-            statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+            const statusTd = document.createElement("td");
+            const isActive =
+                item.status === "active" ||
+                item.status === 1 ||
+                item.user?.status === "active";
+            const statusBadge = document.createElement("span");
+            statusBadge.className = `badge bg-${isActive ? "success" : "secondary"}-subtle text-${isActive ? "success" : "secondary"} px-2`;
+            statusBadge.textContent = isActive ? "Active" : "Inactive";
             statusTd.appendChild(statusBadge);
             tr.appendChild(statusTd);
 
-            const subjectsTd = document.createElement('td');
-            subjectsTd.textContent = item.assignments_count !== undefined ? `${item.assignments_count} Subjects` : 'N/A';
+            const subjectsTd = document.createElement("td");
+            subjectsTd.textContent =
+                item.assignments_count !== undefined
+                    ? `${item.assignments_count} Subjects`
+                    : "N/A";
             tr.appendChild(subjectsTd);
 
-            const phoneTd = document.createElement('td');
-            phoneTd.textContent = item.user?.phone || item.phone || 'N/A';
+            const phoneTd = document.createElement("td");
+            phoneTd.textContent = item.user?.phone || item.phone || "N/A";
             tr.appendChild(phoneTd);
 
-            const dateTd = document.createElement('td');
-            dateTd.textContent = item.hire_date ? new Date(item.hire_date).toLocaleDateString() : 'N/A';
+            const dateTd = document.createElement("td");
+            dateTd.textContent = item.hire_date
+                ? new Date(item.hire_date).toLocaleDateString()
+                : "N/A";
             tr.appendChild(dateTd);
-        } else if (type === 'enrollment') {
-            const studentTd = document.createElement('td');
-            studentTd.className = 'fw-bold text-dark';
-            studentTd.textContent = item.student?.full_name || item.student_name || 'N/A';
+        } else if (type === "enrollment") {
+            const studentTd = document.createElement("td");
+            studentTd.className = "fw-bold text-dark";
+            studentTd.textContent =
+                item.student?.full_name || item.student_name || "N/A";
             tr.appendChild(studentTd);
 
-            const classTd = document.createElement('td');
-            classTd.textContent = item.class_room?.name || item.class?.name || 'N/A';
+            const classTd = document.createElement("td");
+            classTd.textContent =
+                item.class_room?.name || item.class?.name || "N/A";
             tr.appendChild(classTd);
 
-            const sessionTd = document.createElement('td');
-            sessionTd.textContent = item.session?.name || item.school_session?.name || 'N/A';
+            const sessionTd = document.createElement("td");
+            sessionTd.textContent =
+                item.session?.name || item.school_session?.name || "N/A";
             tr.appendChild(sessionTd);
 
-            const termTd = document.createElement('td');
-            termTd.textContent = item.term?.name || 'N/A';
+            const termTd = document.createElement("td");
+            termTd.textContent = item.term?.name || "N/A";
             tr.appendChild(termTd);
-
-        } else if (type === 'attachment') {
-            const titleTd = document.createElement('td');
-            titleTd.className = 'fw-bold text-dark';
-            titleTd.textContent = item.title || item.file_name || 'N/A';
+        } else if (type === "attachment") {
+            const titleTd = document.createElement("td");
+            titleTd.className = "fw-bold text-dark";
+            titleTd.textContent = item.title || item.file_name || "N/A";
             tr.appendChild(titleTd);
 
-            const classTd = document.createElement('td');
-            classTd.textContent = item.class_room?.name || 'Global';
+            const classTd = document.createElement("td");
+            classTd.textContent = item.class_room?.name || "Global";
             tr.appendChild(classTd);
 
-            const subjectTd = document.createElement('td');
-            subjectTd.textContent = item.subject?.name || 'N/A';
+            const subjectTd = document.createElement("td");
+            subjectTd.textContent = item.subject?.name || "N/A";
             tr.appendChild(subjectTd);
 
-            const typeTd = document.createElement('td');
-            typeTd.textContent = item.type || 'General';
+            const typeTd = document.createElement("td");
+            typeTd.textContent = item.type || "General";
             tr.appendChild(typeTd);
 
-            const dateTd = document.createElement('td');
+            const dateTd = document.createElement("td");
             dateTd.textContent = new Date(item.created_at).toLocaleDateString();
             tr.appendChild(dateTd);
-
-        } else if (type === 'notice' || type === 'announcement') {
-            const titleTd = document.createElement('td');
-            titleTd.className = 'fw-bold text-dark';
+        } else if (type === "notice" || type === "announcement") {
+            const titleTd = document.createElement("td");
+            titleTd.className = "fw-bold text-dark";
             titleTd.textContent = item.title;
             tr.appendChild(titleTd);
 
-            const typeTd = document.createElement('td');
-            const typeBadge = document.createElement('span');
-            const color = item.type === 'Urgent' ? 'danger' : (item.type === 'Event' ? 'info' : 'primary');
+            const typeTd = document.createElement("td");
+            const typeBadge = document.createElement("span");
+            const color =
+                item.type === "Urgent"
+                    ? "danger"
+                    : item.type === "Event"
+                      ? "info"
+                      : "primary";
             typeBadge.className = `badge bg-${color}-subtle text-${color}`;
             typeBadge.textContent = item.type;
             typeTd.appendChild(typeBadge);
             tr.appendChild(typeTd);
 
-            const authorTd = document.createElement('td');
-            authorTd.textContent = item.author_name || 'System';
+            const authorTd = document.createElement("td");
+            authorTd.textContent = item.author_name || "System";
             tr.appendChild(authorTd);
 
-            const dateTd = document.createElement('td');
+            const dateTd = document.createElement("td");
             dateTd.textContent = item.created_at; // This is already diffForHumans in my controller
             tr.appendChild(dateTd);
-
-        } else if (type === 'plan') {
-            const nameTd = document.createElement('td');
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'fw-bold text-dark';
+        } else if (type === "plan") {
+            const nameTd = document.createElement("td");
+            const nameDiv = document.createElement("div");
+            nameDiv.className = "fw-bold text-dark";
             nameDiv.textContent = item.name;
             if (item.description) {
-                const descDiv = document.createElement('div');
-                descDiv.className = 'small text-muted text-truncate';
-                descDiv.style.maxWidth = '200px';
+                const descDiv = document.createElement("div");
+                descDiv.className = "small text-muted text-truncate";
+                descDiv.style.maxWidth = "200px";
                 descDiv.textContent = item.description;
                 nameTd.appendChild(descDiv);
             }
@@ -892,77 +1116,88 @@ const App = (() => {
             tr.appendChild(nameTd);
 
             const formatLimit = (v) => {
-                if (v === undefined || v === null) return 'Unlimited';
+                if (v === undefined || v === null) return "Unlimited";
                 const num = parseFloat(v);
-                return num === 0 ? 'Unlimited' : (Number.isInteger(num) ? num : num.toFixed(0));
+                return num === 0
+                    ? "Unlimited"
+                    : Number.isInteger(num)
+                      ? num
+                      : num.toFixed(0);
             };
 
-            const priceTd = document.createElement('td');
+            const priceTd = document.createElement("td");
             priceTd.textContent = formatCurrency(item.price);
             tr.appendChild(priceTd);
 
-            const stdTd = document.createElement('td');
+            const stdTd = document.createElement("td");
             stdTd.textContent = formatLimit(item.no_of_students);
             tr.appendChild(stdTd);
 
-            const tchTd = document.createElement('td');
+            const tchTd = document.createElement("td");
             tchTd.textContent = formatLimit(item.no_of_teachers);
             tr.appendChild(tchTd);
 
-            const grdTd = document.createElement('td');
+            const grdTd = document.createElement("td");
             grdTd.textContent = formatLimit(item.no_of_guardians);
             tr.appendChild(grdTd);
 
-            const stfTd = document.createElement('td');
+            const stfTd = document.createElement("td");
             stfTd.textContent = formatLimit(item.no_of_staff);
             tr.appendChild(stfTd);
 
-            const actionTd = document.createElement('td');
-            actionTd.className = 'text-end';
+            const actionTd = document.createElement("td");
+            actionTd.className = "text-end";
             actionTd.append(
-                actionButton('bi-pencil-square', 'edit', type, item.id),
-                actionButton('bi-trash', 'delete', type, item.id)
+                actionButton("bi-pencil-square", "edit", type, item.id),
+                actionButton("bi-trash", "delete", type, item.id),
             );
             tr.appendChild(actionTd);
             return tr;
         } else {
             // Generic fallback
-            const nameTd = document.createElement('td');
-            nameTd.textContent = item.name || item.title || 'N/A';
+            const nameTd = document.createElement("td");
+            nameTd.textContent = item.name || item.title || "N/A";
             tr.appendChild(nameTd);
         }
 
-        const actionTd = document.createElement('td');
-        actionTd.className = 'text-end';
+        const actionTd = document.createElement("td");
+        actionTd.className = "text-end";
 
         // Actions
-        if (userRole !== 'student') {
-            if (type === 'class') {
-                const manageBtn = document.createElement('button');
-                manageBtn.className = 'btn btn-sm btn-outline-primary ms-1';
-                manageBtn.title = 'Manage Subjects';
-                const i = document.createElement('i');
-                i.className = 'bi bi-journal-plus';
+        if (userRole !== "student") {
+            if (type === "class") {
+                const manageBtn = document.createElement("button");
+                manageBtn.className = "btn btn-sm btn-outline-primary ms-1";
+                manageBtn.title = "Manage Subjects";
+                const i = document.createElement("i");
+                i.className = "bi bi-journal-plus";
                 manageBtn.appendChild(i);
-                manageBtn.onclick = () => window.manageSubjects ? window.manageSubjects(item.id, item.name) : console.warn('manageSubjects missing');
+                manageBtn.onclick = () =>
+                    window.manageSubjects
+                        ? window.manageSubjects(item.id, item.name)
+                        : console.warn("manageSubjects missing");
                 actionTd.appendChild(manageBtn);
             }
 
-            if (type === 'school' && !item.is_active) {
-                const approveBtn = document.createElement('button');
-                approveBtn.type = 'button';
-                approveBtn.className = 'btn btn-sm btn-success-subtle text-success me-1';
-                const approveIcon = document.createElement('i');
-                approveIcon.className = 'bi bi-check-lg';
+            if (type === "school" && !item.is_active) {
+                const approveBtn = document.createElement("button");
+                approveBtn.type = "button";
+                approveBtn.className =
+                    "btn btn-sm btn-success-subtle text-success me-1";
+                const approveIcon = document.createElement("i");
+                approveIcon.className = "bi bi-check-lg";
                 approveBtn.appendChild(approveIcon);
-                approveBtn.title = 'Approve School';
-                approveBtn.onclick = () => window.approveSchool ? window.approveSchool(item.id) : console.warn('approveSchool fn missing');
+                approveBtn.title = "Approve School";
+                approveBtn.onclick = () =>
+                    window.approveSchool
+                        ? window.approveSchool(item.id)
+                        : console.warn("approveSchool fn missing");
                 actionTd.appendChild(approveBtn);
             }
 
             actionTd.append(
-                actionButton('bi-pencil-square', 'edit', type, item.id),
-                actionButton('bi-trash', 'delete', type, item.id)
+                actionButton("bi-pencil-square", "edit", type, item.id),
+                actionButton("bi-trash", "delete", type, item.id),
             );
         }
 
@@ -971,11 +1206,11 @@ const App = (() => {
     };
 
     const actionButton = (iconClass, action, entity, id) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `btn btn-sm btn-outline-${action === 'delete' ? 'danger' : 'primary'} ms-1`;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `btn btn-sm btn-outline-${action === "delete" ? "danger" : "primary"} ms-1`;
 
-        const i = document.createElement('i');
+        const i = document.createElement("i");
         i.className = `bi ${iconClass}`;
         btn.appendChild(i);
 
@@ -986,12 +1221,12 @@ const App = (() => {
     };
 
     const createSkeletonRow = (cols = 6) => {
-        const tr = document.createElement('tr');
-        tr.className = 'skeleton-row';
+        const tr = document.createElement("tr");
+        tr.className = "skeleton-row";
         for (let i = 0; i < cols; i++) {
-            const td = document.createElement('td');
-            const skeleton = document.createElement('div');
-            skeleton.className = 'skeleton-line';
+            const td = document.createElement("td");
+            const skeleton = document.createElement("div");
+            skeleton.className = "skeleton-line";
             td.appendChild(skeleton);
             tr.appendChild(td);
         }
@@ -999,10 +1234,10 @@ const App = (() => {
     };
 
     const emptyRow = (message, isError = false) => {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
         td.colSpan = 10;
-        td.className = `text-center py-4 ${isError ? 'text-danger' : 'text-muted'}`;
+        td.className = `text-center py-4 ${isError ? "text-danger" : "text-muted"}`;
         td.textContent = message;
         tr.appendChild(td);
         return tr;
@@ -1011,21 +1246,21 @@ const App = (() => {
     /* ================= EVENTS ================= */
 
     const handleActionClicks = async (e) => {
-        const btn = e.target.closest('button[data-action]');
+        const btn = e.target.closest("button[data-action]");
         if (!btn) return;
 
         const { action, entity, id } = btn.dataset;
         const endpoint = getApiEndpoint(entity);
 
-        if (action === 'delete') {
+        if (action === "delete") {
             deleteItem(`/api/v1/${endpoint}/${id}`);
         }
 
-        if (action === 'edit') {
+        if (action === "edit") {
             btn.disabled = true;
             btn.replaceChildren();
-            const spinner = document.createElement('span');
-            spinner.className = 'spinner-border spinner-border-sm';
+            const spinner = document.createElement("span");
+            spinner.className = "spinner-border spinner-border-sm";
             btn.appendChild(spinner);
 
             try {
@@ -1034,19 +1269,26 @@ const App = (() => {
                 const data = res?.data?.data || res?.data;
 
                 const fn = window[`edit${capitalize(entity)}`];
-                if (typeof fn === 'function') {
+                if (typeof fn === "function") {
                     fn(data);
                 } else {
-                    console.error(`Global function edit${capitalize(entity)} not found.`);
+                    console.error(
+                        `Global function edit${capitalize(entity)} not found.`,
+                    );
                 }
             } catch (err) {
                 console.error(`Failed to fetch ${entity} data:`, err);
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load item data.' });
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to load item data.",
+                });
             } finally {
                 btn.disabled = false;
                 btn.replaceChildren();
-                const i = document.createElement('i');
-                i.className = action === 'delete' ? 'bi bi-trash' : 'bi bi-pencil-square';
+                const i = document.createElement("i");
+                i.className =
+                    action === "delete" ? "bi bi-trash" : "bi bi-pencil-square";
                 btn.appendChild(i);
             }
         }
@@ -1054,15 +1296,15 @@ const App = (() => {
 
     const getApiEndpoint = (entity) => {
         const map = {
-            'class': 'classes',
-            'library': 'library/books',
-            'session': 'school-sessions',
-            'feeType': 'fee-types',
-            'plan': 'plans',
-            'invoiceItem': 'invoice-items',
-            'lessonNote': 'lesson-notes',
-            'assignmentSubmission': 'assignment-submissions',
-            'fee-type': 'fee-types', // cover both cases
+            class: "classes",
+            library: "library/books",
+            session: "school-sessions",
+            feeType: "fee-types",
+            plan: "plans",
+            invoiceItem: "invoice-items",
+            lessonNote: "lesson-notes",
+            assignmentSubmission: "assignment-submissions",
+            "fee-type": "fee-types", // cover both cases
         };
 
         if (map[entity]) return map[entity];
@@ -1082,32 +1324,36 @@ const App = (() => {
 
         const data = new FormData(form);
 
+        if (!validateForm(form)) {
+            return;
+        }
+
         clearFormErrors(form);
 
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.replaceChildren();
-            const spinner = document.createElement('span');
-            spinner.className = 'spinner-border spinner-border-sm me-2';
-            submitBtn.append(spinner, document.createTextNode('Saving...'));
+            const spinner = document.createElement("span");
+            spinner.className = "spinner-border spinner-border-sm me-2";
+            submitBtn.append(spinner, document.createTextNode("Saving..."));
         }
 
         try {
             const res = await axios({
                 method: form.method,
                 url: form.action,
-                data
+                data,
             });
 
             closeModal(modalId);
             form.reset();
 
             Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: res.data.message || 'Action completed successfully',
+                icon: "success",
+                title: "Success!",
+                text: res.data.message || "Action completed successfully",
                 timer: 2000,
-                showConfirmButton: false
+                showConfirmButton: false,
             });
 
             callback ? callback(res.data) : location.reload();
@@ -1116,9 +1362,10 @@ const App = (() => {
                 showFormErrors(form, err.response.data.errors);
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: err.response?.data?.message || 'Something went wrong!'
+                    icon: "error",
+                    title: "Oops...",
+                    text:
+                        err.response?.data?.message || "Something went wrong!",
                 });
             }
         } finally {
@@ -1129,46 +1376,182 @@ const App = (() => {
         }
     };
 
+    const validateForm = (form) => {
+        let isValid = true;
+        clearFormErrors(form);
+
+        const elements = form.querySelectorAll(
+            "input[required], select[required], textarea[required]",
+        );
+        elements.forEach((el) => {
+            if (!el.value.trim()) {
+                isValid = false;
+                el.classList.add("is-invalid");
+                let div = el.nextElementSibling;
+                if (!div || !div.classList.contains("invalid-feedback")) {
+                    div = document.createElement("div");
+                    div.className = "invalid-feedback";
+                    el.after(div);
+                }
+                const label = form.querySelector(`label[for="${el.id}"]`);
+                const fieldName = label
+                    ? label.textContent.replace("*", "").trim()
+                    : "This field";
+                div.textContent = `${fieldName} is required`;
+            } else if (
+                el.type === "email" &&
+                !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(el.value)
+            ) {
+                isValid = false;
+                el.classList.add("is-invalid");
+                let div = el.nextElementSibling;
+                if (!div || !div.classList.contains("invalid-feedback")) {
+                    div = document.createElement("div");
+                    div.className = "invalid-feedback";
+                    el.after(div);
+                }
+                div.textContent = `Please enter a valid email address`;
+            }
+        });
+        return isValid;
+    };
+
+    const attachInlineValidation = () => {
+        document.body.addEventListener(
+            "blur",
+            (e) => {
+                if (e.target && e.target.hasAttribute("required")) {
+                    const el = e.target;
+                    el.classList.remove("is-invalid");
+                    const next = el.nextElementSibling;
+                    if (next && next.classList.contains("invalid-feedback")) {
+                        next.remove();
+                    }
+
+                    if (!el.value.trim()) {
+                        el.classList.add("is-invalid");
+                        const div = document.createElement("div");
+                        div.className = "invalid-feedback";
+                        const label = el.form
+                            ? el.form.querySelector(`label[for="${el.id}"]`)
+                            : null;
+                        const fieldName = label
+                            ? label.textContent.replace("*", "").trim()
+                            : "This field";
+                        div.textContent = `${fieldName} is required`;
+                        el.after(div);
+                    } else if (
+                        el.type === "email" &&
+                        !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(el.value)
+                    ) {
+                        el.classList.add("is-invalid");
+                        const div = document.createElement("div");
+                        div.className = "invalid-feedback";
+                        div.textContent = `Please enter a valid email address`;
+                        el.after(div);
+                    }
+                }
+            },
+            true,
+        );
+    };
+
+    const switchWizardStep = (step, entity) => {
+        if (step === 2) {
+            const step1 = document.getElementById(`${entity}-wizard-step-1`);
+            const inputs = step1.querySelectorAll(
+                "input[required], select[required], textarea[required]",
+            );
+            let isValid = true;
+            inputs.forEach((el) => {
+                if (
+                    !el.value.trim() ||
+                    (el.type === "email" &&
+                        !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(el.value))
+                ) {
+                    isValid = false;
+                    el.focus();
+                    el.blur();
+                }
+            });
+            if (!isValid) return;
+
+            document
+                .getElementById(`${entity}-wizard-step-1`)
+                .classList.add("d-none");
+            document
+                .getElementById(`${entity}-wizard-step-2`)
+                .classList.remove("d-none");
+            document
+                .getElementById(`${entity}-wizard-footer-1`)
+                .classList.add("d-none");
+            document
+                .getElementById(`${entity}-wizard-footer-2`)
+                .classList.remove("d-none");
+        } else {
+            document
+                .getElementById(`${entity}-wizard-step-2`)
+                .classList.add("d-none");
+            document
+                .getElementById(`${entity}-wizard-step-1`)
+                .classList.remove("d-none");
+            document
+                .getElementById(`${entity}-wizard-footer-2`)
+                .classList.add("d-none");
+            document
+                .getElementById(`${entity}-wizard-footer-1`)
+                .classList.remove("d-none");
+        }
+    };
+
     const clearFormErrors = (form) => {
-        form.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
-        form.querySelectorAll('.invalid-feedback').forEach(e => e.remove());
+        form.querySelectorAll(".is-invalid").forEach((i) =>
+            i.classList.remove("is-invalid"),
+        );
+        form.querySelectorAll(".invalid-feedback").forEach((e) => e.remove());
     };
 
     const showFormErrors = (form, errors) => {
-        if (!errors || typeof errors !== 'object') return;
+        if (!errors || typeof errors !== "object") return;
 
         Object.entries(errors).forEach(([field, msgs]) => {
             const input = form.elements[field];
             if (!input) return;
 
-            input.classList.add('is-invalid');
+            input.classList.add("is-invalid");
 
-            const div = document.createElement('div');
-            div.className = 'invalid-feedback';
+            const div = document.createElement("div");
+            div.className = "invalid-feedback";
             div.textContent = msgs[0];
             input.after(div);
         });
     };
 
-    const populateForm = (form, data, prefix = '') => {
+    const populateForm = (form, data, prefix = "") => {
         if (!data) return;
 
         Object.entries(data).forEach(([key, value]) => {
             const fieldName = prefix ? `${prefix}[${key}]` : key;
 
-            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+            if (
+                value !== null &&
+                typeof value === "object" &&
+                !Array.isArray(value)
+            ) {
                 populateForm(form, value, fieldName);
-                populateForm(form, value, '');
+                populateForm(form, value, "");
             } else {
                 const element = form.elements[fieldName] || form.elements[key];
                 if (element) {
-                    if (element.type === 'checkbox') {
+                    if (element.type === "checkbox") {
                         element.checked = !!value;
-                    } else if (element.type === 'radio') {
-                        const radio = form.querySelector(`input[name="${fieldName}"][value="${value}"]`);
+                    } else if (element.type === "radio") {
+                        const radio = form.querySelector(
+                            `input[name="${fieldName}"][value="${value}"]`,
+                        );
                         if (radio) radio.checked = true;
                     } else {
-                        element.value = value ?? '';
+                        element.value = value ?? "";
                     }
                 }
             }
@@ -1179,28 +1562,32 @@ const App = (() => {
 
     const deleteItem = async (url) => {
         const result = await Swal.fire({
-            title: 'Are you sure?',
+            title: "Are you sure?",
             text: "You won't be able to revert this!",
-            icon: 'warning',
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
         });
 
         if (result.isConfirmed) {
             try {
                 await axios.delete(url);
                 await Swal.fire({
-                    title: 'Deleted!',
-                    text: 'Your item has been deleted.',
-                    icon: 'success',
+                    title: "Deleted!",
+                    text: "Your item has been deleted.",
+                    icon: "success",
                     timer: 1500,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 });
                 location.reload();
             } catch (err) {
-                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Failed to delete item' });
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Failed to delete item",
+                });
             }
         }
     };
@@ -1215,28 +1602,39 @@ const App = (() => {
         if (e && e.preventDefault) e.preventDefault();
 
         try {
-            await axios.post('/logout', {}, {
-                headers: { 'Accept': 'application/json' }
-            });
+            await axios.post(
+                "/logout",
+                {},
+                {
+                    headers: { Accept: "application/json" },
+                },
+            );
         } catch (err) {
-            console.warn('Logout API failed, forcing local cleanup', err);
+            console.warn("Logout API failed, forcing local cleanup", err);
         } finally {
             // Clear all client-side storage
             localStorage.clear();
             sessionStorage.clear();
 
             // redirect - force reload from server
-            window.location.replace('/');
+            window.location.replace("/");
         }
     };
 
-    const loadOptions = async (url, elementId, selectedId = null, valueKey = 'id', labelKey = 'name', placeholder = 'Select option') => {
+    const loadOptions = async (
+        url,
+        elementId,
+        selectedId = null,
+        valueKey = "id",
+        labelKey = "name",
+        placeholder = "Select option",
+    ) => {
         const select = document.getElementById(elementId);
         if (!select) return;
 
         select.replaceChildren();
-        const loadingOpt = document.createElement('option');
-        loadingOpt.textContent = 'Loading options...';
+        const loadingOpt = document.createElement("option");
+        loadingOpt.textContent = "Loading options...";
         select.appendChild(loadingOpt);
         select.disabled = true;
 
@@ -1249,78 +1647,109 @@ const App = (() => {
                 data = data.data;
             }
 
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = '';
+            const defaultOpt = document.createElement("option");
+            defaultOpt.value = "";
             defaultOpt.textContent = placeholder;
             select.appendChild(defaultOpt);
 
-            data.forEach(item => {
-                const opt = document.createElement('option');
+            data.forEach((item) => {
+                const opt = document.createElement("option");
 
-                const val = typeof valueKey === 'function' ? valueKey(item) : item[valueKey];
-                const lbl = typeof labelKey === 'function' ? labelKey(item) : item[labelKey];
+                const val =
+                    typeof valueKey === "function"
+                        ? valueKey(item)
+                        : item[valueKey];
+                const lbl =
+                    typeof labelKey === "function"
+                        ? labelKey(item)
+                        : item[labelKey];
 
                 opt.value = val;
                 opt.textContent = lbl;
 
-                if (selectedId && String(val) === String(selectedId)) opt.selected = true;
+                if (selectedId && String(val) === String(selectedId))
+                    opt.selected = true;
                 select.appendChild(opt);
             });
 
             select.disabled = false;
         } catch {
             select.replaceChildren();
-            const opt = document.createElement('option');
-            opt.textContent = 'Failed to load';
+            const opt = document.createElement("option");
+            opt.textContent = "Failed to load";
             select.appendChild(opt);
         }
     };
 
     const initiateLinking = async () => {
-        const email = document.getElementById('link-email').value;
+        const email = document.getElementById("link-email").value;
         if (!email) {
-            Swal.fire({ icon: 'warning', title: 'Email required', text: 'Please enter a valid email address.' });
+            Swal.fire({
+                icon: "warning",
+                title: "Email required",
+                text: "Please enter a valid email address.",
+            });
             return;
         }
 
         try {
-            await axios.post('/api/v1/account/link/initiate', { email });
-            document.getElementById('display-link-email').textContent = email;
+            await axios.post("/api/v1/account/link/initiate", { email });
+            document.getElementById("display-link-email").textContent = email;
             switchLinkStep(2);
-            Swal.fire({ icon: 'success', title: 'Step 1 Complete', text: 'Verification code sent!' });
+            Swal.fire({
+                icon: "success",
+                title: "Step 1 Complete",
+                text: "Verification code sent!",
+            });
         } catch (err) {
-            Swal.fire({ icon: 'error', title: 'Failed', text: err.response?.data?.message || 'Failed to send code' });
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: err.response?.data?.message || "Failed to send code",
+            });
         }
     };
 
     const verifyLinking = async () => {
-        const email = document.getElementById('link-email').value;
-        const otp = document.getElementById('link-otp').value;
+        const email = document.getElementById("link-email").value;
+        const otp = document.getElementById("link-otp").value;
 
         if (!otp || otp.length !== 6) {
-            Swal.fire({ icon: 'warning', title: 'Invalid code', text: 'Please enter the 6-digit verification code.' });
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid code",
+                text: "Please enter the 6-digit verification code.",
+            });
             return;
         }
 
         try {
-            await axios.post('/api/v1/account/link/verify', { email, otp });
-            Swal.fire({ icon: 'success', title: 'Success!', text: 'Account linked successfully.' });
-            closeModal('linkAccountModal');
+            await axios.post("/api/v1/account/link/verify", { email, otp });
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Account linked successfully.",
+            });
+            closeModal("linkAccountModal");
             location.reload();
         } catch (err) {
-            Swal.fire({ icon: 'error', title: 'Failed', text: err.response?.data?.message || 'Invalid or expired code' });
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: err.response?.data?.message || "Invalid or expired code",
+            });
         }
     };
 
     const switchLinkStep = (step) => {
-        const s1 = document.getElementById('link-step-1');
-        const s2 = document.getElementById('link-step-2');
+        const s1 = document.getElementById("link-step-1");
+        const s2 = document.getElementById("link-step-2");
         if (step === 1) {
-            s1.classList.remove('d-none');
-            s2.classList.add('d-none');
+            s1.classList.remove("d-none");
+            s2.classList.add("d-none");
         } else {
-            s1.classList.add('d-none');
-            s2.classList.remove('d-none');
+            s1.classList.add("d-none");
+            s2.classList.remove("d-none");
         }
     };
 
@@ -1329,21 +1758,80 @@ const App = (() => {
         form.reset();
         clearFormErrors(form);
         // Clear hidden IDs that might be left over from previous edits
-        form.querySelectorAll('input[type="hidden"][name$="_id"]').forEach(i => i.value = '');
+        form.querySelectorAll('input[type="hidden"][name$="_id"]').forEach(
+            (i) => (i.value = ""),
+        );
     };
 
     const formatCurrency = (val) =>
-        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
+        new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+        }).format(val || 0);
 
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-    return { init, renderTable, submitForm, populateForm, resetForm, deleteItem, logout, loadOptions, safeHTML, formatCurrency, initiateLinking, verifyLinking, switchLinkStep };
+    return {
+        init,
+        renderTable,
+        submitForm,
+        populateForm,
+        resetForm,
+        deleteItem,
+        logout,
+        loadOptions,
+        safeHTML,
+        formatCurrency,
+        initiateLinking,
+        verifyLinking,
+        switchLinkStep,
+        switchWizardStep,
+        setupAxios,
+    };
 })();
 
 window.App = App;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const sidebar = new SidebarManager();
-    await sidebar.init();
+document.addEventListener("DOMContentLoaded", async () => {
+    const initSidebar = async () => {
+        // Sidebar is now handled by Blade/Alpine.js
+    };
     App.init();
+
+    // H-7: Sortable column header — keyboard + aria-sort support
+    document
+        .querySelectorAll('[role="columnheader"][data-sort]')
+        .forEach((header) => {
+            header.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    header.click();
+                }
+            });
+            header.addEventListener("click", () => {
+                // Clear all other headers
+                header
+                    .closest("thead")
+                    ?.querySelectorAll("[aria-sort]")
+                    .forEach((th) => {
+                        if (th !== header) th.setAttribute("aria-sort", "none");
+                    });
+                const current = header.getAttribute("aria-sort") || "none";
+                header.setAttribute(
+                    "aria-sort",
+                    current === "ascending" ? "descending" : "ascending",
+                );
+            });
+        });
+
+    // H-8: Apply will-change transiently (not permanently) on .transition-all-premium elements
+    // This avoids permanent compositor layers across the entire page
+    document.querySelectorAll(".transition-all-premium").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+            el.style.willChange = "transform, opacity, box-shadow";
+        });
+        el.addEventListener("mouseleave", () => {
+            el.style.willChange = "auto";
+        });
+    });
 });

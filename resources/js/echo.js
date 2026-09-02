@@ -11,12 +11,16 @@ const config = window.Laravel?.reverb || {
     scheme: import.meta.env.VITE_REVERB_SCHEME ?? 'https'
 };
 
-window.Echo = new Echo({
-    broadcaster: 'reverb',
-    key: config.key,
-    wsHost: config.host,
-    wsPort: config.port,
-    wssPort: config.port,
-    forceTLS: config.scheme === 'https',
-    enabledTransports: ['ws', 'wss'],
-});
+if (config.key) {
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: config.key,
+        wsHost: config.host,
+        wsPort: config.port,
+        wssPort: config.port,
+        forceTLS: config.scheme === 'https',
+        enabledTransports: ['ws', 'wss'],
+    });
+} else {
+    console.warn('Echo: Pusher/Reverb key not found. Broadcasting disabled.');
+}

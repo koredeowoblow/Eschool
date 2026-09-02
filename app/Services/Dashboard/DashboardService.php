@@ -40,6 +40,7 @@ class DashboardService
             'recent_registrations' => $applySchool(User::query())
                 ->where('created_at', '>=', now()->subDays(7))
                 ->count(),
+            'is_empty' => $applySchool(Student::query())->count() === 0 && $applySchool(TeacherProfile::query())->count() === 0,
         ];
     }
 
@@ -48,43 +49,60 @@ class DashboardService
      */
     public function getStudentStats(string $userId): array
     {
-        $student = Student::where('user_id', $userId)->first();
-        if (!$student) return ['error' => 'Student record not found'];
+        $cacheKey = "dashboard:student-stats:user-{$userId}";
+        $cacheTTL = 15 * 60; // 15 minutes
 
-        return [
-            'student' => [
-                'attendance' => $student->attendanceRecords()->count() > 0
-                    ? ($student->attendanceRecords()->where('status', 'present')->count() / $student->attendanceRecords()->count()) * 100
-                    : 100,
-                'assignments' => Assignment::where('school_id', $student->school_id)
-                    ->where('due_date', '>=', now())
-                    ->count(),
-                'avg_marks' => $student->results()->avg('marks_obtained') ?? 0,
-                'upcoming_assignments' => Assignment::where('school_id', $student->school_id)
-                    ->where('due_date', '>=', now())
-                    ->orderBy('due_date', 'asc')
-                    ->limit(5)
-                    ->get()
-            ],
-            'charts' => [
-                'performance_trend' => [
-                    'labels' => ['Test 1', 'Test 2', 'Mid-Term', 'Final'],
-                    'data' => [65, 78, 82, $student->results()->avg('marks_obtained') ?? 0]
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, $cacheTTL, function () use ($userId) {
+            $student = Student::with(['results.subject'])
+                ->withCount([
+                    'attendanceRecords',
+                    'attendanceRecords as present_count' => fn($q) => $q->where('status', 'present'),
+                    'attendanceRecords as absent_count' => fn($q) => $q->where('status', 'absent'),
+                    'attendanceRecords as late_count' => fn($q) => $q->where('status', 'late')
+                ])
+                ->where('user_id', $userId)
+                ->first();
+
+            if (!$student) return ['error' => 'Student record not found'];
+
+            $attendanceRatio = $student->attendance_records_count > 0 
+                ? ($student->present_count / $student->attendance_records_count) * 100 
+                : 100;
+
+            return [
+                'student' => [
+                    'attendance' => $attendanceRatio,
+                    'assignments' => Assignment::where('school_id', $student->school_id)
+                        ->where('due_date', '>=', now())
+                        ->count(),
+                    'avg_marks' => $student->results->avg('marks_obtained') ?? 0,
+                    'upcoming_assignments' => Assignment::where('school_id', $student->school_id)
+                        ->where('due_date', '>=', now())
+                        ->orderBy('due_date', 'asc')
+                        ->limit(5)
+                        ->get(),
+                    'is_empty' => $student->results->count() === 0 && $student->attendance_records_count === 0,
                 ],
-                'attendance_stats' => [
-                    'labels' => ['Present', 'Absent', 'Late'],
-                    'data' => [
-                        $student->attendanceRecords()->where('status', 'present')->count(),
-                        $student->attendanceRecords()->where('status', 'absent')->count(),
-                        $student->attendanceRecords()->where('status', 'late')->count(),
+                'charts' => [
+                    'performance_trend' => [
+                        'labels' => ['Test 1', 'Test 2', 'Mid-Term', 'Final'],
+                        'data' => [65, 78, 82, $student->results->avg('marks_obtained') ?? 0]
+                    ],
+                    'attendance_stats' => [
+                        'labels' => ['Present', 'Absent', 'Late'],
+                        'data' => [
+                            $student->present_count,
+                            $student->absent_count,
+                            $student->late_count,
+                        ]
+                    ],
+                    'subject_performance' => [
+                        'labels' => $student->results->unique('subject_id')->map(fn($r) => $r->subject->name ?? 'Unknown')->values(),
+                        'data' => $student->results->groupBy('subject_id')->map(fn($group) => $group->avg('marks_obtained'))->values()
                     ]
-                ],
-                'subject_performance' => [
-                    'labels' => $student->results()->with('subject')->get()->unique('subject_id')->map(fn($r) => $r->subject->name ?? 'Unknown'),
-                    'data' => $student->results()->with('subject')->get()->groupBy('subject_id')->map(fn($group) => $group->avg('marks_obtained'))
                 ]
-            ]
-        ];
+            ];
+        });
     }
 
     /**
@@ -102,7 +120,8 @@ class DashboardService
                 'assignments' => Assignment::where('school_id', $teacher->school_id)
                     ->where('due_date', '>=', now())
                     ->count(),
-                'academic' => $this->getAcademicStats($teacher->school_id)
+                'academic' => $this->getAcademicStats($teacher->school_id),
+                'is_empty' => ClassRoom::where('school_id', $teacher->school_id)->count() === 0,
             ],
             'charts' => [
                 'class_performance' => [
@@ -197,6 +216,7 @@ class DashboardService
                 'total_students' => Student::count(),
                 'total_teachers' => TeacherProfile::count(),
                 'total_revenue' => Payment::where('status', Payment::STATUS_COMPLETED)->sum('amount'),
+                'is_empty' => School::count() === 0,
             ],
             'charts' => [
                 'school_growth' => [

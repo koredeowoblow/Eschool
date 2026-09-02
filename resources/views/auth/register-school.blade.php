@@ -3,406 +3,343 @@
 @section('title', 'School Registration')
 
 @section('content')
-    <style>
-        .register-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+    <div x-data="registerSchoolForm()"
+        class="w-full max-w-4xl mx-auto bg-white/98 border border-white/10 shadow-2xl shadow-black/10 rounded-3xl overflow-hidden animate-in my-8">
+        <!-- Header Gradient -->
+        <div
+            class="bg-gradient-to-br from-blue-500 to-indigo-600 px-8 py-12  text-center  text-white relative overflow-hidden">
+            <!-- SVG Pattern Background -->
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M0 40L40 0H20L0 20M40 40V20L20 40" fill="currentColor" fill-opacity="0.2" />
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+                </svg>
+            </div>
 
-        .register-header {
-            background: linear-gradient(135deg, var(--color-primary-500, #3b82f6), var(--color-primary-700, #2563eb));
-            /* Padding moved to HTML for consistency */
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
+            <div class="relative z-10">
+                <i class="bi bi-mortarboard-fill text-6xl  mb-6  inline-block drop-shadow-md"></i>
+                <h2 class="text-4xl font-bold mb-2 tracking-tight">Begin Your Journey</h2>
+                <p class="text-white/80 font-medium text-lg">Register your school today and transform your administration.
+                </p>
+            </div>
+        </div>
 
-        .register-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.105 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.105 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.105 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.105 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
+        <!-- Body -->
+        <div class="p-6 md:p-10">
+            <form @submit.prevent="submit" class="space-y-8">
+                <!-- Hidden Fields -->
+                <input type="hidden" x-model="formData.slug">
+                <input type="hidden" x-model="formData.admin_name">
+                <input type="hidden" x-model="formData.admin_email">
+                <input type="hidden" x-model="formData.status">
 
-        .section-title {
-            color: var(--color-primary-600, #2563eb);
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
+                <!-- Section 1: School Details -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-blue-600 flex items-center gap-2 border-b pb-2">
+                        <div class="bg-blue-50 p-2 rounded-lg"><i class="bi bi-building"></i></div>
+                        School Information
+                    </h3>
 
-        .section-title i {
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
-            background: rgba(59, 130, 246, 0.1);
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-        }
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- School Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">School Name <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" x-model="formData.name" @input="clearError('name')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.name }" placeholder="e.g. Springfield High">
+                            <p x-show="errors.name" x-text="errors.name" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-        .form-floating>.form-control {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.75rem;
-        }
+                        <!-- Official Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Official Email <span
+                                    class="text-red-500">*</span></label>
+                            <input type="email" x-model="formData.email" @input="clearError('email')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.email }" placeholder="admin@school.com">
+                            <p x-show="errors.email" x-text="errors.email" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-        .form-floating>.form-control:focus {
-            border-color: var(--color-orange-400);
-            /* Motivational Orange Border */
-            box-shadow: 0 0 0 4px var(--ui-focus-ring);
-            /* Orange Ring */
-        }
+                        <!-- Phone Number -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number <span
+                                    class="text-red-500">*</span></label>
+                            <input type="tel" x-model="formData.phone" @input="clearError('phone')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.phone }" placeholder="+1 (555) 000-0000">
+                            <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-        .form-floating>label {
-            color: #64748b;
-        }
-
-        .btn-register {
-            background: linear-gradient(135deg, var(--color-primary-500, #3b82f6), var(--color-primary-600, #2563eb));
-            border: none;
-            padding: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-radius: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
-        }
-    </style>
-
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-9 col-xl-8">
-                <div class="register-card">
-                    <!-- Header -->
-                    <div class="register-header p-4 p-md-5">
-                        <div class="position-relative z-1">
-                            <i class="bi bi-mortarboard-fill mb-3 d-inline-block" style="font-size: 3rem;"></i>
-                            <h2 class="fw-bold mb-1">Begin Your Journey</h2>
-                            <p class="mb-0 opacity-75">Register your school today and transform your administration.</p>
+                        <!-- Website -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Website URL <span
+                                    class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="url" x-model="formData.website"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                placeholder="https://www.school.com">
                         </div>
                     </div>
+                </div>
 
-                    <div class="card-body p-4 p-md-5">
-                        <form id="schoolRegistrationForm" method="POST"
-                            action="{{ secure_url(route('school.register.submit', [], false)) }}">
-                            @csrf
+                <!-- Section 2: Location -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-blue-600 flex items-center gap-2 border-b pb-2">
+                        <div class="bg-blue-50 p-2 rounded-lg"><i class="bi bi-geo-alt"></i></div>
+                        Location Details
+                    </h3>
 
-                            {{-- Hidden fields required by backend --}}
-                            <input type="hidden" name="slug" id="slug">
-                            <input type="hidden" name="admin_name" id="admin_name">
-                            <input type="hidden" name="admin_email" id="admin_email">
-                            <input type="hidden" name="status" value="pending">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Address -->
+                        <div class="md:col-span-3">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Full Address <span
+                                    class="text-red-500">*</span></label>
+                            <textarea x-model="formData.address" @input="clearError('address')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all h-24"
+                                :class="{ 'ring-2 ring-red-500': errors.address }" placeholder="123 Education Lane..."></textarea>
+                            <p x-show="errors.address" x-text="errors.address" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-                            <div class="row g-4">
-                                <!-- Section 1: School Details -->
-                                <div class="col-12">
-                                    <div class="section-title">
-                                        <i class="bi bi-building"></i> School Information
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="text" name="name" id="name"
-                                                    class="form-control @error('name') is-invalid @enderror"
-                                                    value="{{ old('name') }}" placeholder="School Name" required>
-                                                <label>School Name <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('name')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                        <!-- City -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">City <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" x-model="formData.city" @input="clearError('city')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.city }" placeholder="City">
+                            <p x-show="errors.city" x-text="errors.city" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="email" name="email" id="email"
-                                                    class="form-control @error('email') is-invalid @enderror"
-                                                    value="{{ old('email') }}" placeholder="Official Email" required>
-                                                <label>Official Email <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('email')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                        <!-- State -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">State <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" x-model="formData.state" @input="clearError('state')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.state }" placeholder="State">
+                            <p x-show="errors.state" x-text="errors.state" class="text-red-500 text-sm mt-1"></p>
+                        </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="tel" name="phone"
-                                                    class="form-control @error('phone') is-invalid @enderror"
-                                                    value="{{ old('phone') }}" placeholder="Phone Number" required>
-                                                <label>Phone Number <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('phone')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="url" name="website"
-                                                    class="form-control @error('website') is-invalid @enderror"
-                                                    value="{{ old('website') }}" placeholder="Website URL">
-                                                <label>Website URL (Optional)</label>
-                                            </div>
-                                            @error('website')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Section 2: Location -->
-                                <div class="col-12">
-                                    <div class="section-title border-top pt-4">
-                                        <i class="bi bi-geo-alt"></i> Location Details
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-12">
-                                            <div class="form-floating">
-                                                <textarea name="address" class="form-control @error('address') is-invalid @enderror" style="height: 100px"
-                                                    placeholder="Full Address" required>{{ old('address') }}</textarea>
-                                                <label>Full Address <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('address')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-floating">
-                                                <input type="text" name="city"
-                                                    class="form-control @error('city') is-invalid @enderror"
-                                                    value="{{ old('city') }}" placeholder="City" required>
-                                                <label>City <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('city')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-floating">
-                                                <input type="text" name="state"
-                                                    class="form-control @error('state') is-invalid @enderror"
-                                                    value="{{ old('state') }}" placeholder="State" required>
-                                                <label>State <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('state')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-floating">
-                                                <input type="text" name="area"
-                                                    class="form-control @error('area') is-invalid @enderror"
-                                                    value="{{ old('area') }}" placeholder="Area">
-                                                <label>Area/District (Optional)</label>
-                                            </div>
-                                            @error('area')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Section 3: Contact Person -->
-                                <div class="col-12">
-                                    <div class="section-title border-top pt-4">
-                                        <i class="bi bi-person-badge"></i> Administrator Contact
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="text" name="contact_person" id="contact_person"
-                                                    class="form-control @error('contact_person') is-invalid @enderror"
-                                                    value="{{ old('contact_person') }}" placeholder="Contact Name"
-                                                    required>
-                                                <label>Admin Name <span class="text-danger">*</span></label>
-                                            </div>
-                                            <div class="form-text small"><i class="bi bi-info-circle"></i> This person
-                                                will
-                                                be the default Super Admin.</div>
-                                            @error('contact_person')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="tel" name="contact_person_phone"
-                                                    class="form-control @error('contact_person_phone') is-invalid @enderror"
-                                                    value="{{ old('contact_person_phone') }}" placeholder="Direct Phone"
-                                                    required>
-                                                <label>Direct Phone <span class="text-danger">*</span></label>
-                                            </div>
-                                            @error('contact_person_phone')
-                                                <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Section 4: Plan -->
-                                <div class="col-12">
-                                    <div class="section-title border-top pt-4">
-                                        <i class="bi bi-credit-card"></i> Subscription Plan
-                                    </div>
-                                    <div class="form-floating">
-                                        <select name="plan" id="create_plan"
-                                            class="form-select @error('plan') is-invalid @enderror" required>
-                                            <option value="">Loading Plans...</option>
-                                        </select>
-                                        <label>Select Your Plan <span class="text-danger">*</span></label>
-                                    </div>
-                                    @error('plan')
-                                        <div class="invalid-feedback d-block small">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Submit -->
-                                <div class="col-12 mt-4">
-                                    <button type="submit" class="btn btn-primary btn-register w-100 text-white">
-                                        <span class="fs-5">Submit Registration</span>
-                                        <i class="bi bi-arrow-right ms-2"></i>
-                                    </button>
-                                </div>
-
-                                <div class="col-12 text-center mt-3">
-                                    <p class="text-muted">
-                                        Already have an account? <a href="{{ route('login') }}"
-                                            class="fw-bold text-decoration-none"
-                                            style="color: var(--color-orange-600);">Login Here</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </form>
+                        <!-- Area -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Area/District <span
+                                    class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="text" x-model="formData.area"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                placeholder="District">
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Section 3: Contact Person -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-blue-600 flex items-center gap-2 border-b pb-2">
+                        <div class="bg-blue-50 p-2 rounded-lg"><i class="bi bi-person-badge"></i></div>
+                        Administrator Contact
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Admin Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Admin Name <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" x-model="formData.contact_person" @input="clearError('contact_person')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.contact_person }" placeholder="John Doe">
+                            <p class="text-xs text-slate-500 mt-1"><i class="bi bi-info-circle"></i> This person will be
+                                the default Super Admin.</p>
+                            <p x-show="errors.contact_person" x-text="errors.contact_person"
+                                class="text-red-500 text-sm mt-1"></p>
+                        </div>
+
+                        <!-- Direct Phone -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Direct Phone <span
+                                    class="text-red-500">*</span></label>
+                            <input type="tel" x-model="formData.contact_person_phone"
+                                @input="clearError('contact_person_phone')"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                :class="{ 'ring-2 ring-red-500': errors.contact_person_phone }" placeholder="Admin Phone">
+                            <p x-show="errors.contact_person_phone" x-text="errors.contact_person_phone"
+                                class="text-red-500 text-sm mt-1"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Subscription Plan -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-blue-600 flex items-center gap-2 border-b pb-2">
+                        <div class="bg-blue-50 p-2 rounded-lg"><i class="bi bi-credit- bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden "></i></div>
+                        Subscription Plan
+                    </h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Select Your Plan <span
+                                class="text-red-500">*</span></label>
+                        <select x-model="formData.plan" @change="clearError('plan')"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            :class="{ 'ring-2 ring-red-500': errors.plan }">
+                            <option value="">Select a Plan</option>
+                            <template x-for="plan in plans" :key="plan.id">
+                                <option :value="plan.id" x-text="plan.name"></option>
+                            </template>
+                        </select>
+                        <p x-show="errors.plan" x-text="errors.plan" class="text-red-500 text-sm mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" :disabled="loading"
+                        class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-lg font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 transform hover:-translate-y-0.5">
+                        <svg x-show="loading" class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" style="display: none;">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <span x-text="loading ? 'Processing...' : 'Submit Registration'">Submit Registration</span>
+                        <i x-show="!loading" class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class=" text-center  mt-6 border-t border-slate-100 pt-6">
+                    <p class="text-slate-500">
+                        Already have an account?
+                        <a href="{{ route('login') }}"
+                            class="font-bold text-blue-600 hover:text-blue-700 transition-colors">Login Here</a>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
 @endsection
 
 @section('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            App.loadOptions('/api/v1/plans', 'create_plan', @json(old('plan')), 'id', 'name',
-                'Select a Plan');
-        });
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('registerSchoolForm', () => ({
+                plans: [],
+                loading: false,
+                errors: {},
+                formData: {
+                    name: '{{ old('name') }}',
+                    email: '{{ old('email') }}',
+                    phone: '{{ old('phone') }}',
+                    website: '{{ old('website') }}',
+                    address: '{{ old('address') }}',
+                    city: '{{ old('city') }}',
+                    state: '{{ old('state') }}',
+                    area: '{{ old('area') }}',
+                    contact_person: '{{ old('contact_person') }}',
+                    contact_person_phone: '{{ old('contact_person_phone') }}',
+                    plan: '{{ old('plan') }}',
+                    slug: '',
+                    admin_name: '',
+                    admin_email: '',
+                    status: 'pending'
+                },
 
-        document.getElementById('schoolRegistrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Populate hidden fields
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const contactPerson = document.getElementById('contact_person').value;
-
-            // Generate slug from name
-            const slug = name.toLowerCase()
-                .replace(/[^\w ]+/g, '')
-                .replace(/ +/g, '-');
-
-            document.getElementById('slug').value = slug;
-            document.getElementById('admin_name').value = contactPerson; // Default admin name to contact person
-            document.getElementById('admin_email').value = email; // Default admin email to school email
-
-            const formData = new FormData(this);
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalBtnContent = submitBtn.innerHTML;
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
-
-            fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
+                async init() {
+                    try {
+                        const res = await axios.get('/api/v1/plans');
+                        this.plans = res.data.data || res.data;
+                    } catch (e) {
+                        console.error("Failed to load plans", e);
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Welcome!',
-                                text: 'Registration successful! Your school account has been created.',
-                                confirmButtonText: 'Proceed to Login',
-                                confirmButtonColor: '#3b82f6',
-                                allowOutsideClick: false
-                            }).then(() => {
-                                window.location.href = "{{ route('login') }}";
-                            });
-                        } else {
-                            alert('Registration successful!');
-                            window.location.href = "{{ route('login') }}";
-                        }
-                    } else {
-                        // Handle validation errors
-                        if (data.errors) {
-                            let errorMsg = '';
-                            Object.values(data.errors).forEach(errors => {
-                                errors.forEach(error => errorMsg += `• ${error}\n`);
-                            });
+                },
 
-                            if (typeof Swal !== 'undefined') {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Validation Failed',
-                                    text: 'Please check the form for errors.',
-                                    html: `<div class="text-start text-danger">${errorMsg.replace(/\n/g, '<br>')}</div>`,
-                                    confirmButtonColor: '#3b82f6'
-                                });
-                            } else {
-                                alert('Please fix the following errors:\n' + errorMsg);
-                            }
-                        } else {
-                            if (typeof Swal !== 'undefined') {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Registration Failed',
-                                    text: data.message || 'Please try again later.',
-                                    confirmButtonColor: '#3b82f6'
-                                });
-                            } else {
-                                alert(data.message || 'Registration failed. Please try again.');
-                            }
-                        }
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnContent;
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    if (typeof Swal !== 'undefined') {
+                },
+
+                async submit() {
+                    // Basic frontend validation
+                    this.errors = {};
+                    let hasErrors = false;
+                    const required = ['name', 'email', 'phone', 'address', 'city', 'state',
+                        'contact_person', 'contact_person_phone', 'plan'
+                    ];
+
+                    required.forEach(field => {
+                        if (!this.formData[field]) {
+                            this.errors[field] = 'This field is required';
+                            hasErrors = true;
+                        }
+                    });
+
+                    if (hasErrors) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Network Error',
-                            text: 'An unexpected error occurred. Please try again.',
-                            confirmButtonColor: '#3b82f6'
+                            icon: 'warning',
+                            title: 'Incomplete Form',
+                            text: 'Please fill in all required fields.'
                         });
-                    } else {
-                        alert('An error occurred. Please try again.');
+                        return;
                     }
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnContent;
-                });
+
+                    // Dynamic generation of hidden fields
+                    this.formData.slug = this.formData.name.toLowerCase().replace(/[^\w ]+/g, '')
+                        .replace(/ +/g, '-');
+                    this.formData.admin_name = this.formData.contact_person;
+                    this.formData.admin_email = this.formData.email;
+
+                    this.loading = true;
+
+                    try {
+                        const response = await axios.post(
+                            "{{ secure_url(route('school.register.submit', [], false)) }}",
+                            this.formData);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Welcome!',
+                            text: 'Registration successful! Your school account has been created.',
+                            confirmButtonText: 'Proceed to Login',
+                            confirmButtonColor: '#3b82f6',
+                            allowOutsideClick: false
+                        }).then(() => {
+                            window.location.href = "{{ route('login') }}";
+                        });
+
+                    } catch (err) {
+                        if (err.response?.status === 422) {
+                            const errs = err.response.data.errors;
+                            let errHtml =
+                                '<ul class="text-left text-sm text-red-500 list-disc pl-5 mt-2">';
+                            Object.keys(errs).forEach(field => {
+                                this.errors[field] = errs[field][0];
+                                errHtml += `<li>${errs[field][0]}</li>`;
+                            });
+                            errHtml += '</ul>';
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Failed',
+                                html: 'Please check the form for errors.' + errHtml,
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Registration Failed',
+                                text: err.response?.data?.message ||
+                                    'An unexpected error occurred. Please try again later.',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        }
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }));
         });
     </script>
 @endsection

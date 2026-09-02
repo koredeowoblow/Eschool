@@ -4,14 +4,14 @@
 @section('header_title', 'Class Schedules')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-        <div class="d-flex gap-2 w-100 w-md-auto">
-            <select id="classSelect" class="form-select w-100 w-md-auto" style="min-width: 200px;" onchange="loadTimetable()">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+        <div class=" flex  gap-2 w-100 w-md-auto">
+            <select id="classSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white w-100 w-md-auto" style="min-width: 200px;" onchange="loadTimetable()">
                 <option value="">Loading...</option>
             </select>
         </div>
         @hasrole('super_admin|School Admin|Teacher')
-            <button type="button" class="btn btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium w-100 w-md-auto" data-bs-toggle="modal"
                 data-bs-target="#createSlotModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Slot
             </button>
@@ -19,11 +19,11 @@
     </div>
 
     <!-- Calendar Grid Timetable -->
-    <div class="card-premium">
-        <div class="card-body p-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
             <div id="timetableContainer" class="p-4">
-                <div class="text-center py-5 text-muted">
-                    <i class="bi bi-calendar3 fs-1 mb-3 d-block"></i>
+                <div class=" text-center  py-5 text-gray-500">
+                    <i class="bi bi-calendar3 fs-1  mb-6  d-block"></i>
                     <p>Select a class to view the weekly schedule</p>
                 </div>
             </div>
@@ -38,25 +38,25 @@
                     onsubmit="App.submitForm(event, loadTimetable, 'timetable', 'createSlotModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add Timetable Slot</h5>
+                        <h5 class="modal-title font-bold">Add Timetable Slot</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Class</label>
-                            <select name="class_room_id" id="create_slot_class_id" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Class</label>
+                            <select name="class_room_id" id="create_slot_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="">Loading...</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Subject</label>
-                            <select name="subject_id" id="create_slot_subject_id" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject</label>
+                            <select name="subject_id" id="create_slot_subject_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option>Select Class First</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Day</label>
-                            <select name="day" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Day</label>
+                            <select name="day" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="Monday">Monday</option>
                                 <option value="Tuesday">Tuesday</option>
                                 <option value="Wednesday">Wednesday</option>
@@ -64,20 +64,20 @@
                                 <option value="Friday">Friday</option>
                             </select>
                         </div>
-                        <div class="row g-3">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
                             <div class="col-6">
-                                <label class="form-label">Start Time</label>
-                                <input type="time" name="start_time" class="form-control">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Start Time</label>
+                                <input type="time" name="start_time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                             <div class="col-6">
-                                <label class="form-label">End Time</label>
-                                <input type="time" name="end_time" class="form-control">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">End Time</label>
+                                <input type="time" name="end_time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Slot</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Slot</button>
                     </div>
                 </form>
             </div>
@@ -112,8 +112,8 @@
 
             if (!classId) {
                 container.innerHTML = `
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-calendar3 fs-1 mb-3 d-block"></i>
+                    <div class=" text-center  py-5 text-gray-500">
+                        <i class="bi bi-calendar3 fs-1  mb-6  d-block"></i>
                         <p>Select a class to view the weekly schedule</p>
                     </div>
                 `;
@@ -121,9 +121,9 @@
             }
 
             container.innerHTML = `
-                <div class="text-center py-5">
+                <div class=" text-center  py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="text-muted mt-2">Loading timetable...</p>
+                    <p class="text-gray-500 mt-4">Loading timetable...</p>
                 </div>
             `;
 
@@ -135,8 +135,8 @@
                 .catch(err => {
                     console.error('Timetable load error:', err);
                     container.innerHTML = `
-                        <div class="text-center py-5 text-danger">
-                            <i class="bi bi-exclamation-triangle fs-1 mb-3 d-block"></i>
+                        <div class=" text-center  py-5 text-danger">
+                            <i class="bi bi-exclamation-triangle fs-1  mb-6  d-block"></i>
                             <p>Failed to load timetable</p>
                         </div>
                     `;
@@ -178,7 +178,7 @@
                                     <div class="teacher-name">${slot.teacher?.user?.name || 'N/A'}</div>
                                     <div class="subject-block-actions">
                                         @hasrole('super_admin|School Admin|Teacher')
-                                        <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSlot(${slot.id})">
+                                        <button class="btn px-3 py-1.5 text-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSlot(${slot.id})">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                         @endhasrole

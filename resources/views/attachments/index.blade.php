@@ -4,15 +4,15 @@
 @section('header_title', 'Attachments')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="attachmentSearch" class="form-control border-start-0 ps-0"
+            <input type="text" id="attachmentSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                 placeholder="Search attachments..." oninput="reloadAttachments()">
         </div>
 
         @hasrole('super_admin|School Admin|Teacher')
-            <button type="button" class="btn btn-primary-premium"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium"
                 onclick="App.resetForm(document.forms['createAttachmentForm']);" data-bs-toggle="modal"
                 data-bs-target="#createAttachmentModal">
                 <i class="bi bi-plus-lg me-1"></i> New Attachment
@@ -20,16 +20,16 @@
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
                             <th>File Name</th>
                             <th>Type</th>
                             <th>Related To</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="attachmentsTableBody"></tbody>
@@ -46,44 +46,44 @@
                     onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'createAttachmentModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Upload Attachment</h5>
+                        <h5 class="modal-title font-bold">Upload Attachment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">File</label>
-                            <input type="file" name="file" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">File</label>
+                            <input type="file" name="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Title / Description</label>
-                                <input type="text" name="title" class="form-control"
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Title / Description</label>
+                                <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. Weekly Lesson Plan" required>
                             </div>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Class (Optional)</label>
-                                <select name="class_id" id="create_attachment_class_id" class="form-select">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Class (Optional)</label>
+                                <select name="class_id" id="create_attachment_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Subject (Optional)</label>
-                                <select name="subject_id" id="create_attachment_subject_id" class="form-select">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject (Optional)</label>
+                                <select name="subject_id" id="create_attachment_subject_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">Select Subject</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Category</label>
-                            <input type="text" name="type" class="form-control"
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Category</label>
+                            <input type="text" name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                 placeholder="e.g. Lesson Note, Assignment">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Upload</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Upload</button>
                     </div>
                 </form>
             </div>
@@ -98,24 +98,24 @@
                     onsubmit="App.submitForm(event, reloadAttachments, 'attachment', 'editAttachmentModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Attachment</h5>
+                        <h5 class="modal-title font-bold">Edit Attachment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Type</label>
-                                <input type="text" name="type" class="form-control">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Type</label>
+                                <input type="text" name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Related ID</label>
-                                <input type="number" name="related_id" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Related ID</label>
+                                <input type="number" name="related_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Attachment</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Attachment</button>
                     </div>
                 </form>
             </div>

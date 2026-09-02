@@ -4,20 +4,20 @@
 @section('header_title', 'Schools Management')
 
 @section('content')
-    <div class="card-premium p-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4">
+        <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
             <div class="input-group w-100 w-md-50">
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                <input type="text" id="schoolSearch" class="form-control border-start-0 ps-0"
+                <input type="text" id="schoolSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                     placeholder="Search schools by name or location..." oninput="loadSchools()">
             </div>
-            <button class="btn btn-primary-premium" onclick="openCreateModal()">
+            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="openCreateModal()">
                 <i class="bi bi-plus-lg me-2"></i>Add School
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-premium table-hover align-middle">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle">
                 <thead>
                     <tr>
                         <th class="sortable-header" data-sort="name">School / Email</th>
@@ -26,14 +26,14 @@
                         <th>Stats</th>
                         <th class="sortable-header" data-sort="plan_id">Plan</th>
                         <th class="sortable-header" data-sort="is_active">Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="schools-table-body">
                     <tr>
-                        <td colspan="5" class="text-center py-4">
+                        <td colspan="5" class=" text-center  py-4">
                             <div class="spinner-border text-primary" role="status"></div>
-                            <p class="text-muted small mt-2">Loading schools...</p>
+                            <p class="text-gray-500 small mt-4">Loading schools...</p>
                         </td>
                     </tr>
                 </tbody>
@@ -46,8 +46,12 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Create New School</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title font-bold text-xl text-gray-800">Create New School</h5>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors" data-bs-dismiss="modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="createSchoolForm" method="POST" action="/api/v1/create-school"
@@ -55,70 +59,70 @@
 
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">School Name *</label>
-                                <input type="text" class="form-control" id="create_name" name="name" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">School Name *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_name" name="name" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="create_email" name="email" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email *</label>
+                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_email" name="email" required>
                                 <div class="form-text">School Contact Email</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admin Email *</label>
-                                <input type="email" class="form-control" id="create_admin_email" name="admin_email"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Admin Email *</label>
+                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_admin_email" name="admin_email"
                                     required>
                                 <div class="form-text">Login Email for Admin User</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Admin Name *</label>
-                                <input type="text" class="form-control" id="create_admin_name" name="admin_name"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Admin Name *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_admin_name" name="admin_name"
                                     required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone *</label>
-                                <input type="tel" class="form-control" id="create_phone" name="phone" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Phone *</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_phone" name="phone" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Website</label>
-                                <input type="url" class="form-control" id="create_website" name="website">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Website</label>
+                                <input type="url" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_website" name="website">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">Address *</label>
-                                <textarea class="form-control" id="create_address" name="address" rows="2" required></textarea>
+                            <div class=" col-span-1 md:col-span-12 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Address *</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_address" name="address" rows="2" required></textarea>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">City *</label>
-                                <input type="text" class="form-control" id="create_city" name="city" required>
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">City *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_city" name="city" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">State *</label>
-                                <input type="text" class="form-control" id="create_state" name="state" required>
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">State *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_state" name="state" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Area</label>
-                                <input type="text" class="form-control" id="create_area" name="area">
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Area</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_area" name="area">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Contact Person *</label>
-                                <input type="text" class="form-control" id="create_contact_person"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Person *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_contact_person"
                                     name="contact_person" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Contact Phone *</label>
-                                <input type="tel" class="form-control" id="create_contact_phone"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Phone *</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="create_contact_phone"
                                     name="contact_person_phone" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Plan *</label>
-                                <select class="form-select" id="create_plan" name="plan" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Plan *</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="create_plan" name="plan" required>
                                     <option value="">Loading...</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status *</label>
-                                <select class="form-select" id="create_status" name="status" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status *</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="create_status" name="status" required>
                                     <option value="pending">Pending</option>
                                     <option value="active" selected>Active</option>
                                     <option value="suspended">Suspended</option>
@@ -127,9 +131,9 @@
                             <input type="hidden" name="slug" id="create_slug">
                         </div>
 
-                        <div class="modal-footer mt-3">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary-premium">Create School</button>
+                        <div class="modal-footer mt-4">
+                            <button type="button" class=" px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium " data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Create School</button>
                         </div>
                     </form>
                 </div>
@@ -142,8 +146,12 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit School</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title font-bold text-xl text-gray-800">Edit School</h5>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors" data-bs-dismiss="modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="editSchoolForm" method="PUT"
@@ -151,58 +159,58 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">School Name *</label>
-                                <input type="text" class="form-control" id="edit_name" name="name" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">School Name *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_name" name="name" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="edit_email" name="email" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email *</label>
+                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_email" name="email" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone *</label>
-                                <input type="tel" class="form-control" id="edit_phone" name="phone" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Phone *</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_phone" name="phone" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Website</label>
-                                <input type="url" class="form-control" id="edit_website" name="website">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Website</label>
+                                <input type="url" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_website" name="website">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">Address *</label>
-                                <textarea class="form-control" id="edit_address" name="address" rows="2" required></textarea>
+                            <div class=" col-span-1 md:col-span-12 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Address *</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_address" name="address" rows="2" required></textarea>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">City *</label>
-                                <input type="text" class="form-control" id="edit_city" name="city" required>
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">City *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_city" name="city" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">State *</label>
-                                <input type="text" class="form-control" id="edit_state" name="state" required>
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">State *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_state" name="state" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Area</label>
-                                <input type="text" class="form-control" id="edit_area" name="area">
+                            <div class=" md:col-span-4 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Area</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_area" name="area">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Contact Person *</label>
-                                <input type="text" class="form-control" id="edit_contact_person"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Person *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_contact_person"
                                     name="contact_person" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Contact Phone *</label>
-                                <input type="tel" class="form-control" id="edit_contact_phone"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Phone *</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_contact_phone"
                                     name="contact_person_phone" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Plan *</label>
-                                <select class="form-select" id="edit_plan" name="plan" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Plan *</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="edit_plan" name="plan" required>
                                     <option value="">Loading...</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status *</label>
-                                <select class="form-select" id="edit_status" name="status" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status *</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="edit_status" name="status" required>
                                     <option value="pending">Pending</option>
                                     <option value="active">Active</option>
                                     <option value="suspended">Suspended</option>
@@ -212,9 +220,9 @@
                             <input type="hidden" name="is_active" id="edit_is_active">
                         </div>
 
-                        <div class="modal-footer mt-3">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary-premium">Save Changes</button>
+                        <div class="modal-footer mt-4">
+                            <button type="button" class=" px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium " data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Changes</button>
                         </div>
                     </form>
                 </div>

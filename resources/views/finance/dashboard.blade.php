@@ -6,30 +6,30 @@
 @section('content')
     <div class="row" id="finance-overview">
         <!-- Overview Cards -->
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Total Revenue</h6>
+        <div class=" md:col-span-4 col-span-1   mb-6 ">
+            <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  border-0 shadow-sm h-100">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                    <h6 class=" text-slate-500  text-uppercase mb-2">Total Revenue</h6>
                     <h3 class="fw-bold text-primary" id="total-invoiced">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Outstanding</h6>
+        <div class=" md:col-span-4 col-span-1   mb-6 ">
+            <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  border-0 shadow-sm h-100">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                    <h6 class=" text-slate-500  text-uppercase mb-2">Outstanding</h6>
                     <h3 class="fw-bold text-success" id="total-collected">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase mb-2">Pending Invoices</h6>
+        <div class=" md:col-span-4 col-span-1   mb-6 ">
+            <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  border-0 shadow-sm h-100">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                    <h6 class=" text-slate-500  text-uppercase mb-2">Pending Invoices</h6>
                     <h3 class="fw-bold text-warning" id="pending">
                         <span class="spinner-border spinner-border-sm"></span>
                     </h3>
@@ -38,16 +38,16 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div class=" col-span-1 md:col-span-12 ">
+            <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  border-0 shadow-sm">
                 <div
-                    class="card-header bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                    class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -header bg-white py-3  flex  flex-column flex-md-row  justify-between   items-center  gap-2">
                     <h5 class="mb-0 fw-bold">Quick Actions</h5>
                 </div>
-                <div class="card-body">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
                     @can('finance.generate.invoices')
-                        <button class="btn btn-primary me-2" onclick="alert('Open Create Invoice Modal')">
+                        <button class=" px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium  me-2" onclick="alert('Open Create Invoice Modal')">
                             <i class="bi bi-plus-lg me-1"></i> Create Invoice
                         </button>
                     @endcan

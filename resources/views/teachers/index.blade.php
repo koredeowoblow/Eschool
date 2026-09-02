@@ -4,25 +4,25 @@
 @section('header_title', 'Teachers')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="teacherSearch" class="form-control border-start-0 ps-0" placeholder="Search teachers..."
+            <input type="text" id="teacherSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search teachers..."
                 oninput="reloadTeachers()">
         </div>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createTeacherForm']);"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="App.resetForm(document.forms['createTeacherForm']);"
                 data-bs-toggle="modal" data-bs-target="#createTeacherModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Teacher
             </button>
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
                             <th>Teacher</th>
@@ -31,7 +31,7 @@
                             <th>Subjects</th>
                             <th>Phone</th>
                             <th>Hire Date</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="teachersTableBody">
@@ -50,64 +50,64 @@
                     onsubmit="App.submitForm(event, reloadTeachers, 'teacher', 'createTeacherModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add Teacher</h5>
+                        <h5 class="modal-title font-bold">Add Teacher</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Hidden role field -->
                         <input type="hidden" name="role" value="teacher">
 
-                        <h6 class="fw-bold mb-3">Basic Information</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+                        <h6 class="font-bold  mb-6 ">Basic Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="John Doe" required>
                             </div>
                         </div>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Email <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone</label>
-                                <input type="tel" name="phone" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Phone</label>
+                                <input type="tel" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                         </div>
 
                         <hr class="my-4">
-                        <h6 class="fw-bold mb-3">Employment Details</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Employee Number <span class="text-danger">*</span></label>
-                                <input type="text" name="employee_number" class="form-control" required
+                        <h6 class="font-bold  mb-6 ">Employment Details</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Employee Number <span class="text-danger">*</span></label>
+                                <input type="text" name="employee_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required
                                     placeholder="e.g. EMP001">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Hire Date</label>
-                                <input type="date" name="hire_date" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Hire Date</label>
+                                <input type="date" name="hire_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Qualification</label>
-                                <input type="text" name="qualification" class="form-control"
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Qualification</label>
+                                <input type="text" name="qualification" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. B.Ed, M.Sc">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Department</label>
-                                <input type="text" name="department" class="form-control"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Department</label>
+                                <input type="text" name="department" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. Mathematics, Science">
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Bio</label>
-                            <textarea name="bio" class="form-control" rows="3" placeholder="Brief biography or description"></textarea>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Bio</label>
+                            <textarea name="bio" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="3" placeholder="Brief biography or description"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Teacher</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Teacher</button>
                     </div>
                 </form>
             </div>
@@ -122,26 +122,26 @@
                     onsubmit="App.submitForm(event, reloadTeachers, 'teacher', 'editTeacherModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Teacher</h5>
+                        <h5 class="modal-title font-bold">Edit Teacher</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="user_id">
-                        <h6 class="fw-bold mb-3">Basic Information</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" required>
+                        <h6 class="font-bold  mb-6 ">Basic Information</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Email <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-select">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Status</label>
+                                <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="1">Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
@@ -149,35 +149,35 @@
                         </div>
 
                         <hr class="my-4">
-                        <h6 class="fw-bold mb-3">Employment Details</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Employee Number <span class="text-danger">*</span></label>
-                                <input type="text" name="employee_number" class="form-control" required>
+                        <h6 class="font-bold  mb-6 ">Employment Details</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Employee Number <span class="text-danger">*</span></label>
+                                <input type="text" name="employee_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Hire Date</label>
-                                <input type="date" name="hire_date" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Qualification</label>
-                                <input type="text" name="qualification" class="form-control">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Department</label>
-                                <input type="text" name="department" class="form-control">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Hire Date</label>
+                                <input type="date" name="hire_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Bio</label>
-                            <textarea name="bio" class="form-control" rows="3"></textarea>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Qualification</label>
+                                <input type="text" name="qualification" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            </div>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Department</label>
+                                <input type="text" name="department" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            </div>
+                        </div>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Bio</label>
+                            <textarea name="bio" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Teacher</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Teacher</button>
                     </div>
                 </form>
             </div>

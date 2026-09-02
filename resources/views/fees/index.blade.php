@@ -5,23 +5,23 @@
 
 @section('content')
     <!-- Actions Toolbar -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-        <div class="d-flex flex-fill gap-2 w-100 w-md-75">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+        <div class=" flex  flex-fill gap-2 w-100 w-md-75">
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                <input type="text" id="feeSearch" class="form-control border-start-0 ps-0" placeholder="Search fees..."
+                <input type="text" id="feeSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search fees..."
                     oninput="reloadFees()">
             </div>
-            <select id="filterClass" class="form-select w-auto" onchange="reloadFees()">
+            <select id="filterClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white w-auto" onchange="reloadFees()">
                 <option value="">All Classes</option>
             </select>
-            <select id="filterTerm" class="form-select w-auto" onchange="reloadFees()">
+            <select id="filterTerm" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white w-auto" onchange="reloadFees()">
                 <option value="">All Terms</option>
             </select>
         </div>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium flex-shrink-0"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium flex-shrink-0"
                 onclick="App.resetForm(document.forms['createFeeForm']);" data-bs-toggle="modal"
                 data-bs-target="#createFeeModal">
                 <i class="bi bi-plus-lg me-1"></i> Create Fee
@@ -29,10 +29,10 @@
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Fee Title</th>
@@ -41,7 +41,7 @@
                             <th>Term & Session</th>
                             <th>Type</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="feesTableBody">
@@ -49,8 +49,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-3 border-top text-center" id="paginationInfo">
-                <small class="text-muted">Loading...</small>
+            <div class="p-3 border-top  text-center " id="paginationInfo">
+                <small class="text-gray-500">Loading...</small>
             </div>
         </div>
     </div>
@@ -63,28 +63,28 @@
                     onsubmit="App.submitForm(event, reloadFees, 'fee', 'createFeeModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create New Fee</h5>
+                        <h5 class="modal-title font-bold">Create New Fee</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="vstack gap-3">
                             <div>
-                                <label class="form-label">Fee Title *</label>
-                                <input type="text" name="title" class="form-control"
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Fee Title *</label>
+                                <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     placeholder="e.g. First Term Tuition" required>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Amount *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Amount *</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" name="amount" class="form-control" step="0.01"
+                                        <input type="number" name="amount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" step="0.01"
                                             placeholder="0.00" required>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Fee Type *</label>
-                                    <select name="fee_type" id="feeTypeSelect" class="form-select" required>
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Fee Type *</label>
+                                    <select name="fee_type" id="feeTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                         <option value="tuition">Tuition</option>
                                         <option value="exam">Exam</option>
                                         <option value="uniform">Uniform</option>
@@ -92,34 +92,34 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Session *</label>
-                                    <select name="session_id" id="sessionSelect" class="form-select" required>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Session *</label>
+                                    <select name="session_id" id="sessionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                         <option value="">Select Session</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Term *</label>
-                                    <select name="term_id" id="termSelect" class="form-select" required>
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Term *</label>
+                                    <select name="term_id" id="termSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                         <option value="">Select Term</option>
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                <label class="form-label">Target Class (Optional)</label>
-                                <select name="class_id" id="classSelect" class="form-select">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Target Class (Optional)</label>
+                                <select name="class_id" id="classSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">All Classes (School-wide)</option>
                                 </select>
-                                <small class="text-muted">Leave empty to apply to all students in the school.</small>
+                                <small class="text-gray-500">Leave empty to apply to all students in the school.</small>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Due Date *</label>
-                                    <input type="date" name="due_date" class="form-control" required>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Due Date *</label>
+                                    <input type="date" name="due_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                                 </div>
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <div class="form-check form-switch mb-2">
+                                <div class=" md:col-span-6 col-span-1   flex  align-items-end">
+                                    <div class="form-check form-switch  mb-6 ">
                                         <input class="form-check-input" type="checkbox" name="is_mandatory"
                                             value="1" id="isMandatorySwitch" checked>
                                         <label class="form-check-label" for="isMandatorySwitch">Is Mandatory?</label>
@@ -127,14 +127,14 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="form-label">Description</label>
-                                <textarea name="description" class="form-control" rows="2" placeholder="Optional details..."></textarea>
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                                <textarea name="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="2" placeholder="Optional details..."></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Fee</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Fee</button>
                     </div>
                 </form>
             </div>
@@ -149,27 +149,27 @@
                     onsubmit="App.submitForm(event, reloadFees, 'fee', 'editFeeModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Fee Definition</h5>
+                        <h5 class="modal-title font-bold">Edit Fee Definition</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="vstack gap-3">
                             <div>
-                                <label class="form-label">Fee Title *</label>
-                                <input type="text" name="title" class="form-control" required>
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Fee Title *</label>
+                                <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Amount *</label>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Amount *</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" name="amount" class="form-control" step="0.01"
+                                        <input type="number" name="amount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" step="0.01"
                                             required>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Fee Type *</label>
-                                    <select name="fee_type" id="editFeeTypeSelect" class="form-select" required>
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Fee Type *</label>
+                                    <select name="fee_type" id="editFeeTypeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                         <option value="tuition">Tuition</option>
                                         <option value="exam">Exam</option>
                                         <option value="uniform">Uniform</option>
@@ -177,31 +177,31 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Session *</label>
-                                    <select name="session_id" id="editSessionSelect" class="form-select" required>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Session *</label>
+                                    <select name="session_id" id="editSessionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Term *</label>
-                                    <select name="term_id" id="editTermSelect" class="form-select" required>
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Term *</label>
+                                    <select name="term_id" id="editTermSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                <label class="form-label">Target Class</label>
-                                <select name="class_id" id="editClassSelect" class="form-select">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Target Class</label>
+                                <select name="class_id" id="editClassSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                     <option value="">All Classes</option>
                                 </select>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Due Date *</label>
-                                    <input type="date" name="due_date" class="form-control" required>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Due Date *</label>
+                                    <input type="date" name="due_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                                 </div>
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <div class="form-check form-switch mb-2">
+                                <div class=" md:col-span-6 col-span-1   flex  align-items-end">
+                                    <div class="form-check form-switch  mb-6 ">
                                         <input class="form-check-input" type="checkbox" name="is_mandatory"
                                             value="1" id="editIsMandatorySwitch">
                                         <label class="form-check-label" for="editIsMandatorySwitch">Is Mandatory?</label>
@@ -209,14 +209,14 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="form-label">Description</label>
-                                <textarea name="description" class="form-control" rows="2"></textarea>
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                                <textarea name="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Fee</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Fee</button>
                     </div>
                 </form>
             </div>
@@ -257,18 +257,18 @@
                 return App.safeHTML`
                     <tr>
                         <td>
-                            <div class="fw-bold text-dark">${item.title}</div>
-                            <small class="text-muted">${item.description || 'No description'}</small>
+                            <div class="font-bold text-dark">${item.title}</div>
+                            <small class="text-gray-500">${item.description || 'No description'}</small>
                         </td>
                         <td>
-                            <span class="badge bg-primary-subtle text-primary">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 <i class="bi bi-building me-1"></i>${item.class_room?.name || 'All Students'}
                             </span>
                         </td>
-                        <td class="fw-bold text-primary">${App.formatCurrency(item.amount)}</td>
+                        <td class="font-bold text-primary">${App.formatCurrency(item.amount)}</td>
                         <td>
                             <div class="small">${item.term?.name || 'N/A'}</div>
-                            <div class="extra-small text-muted">${item.session?.name || 'N/A'}</div>
+                            <div class="extra-small text-gray-500">${item.session?.name || 'N/A'}</div>
                         </td>
                         <td class="text-capitalize small">${item.fee_type}</td>
                         <td>
@@ -276,16 +276,16 @@
                                 ${item.is_mandatory ? 'Mandatory' : 'Optional'}
                             </span>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="/fees/assign?fee_id=${item.id}" class="btn btn-light shadow-sm btn-sm" title="Assign Students">
+                        <td class="text-right">
+                            <div class=" flex   justify-end  gap-2">
+                                <a href="/fees/assign?fee_id=${item.id}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm" title="Assign Students">
                                     <i class="bi bi-person-plus-fill text-success"></i>
                                 </a>
-                                <button class="btn btn-light shadow-sm btn-sm" 
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm" 
                                     data-action="edit" data-entity="fee" data-id="${item.id}" title="Edit">
                                     <i class="bi bi-pencil-fill text-primary"></i>
                                 </button>
-                                <button class="btn btn-light shadow-sm btn-sm" 
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm" 
                                     data-action="delete" data-entity="fee" data-id="${item.id}" title="Delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </button>

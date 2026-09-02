@@ -5,18 +5,18 @@
 
 @section('content')
     @hasrole('super_admin|School Admin|Teacher')
-        <div class="card-premium mb-4">
-            <div class="card-body p-3">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted text-uppercase fw-bold">Select Class</label>
-                        <select id="classSelect" class="form-select" onchange="loadAttendance()">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden  mb-6 ">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200  p-3">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4  align-items-end">
+                    <div class=" md:col-span-4 col-span-1 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6  small text-gray-500 text-uppercase font-bold">Select Class</label>
+                        <select id="classSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" onchange="loadAttendance()">
                             <option value="">Loading...</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted text-uppercase fw-bold">Date</label>
-                        <input type="date" id="dateInput" class="form-control" value="{{ date('Y-m-d') }}"
+                    <div class=" md:col-span-4 col-span-1 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6  small text-gray-500 text-uppercase font-bold">Date</label>
+                        <input type="date" id="dateInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" value="{{ date('Y-m-d') }}"
                             onchange="loadAttendance()">
                     </div>
                 </div>
@@ -24,38 +24,38 @@
         </div>
     @endhasrole
 
-    <div class="card-premium">
-        <div class="card-header bg-white border-bottom p-3">
-            <h6 class="mb-0 fw-bold">Student List</h6>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-white border-bottom p-3">
+            <h6 class=" mb-6  font-bold">Student List</h6>
         </div>
 
-        <div class="card-body p-0">
+        <div class="p-0">
             <form id="attendanceForm" action="/api/v1/attendance" method="POST"
                 onsubmit="App.submitForm(event, loadAttendance, 'attendance', null)">
                 <!-- Route to Store Attendance needed if real -->
                 @csrf
-                <div class="table-responsive">
-                    <table class="table table-premium align-middle mb-0">
+                <div class="overflow-x-auto">
+                    <table class="table table-premium align-middle  mb-6 ">
                         <thead>
                             <tr>
                                 <th>Student</th>
-                                <th class="text-center">Present</th>
-                                <th class="text-center">Late</th>
-                                <th class="text-center">Absent</th>
+                                <th class=" text-center ">Present</th>
+                                <th class=" text-center ">Late</th>
+                                <th class=" text-center ">Absent</th>
                                 <th>Note</th>
                             </tr>
                         </thead>
                         <tbody id="attendanceTableBody">
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">Select a class to view list.</td>
+                                <td colspan="5" class=" text-center  py-5 text-gray-500">Select a class to view list.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 @hasrole('super_admin|School Admin|Teacher')
-                    <div class="p-3 border-top text-end bg-light">
-                        <button type="submit" class="btn btn-primary-premium px-4">Save Attendance</button>
+                    <div class="p-3 border-top text-right bg-light">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium px-4">Save Attendance</button>
                     </div>
                 @endhasrole
             </form>

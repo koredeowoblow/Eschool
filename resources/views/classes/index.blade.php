@@ -4,11 +4,11 @@
 @section('header_title', 'Classes')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-        <h5 class="text-muted fw-normal mb-0">Academic Structures</h5>
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+        <h5 class="text-gray-500 fw-normal  mb-6 ">Academic Structures</h5>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium requires-session-lock" data-bs-toggle="modal"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium requires-session-lock" data-bs-toggle="modal"
                 data-bs-target="#createClassModal">
                 <i class="bi bi-plus-lg me-1"></i> Create Class
             </button>
@@ -16,10 +16,10 @@
     </div>
 
     <!-- We switched to Table for JS Generic Rendering Consistency -->
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Class Name</th>
@@ -27,7 +27,7 @@
                             <th>Students</th>
                             <th>Subjects</th>
                             <th>Assignments</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="classesTableBody">
@@ -46,47 +46,47 @@
                     onsubmit="App.submitForm(event, reloadClasses, 'class', 'createClassModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create New Class</h5>
+                        <h5 class="modal-title font-bold">Create New Class</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Class Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="e.g. Primary 1, Grade 1"
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="e.g. Primary 1, Grade 1"
                                 required>
-                            <small class="text-muted">Enter the academic level name.</small>
+                            <small class="text-gray-500">Enter the academic level name.</small>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Section</label>
-                            <select name="section_id" id="sectionSelectClass" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Section</label>
+                            <select name="section_id" id="sectionSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="">No Section</option>
                             </select>
-                            <small class="text-muted">Optional: Select a section for this class</small>
+                            <small class="text-gray-500">Optional: Select a section for this class</small>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Session <span class="text-danger">*</span></label>
-                            <select name="session_id" id="sessionSelectClass" class="form-select" required
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Session <span class="text-danger">*</span></label>
+                            <select name="session_id" id="sessionSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required
                                 onchange="loadTermsBySessionClass('sessionSelectClass', 'termSelectClass')">
                                 <option value="">Select Session</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Term <span class="text-danger">*</span></label>
-                            <select name="term_id" id="termSelectClass" class="form-select" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Term <span class="text-danger">*</span></label>
+                            <select name="term_id" id="termSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                 <option value="">Select Term</option>
                             </select>
-                            <small class="text-muted">Select session first</small>
+                            <small class="text-gray-500">Select session first</small>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Class Teacher <span class="text-danger">*</span></label>
-                            <select name="class_teacher_id" id="teacherSelectClass" class="form-select" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Teacher <span class="text-danger">*</span></label>
+                            <select name="class_teacher_id" id="teacherSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                 <option value="">Select Teacher</option>
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Create Class</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Create Class</button>
                     </div>
                 </form>
             </div>
@@ -101,43 +101,43 @@
                     onsubmit="App.submitForm(event, reloadClasses, 'class', 'editClassModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Class</h5>
+                        <h5 class="modal-title font-bold">Edit Class</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Class Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="e.g. Primary 1" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="e.g. Primary 1" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Section</label>
-                            <select name="section_id" id="editSectionSelectClass" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Section</label>
+                            <select name="section_id" id="editSectionSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="">No Section</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Session <span class="text-danger">*</span></label>
-                            <select name="session_id" id="editSessionSelectClass" class="form-select" required
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Session <span class="text-danger">*</span></label>
+                            <select name="session_id" id="editSessionSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required
                                 onchange="loadTermsBySessionClass('editSessionSelectClass', 'editTermSelectClass')">
                                 <option value="">Select Session</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Term <span class="text-danger">*</span></label>
-                            <select name="term_id" id="editTermSelectClass" class="form-select" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Term <span class="text-danger">*</span></label>
+                            <select name="term_id" id="editTermSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                 <option value="">Select Term</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Class Teacher <span class="text-danger">*</span></label>
-                            <select name="class_teacher_id" id="editTeacherSelectClass" class="form-select" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Teacher <span class="text-danger">*</span></label>
+                            <select name="class_teacher_id" id="editTeacherSelectClass" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                 <option value="">Select Teacher</option>
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Class</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Class</button>
                     </div>
                 </form>
             </div>
@@ -148,7 +148,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Manage Class Subjects</h5>
+                    <h5 class="modal-title font-bold">Manage Class Subjects</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -157,34 +157,34 @@
                     </div>
 
                     <!-- Assign Form -->
-                    <form id="assignSubjectForm" class="row g-2 mb-4">
+                    <form id="assignSubjectForm" class="row g-2  mb-6 ">
                         @csrf
                         <input type="hidden" name="class_id" id="assignSubjectClassId">
                         <div class="col-md-5">
-                            <label class="form-label small fw-bold">Subject</label>
-                            <select name="subject_id" id="assign_subject_id" class="form-select form-select-sm" required>
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold">Subject</label>
+                            <select name="subject_id" id="assign_subject_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white-sm" required>
                                 <option value="">Select Subject</option>
                             </select>
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label small fw-bold">Teacher</label>
-                            <select name="teacher_id" id="assign_teacher_id" class="form-select form-select-sm" required>
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small font-bold">Teacher</label>
+                            <select name="teacher_id" id="assign_teacher_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white-sm" required>
                                 <option value="">Select Teacher</option>
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary-premium btn-sm w-100">Assign</button>
+                        <div class="col-md-2  flex  align-items-end">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium px-3 py-1.5 text-sm w-100">Assign</button>
                         </div>
                     </form>
 
-                    <h6 class="fw-bold mb-3 small text-uppercase text-muted">Current Assignments</h6>
-                    <div class="table-responsive">
+                    <h6 class="font-bold  mb-6  small text-uppercase text-gray-500">Current Assignments</h6>
+                    <div class="overflow-x-auto">
                         <table class="table table-sm align-middle">
                             <thead class="bg-light">
                                 <tr>
                                     <th>Subject</th>
                                     <th>Teacher</th>
-                                    <th class="text-end">Action</th>
+                                    <th class="text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="classSubjectsTableBody">
@@ -280,7 +280,7 @@
         async function reloadClassSubjects(classId) {
             const tbody = document.getElementById('classSubjectsTableBody');
             tbody.innerHTML =
-                '<tr><td colspan="3" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+                '<tr><td colspan="3" class=" text-center  py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
 
             try {
                 const res = await axios.get(`/api/v1/teacher-subjects?class_id=${classId}`);
@@ -289,7 +289,7 @@
                 tbody.innerHTML = '';
                 if (data.length === 0) {
                     tbody.innerHTML =
-                        '<tr><td colspan="3" class="text-center py-3 text-muted">No subjects assigned yet</td></tr>';
+                        '<tr><td colspan="3" class=" text-center  py-3 text-gray-500">No subjects assigned yet</td></tr>';
                     return;
                 }
 
@@ -298,8 +298,8 @@
                     tr.innerHTML = `
                         <td><strong>${item.subject?.name || 'N/A'}</strong></td>
                         <td>${item.teacher?.user?.name || 'N/A'}</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-danger border-0" onclick="removeSubjectAssignment(${item.id}, ${classId})">
+                        <td class="text-right">
+                            <button class="btn px-3 py-1.5 text-sm btn-outline-danger border-0" onclick="removeSubjectAssignment(${item.id}, ${classId})">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -309,7 +309,7 @@
             } catch (err) {
                 console.error(err);
                 tbody.innerHTML =
-                    '<tr><td colspan="3" class="text-center py-3 text-danger">Error loading assignments</td></tr>';
+                    '<tr><td colspan="3" class=" text-center  py-3 text-danger">Error loading assignments</td></tr>';
             }
         }
 

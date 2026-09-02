@@ -4,15 +4,15 @@
 @section('header_title', 'Subjects')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="subjectSearch" class="form-control border-start-0 ps-0" placeholder="Search subjects..."
+            <input type="text" id="subjectSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search subjects..."
                 oninput="reloadSubjects()">
         </div>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium requires-session-lock"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium requires-session-lock"
                 onclick="App.resetForm(document.forms['createSubjectForm']);" data-bs-toggle="modal"
                 data-bs-target="#createSubjectModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Subject
@@ -20,15 +20,15 @@
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Subject Name</th>
                             {{-- <th>Code</th> --}}
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="subjectsTableBody"></tbody>
@@ -45,26 +45,26 @@
                     onsubmit="App.submitForm(event, reloadSubjects, 'subject', 'createSubjectModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add Subject</h5>
+                        <h5 class="modal-title font-bold">Add Subject</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Subject Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" col-span-1 md:col-span-12 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Code <span class="text-danger">*</span></label>
-                                <input type="text" name="code" class="form-control" placeholder="e.g. MTH101"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Code <span class="text-danger">*</span></label>
+                                <input type="text" name="code" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="e.g. MTH101"
                                     required>
                             </div>
 
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Subject</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Subject</button>
                     </div>
                 </form>
             </div>
@@ -79,26 +79,26 @@
                     onsubmit="App.submitForm(event, reloadSubjects, 'subject', 'editSubjectModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Subject</h5>
+                        <h5 class="modal-title font-bold">Edit Subject</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Subject Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" col-span-1 md:col-span-12 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Code <span class="text-danger">*</span></label>
-                                <input type="text" name="code" class="form-control" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Code <span class="text-danger">*</span></label>
+                                <input type="text" name="code" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
 
 
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Subject</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Subject</button>
                     </div>
                 </form>
             </div>

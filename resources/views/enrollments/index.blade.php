@@ -4,15 +4,15 @@
 @section('header_title', 'Enrollments')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="enrollmentSearch" class="form-control border-start-0 ps-0"
+            <input type="text" id="enrollmentSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                 placeholder="Search enrollments..." oninput="reloadEnrollments()">
         </div>
 
         @hasrole('super_admin|School Admin|Teacher')
-            <button type="button" class="btn btn-primary-premium"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium"
                 onclick="App.resetForm(document.forms['createEnrollmentForm']);" data-bs-toggle="modal"
                 data-bs-target="#createEnrollmentModal">
                 <i class="bi bi-plus-lg me-1"></i> New Enrollment
@@ -20,17 +20,17 @@
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
                             <th>Student</th>
                             <th>Class</th>
                             <th>Session</th>
                             <th>Term</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="enrollmentsTableBody"></tbody>
@@ -47,40 +47,40 @@
                     onsubmit="App.submitForm(event, reloadEnrollments, 'enrollment', 'createEnrollmentModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create Enrollment</h5>
+                        <h5 class="modal-title font-bold">Create Enrollment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Student</label>
-                                <select name="student_id" id="create_enrollment_student_id" class="form-select" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Student</label>
+                                <select name="student_id" id="create_enrollment_student_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Student</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Class Placement</label>
-                                <select name="class_id" id="create_enrollment_class_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Placement</label>
+                                <select name="class_id" id="create_enrollment_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Session</label>
-                                <select name="session_id" id="create_enrollment_session_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Session</label>
+                                <select name="session_id" id="create_enrollment_session_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Session</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Term</label>
-                                <select name="term_id" id="create_enrollment_term_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Term</label>
+                                <select name="term_id" id="create_enrollment_term_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Term</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Enrollment</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Enrollment</button>
                     </div>
                 </form>
             </div>
@@ -95,40 +95,40 @@
                     onsubmit="App.submitForm(event, reloadEnrollments, 'enrollment', 'editEnrollmentModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Enrollment</h5>
+                        <h5 class="modal-title font-bold">Edit Enrollment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Student</label>
-                                <select name="student_id" id="edit_enrollment_student_id" class="form-select" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Student</label>
+                                <select name="student_id" id="edit_enrollment_student_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Student</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Class Placement</label>
-                                <select name="class_id" id="edit_enrollment_class_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Class Placement</label>
+                                <select name="class_id" id="edit_enrollment_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Session</label>
-                                <select name="session_id" id="edit_enrollment_session_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Session</label>
+                                <select name="session_id" id="edit_enrollment_session_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Session</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Term</label>
-                                <select name="term_id" id="edit_enrollment_term_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Term</label>
+                                <select name="term_id" id="edit_enrollment_term_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Term</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Enrollment</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Enrollment</button>
                     </div>
                 </form>
             </div>

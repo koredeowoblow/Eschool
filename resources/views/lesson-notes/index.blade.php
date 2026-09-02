@@ -4,15 +4,15 @@
 @section('header_title', 'Lesson Notes')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="lessonNoteSearch" class="form-control border-start-0 ps-0"
+            <input type="text" id="lessonNoteSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                 placeholder="Search lesson notes..." oninput="reloadLessonNotes()">
         </div>
 
         @hasrole('super_admin|School Admin|Teacher')
-            <button type="button" class="btn btn-primary-premium requires-session-lock"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium requires-session-lock"
                 onclick="App.resetForm(document.forms['createLessonNoteForm']);" data-bs-toggle="modal"
                 data-bs-target="#createLessonNoteModal">
                 <i class="bi bi-plus-lg me-1"></i> New Lesson Note
@@ -20,17 +20,17 @@
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
                             <th>Title</th>
                             <th>Class</th>
                             <th>Subject</th>
                             <th>Date</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="lessonNotesTableBody"></tbody>
@@ -47,40 +47,40 @@
                     onsubmit="App.submitForm(event, reloadLessonNotes, 'lessonNote', 'createLessonNoteModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create Lesson Note</h5>
+                        <h5 class="modal-title font-bold">Create Lesson Note</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <input type="text" name="title" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Title</label>
+                            <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Class</label>
-                                <select name="class_room_id" id="create_lesson_note_class_id" class="form-select" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Class</label>
+                                <select name="class_room_id" id="create_lesson_note_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Subject</label>
-                                <select name="subject_id" id="create_lesson_note_subject_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject</label>
+                                <select name="subject_id" id="create_lesson_note_subject_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Subject</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" name="date" class="form-control">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Date</label>
+                            <input type="date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Content</label>
-                            <textarea name="content" class="form-control" rows="4"></textarea>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Content</label>
+                            <textarea name="content" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="4"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Lesson Note</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Lesson Note</button>
                     </div>
                 </form>
             </div>
@@ -95,40 +95,40 @@
                     onsubmit="App.submitForm(event, reloadLessonNotes, 'lessonNote', 'editLessonNoteModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Lesson Note</h5>
+                        <h5 class="modal-title font-bold">Edit Lesson Note</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <input type="text" name="title" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Title</label>
+                            <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Class</label>
-                                <select name="class_room_id" id="edit_lesson_note_class_id" class="form-select" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Class</label>
+                                <select name="class_room_id" id="edit_lesson_note_class_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Class</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Subject</label>
-                                <select name="subject_id" id="edit_lesson_note_subject_id" class="form-select" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Subject</label>
+                                <select name="subject_id" id="edit_lesson_note_subject_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                     <option value="">Select Subject</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" name="date" class="form-control">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Date</label>
+                            <input type="date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Content</label>
-                            <textarea name="content" class="form-control" rows="4"></textarea>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Content</label>
+                            <textarea name="content" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="4"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Lesson Note</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Lesson Note</button>
                     </div>
                 </form>
             </div>

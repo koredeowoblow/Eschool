@@ -5,27 +5,27 @@
 
 @section('content')
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class=" flex  flex-column flex-md-row  justify-between   items-center   mb-6  gap-3">
 
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-search"></i>
             </span>
-            <input type="text" id="gradingSearch" class="form-control border-start-0 ps-0"
+            <input type="text" id="gradingSearch" class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all  "
                 placeholder="Search grading records..." oninput="reloadGradingSystem()">
         </div>
 
-        <div class="d-flex gap-2 align-items-center">
+        <div class=" flex  gap-2  items-center ">
             @hasrole('super_admin')
                 <div id="schoolSelectorRow" style="display:none; min-width:250px;">
-                    <select class="form-select border-warning" id="schoolSelect" onchange="handleSchoolChange(this.value)">
+                    <select class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all  border-warning" id="schoolSelect" onchange="handleSchoolChange(this.value)">
                     </select>
                 </div>
             @endhasrole
 
 
             @hasrole('super_admin|School Admin')
-                <button type="button" class="btn btn-primary-premium requires-session-lock"
+                <button type="button" class=" px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium -premium requires-session-lock"
                     onclick="App.resetForm(document.forms['createGradeForm']);" data-bs-toggle="modal"
                     data-bs-target="#createGradeModal">
                     <i class="bi bi-plus-lg me-1"></i>
@@ -37,8 +37,8 @@
     </div>
 
     <!-- Grading Table -->
-    <div class="card-premium">
-        <div class="card-body p-0">
+    <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -premium">
+        <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body p-0">
             <div class="table-responsive">
                 <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
                     <thead>
@@ -47,7 +47,7 @@
                             <th>Score Range</th>
                             <th>Remark</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class=" text-right ">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="gradingTableBody">
@@ -72,28 +72,28 @@
                         <input type="hidden" id="gradeId">
                         <input type="hidden" id="hiddenSchoolId">
 
-                        <div class="mb-3">
+                        <div class="  mb-6  ">
                             <label class="form-label">Grade Name</label>
-                            <input type="text" id="gradeLabel" class="form-control" required placeholder="A, B, C">
+                            <input type="text" id="gradeLabel" class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " required placeholder="A, B, C">
                         </div>
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
                                 <label class="form-label">Min Score</label>
-                                <input type="number" id="minScore" class="form-control" required>
+                                <input type="number" id="minScore" class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " required>
                             </div>
-                            <div class="col-md-6">
+                            <div class=" md:col-span-6 col-span-1 ">
                                 <label class="form-label">Max Score</label>
-                                <input type="number" id="maxScore" class="form-control" required>
+                                <input type="number" id="maxScore" class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " required>
                             </div>
                         </div>
 
-                        <div class="mt-3">
+                        <div class=" mt-4 ">
                             <label class="form-label">Remark</label>
-                            <input type="text" id="remark" class="form-control">
+                            <input type="text" id="remark" class=" w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ">
                         </div>
 
-                        <div class="mt-3">
+                        <div class=" mt-4 ">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="isPass" checked>
                                 <label class="form-check-label" for="isPass">Is Pass Grade?</label>
@@ -104,7 +104,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="submit" class=" px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium -premium">Save</button>
                     </div>
 
                 </form>
@@ -153,7 +153,7 @@
                 document.getElementById('schoolSelectorRow').style.display = 'block';
                 // Show explicit message for super admin
                 document.getElementById('gradingTableBody').innerHTML =
-                    '<tr><td colspan="6" class="text-center py-4 text-muted">Please select a school to view grading scales</td></tr>';
+                    '<tr><td colspan="6" class=" text-center  py-4  text-slate-500 ">Please select a school to view grading scales</td></tr>';
                 fetchSchools();
             } else {
                 fetchGradingScales();
@@ -196,7 +196,7 @@
                 fetchGradingScales();
             } else {
                 document.getElementById('gradingTableBody').innerHTML =
-                    '<tr><td colspan="6" class="text-center py-4 text-muted">Please select a school to view grading scales</td></tr>';
+                    '<tr><td colspan="6" class=" text-center  py-4  text-slate-500 ">Please select a school to view grading scales</td></tr>';
             }
         }
 
@@ -210,7 +210,7 @@
 
             // Loading State
             document.getElementById('gradingTableBody').innerHTML =
-                '<tr><td colspan="6" class="text-center py-4">Loading...</td></tr>';
+                '<tr><td colspan="6" class=" text-center  py-4">Loading...</td></tr>';
 
             fetch(url, {
                     headers: headers
@@ -222,13 +222,13 @@
                     } else {
                         console.error('Failed to fetch grading scales', data.message);
                         document.getElementById('gradingTableBody').innerHTML =
-                            '<tr><td colspan="6" class="text-center text-danger">Failed to load data</td></tr>';
+                            '<tr><td colspan="6" class=" text-center  text-danger">Failed to load data</td></tr>';
                     }
                 })
                 .catch(err => {
                     console.error(err);
                     document.getElementById('gradingTableBody').innerHTML =
-                        '<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>';
+                        '<tr><td colspan="6" class=" text-center  text-danger">Error loading data</td></tr>';
                 });
         }
 
@@ -237,7 +237,7 @@
             tbody.innerHTML = '';
 
             if (!scales || scales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No grading scales found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class=" text-center ">No grading scales found</td></tr>';
                 return;
             }
 

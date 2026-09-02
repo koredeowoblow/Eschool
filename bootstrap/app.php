@@ -61,6 +61,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'check.session' => \App\Http\Middleware\CheckSessionStatus::class,
         ]);
+
+        // Register Security Headers globally
+        $middleware->append(\App\Http\Middleware\SetSecurityHeaders::class);
     })->withSchedule(function (Schedule $schedule) {
         // $schedule->command('budget:send-reminders')->dailyAt('08:00');
     })

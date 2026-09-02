@@ -4,34 +4,34 @@
 @section('header_title', 'Library')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-        <div class="d-flex gap-2 w-100 w-md-auto">
-            <button class="btn btn-primary-premium flex-fill flex-md-grow-0"
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+        <div class=" flex  gap-2 w-100 w-md-auto">
+            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium flex-fill flex-md-grow-0"
                 onclick="App.resetForm(document.forms['createBookForm']);" data-bs-toggle="modal"
                 data-bs-target="#createBookModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Book
             </button>
-            <button class="btn btn-outline-secondary flex-fill flex-md-grow-0"><i class="bi bi-arrow-left-right me-1"></i>
+            <button class="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-all inline-flex items-center gap-2 font-medium flex-fill flex-md-grow-0"><i class="bi bi-arrow-left-right me-1"></i>
                 Borrow/Return</button>
         </div>
         <div class="w-100 w-md-25">
-            <input type="text" id="bookSearch" class="form-control" placeholder="Search books..."
+            <input type="text" id="bookSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Search books..."
                 oninput="reloadBooks()">
         </div>
     </div>
 
     <!-- Library Table -->
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0 table-mobile-cards">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full">
                     <thead>
                         <tr>
                             <th>Book Title</th>
                             <th>Author</th>
                             <th>ISBN</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="libraryTableBody">
@@ -50,32 +50,32 @@
                     onsubmit="App.submitForm(event, reloadBooks, 'library', 'createBookModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add New Book</h5>
+                        <h5 class="modal-title font-bold">Add New Book</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <input type="text" name="title" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Title</label>
+                            <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Author</label>
-                            <input type="text" name="author" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Author</label>
+                            <input type="text" name="author" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">ISBN</label>
-                                <input type="text" name="isbn" class="form-control">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">ISBN</label>
+                                <input type="text" name="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" name="quantity" class="form-control" value="1" min="1">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Quantity</label>
+                                <input type="number" name="quantity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" value="1" min="1">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Add Book</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Add Book</button>
                     </div>
                 </form>
             </div>
@@ -90,32 +90,32 @@
                     onsubmit="App.submitForm(event, reloadBooks, 'library', 'editBookModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Book</h5>
+                        <h5 class="modal-title font-bold">Edit Book</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <input type="text" name="title" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Title</label>
+                            <input type="text" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Author</label>
-                            <input type="text" name="author" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Author</label>
+                            <input type="text" name="author" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">ISBN</label>
-                                <input type="text" name="isbn" class="form-control">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">ISBN</label>
+                                <input type="text" name="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" name="quantity" class="form-control" min="1">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Quantity</label>
+                                <input type="number" name="quantity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" min="1">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Book</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Book</button>
                     </div>
                 </form>
             </div>

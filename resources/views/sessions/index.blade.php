@@ -4,29 +4,29 @@
 @section('header_title', 'Academic Sessions')
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
         <div class="input-group w-100 w-md-50">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="sessionSearch" class="form-control border-start-0 ps-0" placeholder="Search sessions..."
+            <input type="text" id="sessionSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search sessions..."
                 oninput="reloadSessions()">
         </div>
 
         @hasrole('super_admin|School Admin')
-            <button type="button" class="btn btn-primary-premium" onclick="App.resetForm(document.forms['createSessionForm']);"
+            <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="App.resetForm(document.forms['createSessionForm']);"
                 data-bs-toggle="modal" data-bs-target="#createSessionModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Session
             </button>
         @endhasrole
     </div>
 
-    <div class="card-premium">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Session Name</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="sessionsTableBody"></tbody>
@@ -43,37 +43,37 @@
                     onsubmit="App.submitForm(event, reloadSessions, 'session', 'createSessionModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Add Session</h5>
+                        <h5 class="modal-title font-bold">Add Session</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Session Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" required placeholder="e.g. 2024/2025">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Session Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required placeholder="e.g. 2024/2025">
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Start Date <span class="text-danger">*</span></label>
-                                <input type="date" name="start_date" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" name="start_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">End Date <span class="text-danger">*</span></label>
-                                <input type="date" name="end_date" class="form-control" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">End Date <span class="text-danger">*</span></label>
+                                <input type="date" name="end_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Status</label>
+                            <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="upcoming">Upcoming</option>
                                 <option value="active" selected>Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
-                            <small class="text-muted">Set the current status of this academic session</small>
+                            <small class="text-gray-500">Set the current status of this academic session</small>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save Session</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Session</button>
                     </div>
                 </form>
             </div>
@@ -88,27 +88,27 @@
                     onsubmit="App.submitForm(event, reloadSessions, 'session', 'editSessionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Session</h5>
+                        <h5 class="modal-title font-bold">Edit Session</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Session Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Session Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Start Date <span class="text-danger">*</span></label>
-                                <input type="date" name="start_date" class="form-control" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" name="start_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">End Date <span class="text-danger">*</span></label>
-                                <input type="date" name="end_date" class="form-control" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">End Date <span class="text-danger">*</span></label>
+                                <input type="date" name="end_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Status</label>
+                            <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white">
                                 <option value="upcoming">Upcoming</option>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
@@ -116,8 +116,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update Session</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update Session</button>
                     </div>
                 </form>
             </div>

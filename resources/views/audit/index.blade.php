@@ -4,19 +4,19 @@
 @section('header_title', 'Audit Logs')
 
 @section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold">System Audit Trail</h5>
-                    <small class="text-muted">All sensitive operations are logged here</small>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  mb-6 ">
+        <div class=" col-span-1 md:col-span-12 ">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden border-0 shadow-sm">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-white py-3">
+                    <h5 class=" mb-6  font-bold">System Audit Trail</h5>
+                    <small class="text-gray-500">All sensitive operations are logged here</small>
                 </div>
-                <div class="card-body">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 ">
                     <!-- Filters -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-3">
-                            <label class="form-label small">Entity Type</label>
-                            <select class="form-select" id="filter-entity">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
+                        <div class=" md:col-span-3 col-span-1 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small">Entity Type</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="filter-entity">
                                 <option value="">All Entities</option>
                                 <option value="student">Student</option>
                                 <option value="result">Result</option>
@@ -25,9 +25,9 @@
                                 <option value="user_role">User Role</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">Action</label>
-                            <select class="form-select" id="filter-action">
+                        <div class=" md:col-span-3 col-span-1 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small">Action</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="filter-action">
                                 <option value="">All Actions</option>
                                 <option value="create">Create</option>
                                 <option value="update">Update</option>
@@ -37,30 +37,30 @@
                                 <option value="unauthorized">Unauthorized</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">Start Date</label>
-                            <input type="date" class="form-control" id="filter-start-date">
+                        <div class=" md:col-span-3 col-span-1 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small">Start Date</label>
+                            <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="filter-start-date">
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">End Date</label>
-                            <input type="date" class="form-control" id="filter-end-date">
+                        <div class=" md:col-span-3 col-span-1 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6  small">End Date</label>
+                            <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="filter-end-date">
                         </div>
                     </div>
-                    <div class="row g-3 mb-3">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4   mb-6 ">
                         <div class="col-md-9">
-                            <input type="text" class="form-control" id="filter-search"
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="filter-search"
                                 placeholder="Search by entity, action, or user email...">
                         </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-primary w-100" onclick="loadAuditLogs()">
+                        <div class=" md:col-span-3 col-span-1 ">
+                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium w-100" onclick="loadAuditLogs()">
                                 <i class="bi bi-search me-1"></i> Filter
                             </button>
                         </div>
                     </div>
 
                     <!-- Logs Table -->
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="audit-table">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left divide-y divide-gray-200" id="audit-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Timestamp</th>
@@ -73,7 +73,7 @@
                             </thead>
                             <tbody id="audit-logs-body">
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">
+                                    <td colspan="6" class=" text-center  py-4">
                                         <span class="spinner-border spinner-border-sm me-2"></span>
                                         Loading audit logs...
                                     </td>
@@ -83,7 +83,7 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div id="pagination-container" class="d-flex justify-content-between align-items-center mt-3">
+                    <div id="pagination-container" class="flex justify-between items-center mt-4">
                         <div id="pagination-info"></div>
                         <nav id="pagination-nav"></nav>
                     </div>
@@ -133,7 +133,7 @@
             } catch (error) {
                 console.error('Failed to load audit logs:', error);
                 document.getElementById('audit-logs-body').innerHTML =
-                    '<tr><td colspan="6" class="text-center text-danger">Failed to load audit logs</td></tr>';
+                    '<tr><td colspan="6" class=" text-center  text-danger">Failed to load audit logs</td></tr>';
             }
         }
 
@@ -141,7 +141,7 @@
             const tbody = document.getElementById('audit-logs-body');
 
             if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No audit logs found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class=" text-center  text-gray-500">No audit logs found</td></tr>';
                 return;
             }
 
@@ -151,9 +151,9 @@
             <td><span class="badge bg-${getActionColor(log.action)}">${log.action}</span></td>
             <td>${log.entity}</td>
             <td>${log.user_email || 'System'}</td>
-            <td><small class="text-muted">${log.ip_address || 'N/A'}</small></td>
+            <td><small class="text-gray-500">${log.ip_address || 'N/A'}</small></td>
             <td>
-                <button class="btn btn-sm btn-outline-primary" onclick="viewDetails(${log.id})">
+                <button class="btn px-3 py-1.5 text-sm btn-outline-primary" onclick="viewDetails(${log.id})">
                     <i class="bi bi-eye"></i>
                 </button>
             </td>
@@ -179,7 +179,7 @@
 
             // Simple pagination (you can enhance this)
             const nav = document.getElementById('pagination-nav');
-            let html = '<ul class="pagination mb-0">';
+            let html = '<ul class="pagination  mb-6 ">';
 
             if (data.prev_page_url) {
                 html +=
@@ -203,33 +203,33 @@
                 const log = response.data.data;
 
                 const content = `
-            <div class="row g-3">
-                <div class="col-md-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>Action:</strong> ${log.action}
                 </div>
-                <div class="col-md-6">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>Entity:</strong> ${log.entity}
                 </div>
-                <div class="col-md-6">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>User:</strong> ${log.user_email || 'System'}
                 </div>
-                <div class="col-md-6">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>Role:</strong> ${log.user_role || 'N/A'}
                 </div>
-                <div class="col-md-6">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>IP Address:</strong> ${log.ip_address || 'N/A'}
                 </div>
-                <div class="col-md-6">
+                <div class=" md:col-span-6 col-span-1 ">
                     <strong>Timestamp:</strong> ${new Date(log.created_at).toLocaleString()}
                 </div>
-                <div class="col-12">
+                <div class=" col-span-1 md:col-span-12 ">
                     <strong>User Agent:</strong><br>
-                    <small class="text-muted">${log.user_agent || 'N/A'}</small>
+                    <small class="text-gray-500">${log.user_agent || 'N/A'}</small>
                 </div>
                 ${log.metadata ? `
-                    <div class="col-12">
+                    <div class=" col-span-1 md:col-span-12 ">
                         <strong>Additional Data:</strong>
-                        <pre class="bg-light p-3 rounded mt-2"><code>${JSON.stringify(log.metadata, null, 2)}</code></pre>
+                        <pre class="bg-light p-3 rounded mt-4"><code>${JSON.stringify(log.metadata, null, 2)}</code></pre>
                     </div>
                     ` : ''}
             </div>

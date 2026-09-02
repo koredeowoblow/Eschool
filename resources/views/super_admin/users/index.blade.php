@@ -4,17 +4,17 @@
 @section('header_title', 'User Management')
 
 @section('content')
-    <div class="card-premium p-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-            <h5 class="mb-0">All System Users</h5>
-            <div class="d-flex gap-2 w-100 w-md-auto">
-                <input type="text" class="form-control" placeholder="Search users...">
-                <button class="btn btn-light"><i class="bi bi-filter"></i></button>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4">
+        <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+            <h5 class=" mb-6 ">All System Users</h5>
+            <div class=" flex  gap-2 w-100 w-md-auto">
+                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Search users...">
+                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium"><i class="bi bi-filter"></i></button>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-premium table-hover align-middle">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -26,9 +26,9 @@
                 </thead>
                 <tbody id="users-table-body">
                     <tr>
-                        <td colspan="5" class="text-center py-4">
+                        <td colspan="5" class=" text-center  py-4">
                             <div class="spinner-border text-primary" role="status"></div>
-                            <p class="text-muted small mt-2">Loading users...</p>
+                            <p class="text-gray-500 small mt-4">Loading users...</p>
                         </td>
                     </tr>
                 </tbody>
@@ -47,32 +47,32 @@
                 <div class="modal-body">
                     <form id="editUserForm">
                         <input type="hidden" id="edit_user_id">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" id="edit_name" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_name" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="edit_email" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Email</label>
+                            <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_email" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select class="form-select" id="edit_role">
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Role</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" id="edit_role">
                                 <option value="super_admin">Super Admin</option>
                                 <option value="school_admin">School Admin</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="student">Student</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">School</label>
-                            <input type="text" class="form-control" id="edit_school" readonly>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">School</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_school" readonly>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary-premium" onclick="saveUser()">Save Changes</button>
+                    <button type="button" class=" px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium " data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="saveUser()">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     tbody.innerHTML = '';
 
                     if (!users || users.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">No users found.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" class=" text-center ">No users found.</td></tr>';
                         return;
                     }
 
@@ -105,18 +105,18 @@
                         const tr = document.createElement('tr');
                         const role = user.roles && user.roles.length ? user.roles[0].name : 'User';
                         const schoolName = user.school ? user.school.name :
-                            '<span class="text-muted">Global</span>';
+                            '<span class="text-gray-500">Global</span>';
 
                         tr.innerHTML = `
                     <td data-label="Name">
                         <div class="fw-semibold">${user.name}</div>
-                        <div class="small text-muted">${user.email}</div>
+                        <div class="small text-gray-500">${user.email}</div>
                     </td>
-                    <td data-label="Role"><span class="badge bg-primary-subtle text-primary text-uppercase">${role}</span></td>
+                    <td data-label="Role"><span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 text-uppercase">${role}</span></td>
                     <td data-label="School">${schoolName}</td>
-                    <td data-label="Joined" class="small text-muted">${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td data-label="Joined" class="small text-gray-500">${new Date(user.created_at).toLocaleDateString()}</td>
                     <td data-label="Actions">
-                        <button class="btn btn-sm btn-light text-primary" onclick='editUser(${JSON.stringify(user)})'>
+                        <button class="btn px-3 py-1.5 text-sm btn-light text-primary" onclick='editUser(${JSON.stringify(user)})'>
                             <i class="bi bi-pencil"></i>
                         </button>
                     </td>
@@ -127,7 +127,7 @@
                 .catch(error => {
                     console.error('Error loading users', error);
                     document.getElementById('users-table-body').innerHTML =
-                        '<tr><td colspan="5" class="text-center text-danger">Failed to load data.</td></tr>';
+                        '<tr><td colspan="5" class=" text-center  text-danger">Failed to load data.</td></tr>';
                 });
         }
 

@@ -4,28 +4,28 @@
 @section('header_title', 'Configuration')
 
 @section('content')
-    <div class="row">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
         <div class="col-lg-6">
-            <div class="card-premium p-4">
-                <h5 class="mb-4">General Settings</h5>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4">
+                <h5 class=" mb-6 ">General Settings</h5>
                 <form id="settings-form" onsubmit="saveSettings(event)">
-                    <div class="mb-3">
-                        <label class="form-label">Platform Name</label>
-                        <input type="text" id="site_name" class="form-control" value="{{ config('app.name') }}">
+                    <div class=" mb-6 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6 ">Platform Name</label>
+                        <input type="text" id="site_name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" value="{{ config('app.name') }}">
                     </div>
 
-                    <div class="mb-3 form-check form-switch">
+                    <div class=" mb-6  form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="maintenance_mode">
                         <label class="form-check-label" for="maintenance_mode">Maintenance Mode</label>
                     </div>
 
-                    <div class="mb-3 form-check form-switch">
+                    <div class=" mb-6  form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="allow_registration" checked>
                         <label class="form-check-label" for="allow_registration">Allow New School Registrations</label>
                     </div>
 
                     <div class="pt-2">
-                        <button type="submit" class="btn btn-primary-premium">Save Changes</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Changes</button>
                     </div>
                 </form>
             </div>

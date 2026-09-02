@@ -4,15 +4,15 @@
 @section('header_title', 'Guardian Dashboard')
 
 @section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  mb-6 ">
+        <div class=" col-span-1 md:col-span-12 ">
+            <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  border-0 shadow-sm">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -header bg-white py-3">
                     <h5 class="mb-0 fw-bold">My Children</h5>
                 </div>
-                <div class="card-body">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
                     <div class="row" id="children-container">
-                        <div class="col-12 text-center py-4">
+                        <div class=" col-span-1 md:col-span-12   text-center  py-4">
                             <span class="spinner-border spinner-border-sm"></span> Loading...
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul class="nav nav-tabs mb-3" id="childTabs" role="tablist">
+                    <ul class="nav nav-tabs   mb-6  " id="childTabs" role="tablist">
                         <li class="nav-item">
                             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#results-tab">
                                 Results
@@ -52,7 +52,7 @@
                         <!-- Results Tab -->
                         <div class="tab-pane fade show active" id="results-tab">
                             <div id="results-content">
-                                <div class="text-center py-4">
+                                <div class=" text-center  py-4">
                                     <span class="spinner-border spinner-border-sm"></span> Loading results...
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                         <!-- Attendance Tab -->
                         <div class="tab-pane fade" id="attendance-tab">
                             <div id="attendance-content">
-                                <div class="text-center py-4">
+                                <div class=" text-center  py-4">
                                     <span class="spinner-border spinner-border-sm"></span> Loading attendance...
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                         <!-- Fees Tab -->
                         <div class="tab-pane fade" id="fees-tab">
                             <div id="fees-content">
-                                <div class="text-center py-4">
+                                <div class=" text-center  py-4">
                                     <span class="spinner-border spinner-border-sm"></span> Loading fees...
                                 </div>
                             </div>
@@ -95,20 +95,20 @@
 
                 if (children.length === 0) {
                     container.innerHTML =
-                        '<div class="col-12 text-center text-muted">No children linked to your account</div>';
+                        '<div class=" col-span-1 md:col-span-12   text-center   text-slate-500 ">No children linked to your account</div>';
                     return;
                 }
 
                 container.innerHTML = children.map(child => `
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 border-primary">
-                    <div class="card-body">
-                        <h5 class="card-title">${child.name}</h5>
-                        <p class="card-text">
-                            <small class="text-muted">Admission: ${child.admission_number}</small><br>
-                            <small class="text-muted">Class: ${child.class}</small>
+            <div class=" md:col-span-4 col-span-1    mb-6  ">
+                <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  h-100 border-primary">
+                    <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                        <h5 class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -title">${child.name}</h5>
+                        <p class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -text">
+                            <small class=" text-slate-500 ">Admission: ${child.admission_number}</small><br>
+                            <small class=" text-slate-500 ">Class: ${child.class}</small>
                         </p>
-                        <button class="btn btn-primary btn-sm" onclick="viewChild(${child.id}, '${child.name}')">
+                        <button class=" px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium  btn-sm" onclick="viewChild(${child.id}, '${child.name}')">
                             <i class="bi bi-eye me-1"></i> View Details
                         </button>
                     </div>
@@ -118,7 +118,7 @@
             } catch (error) {
                 console.error('Failed to load children:', error);
                 document.getElementById('children-container').innerHTML =
-                    '<div class="col-12 text-center text-danger">Failed to load children</div>';
+                    '<div class=" col-span-1 md:col-span-12   text-center  text-danger">Failed to load children</div>';
             }
         }
 
@@ -141,7 +141,7 @@
                 const content = document.getElementById('results-content');
 
                 if (results.length === 0) {
-                    content.innerHTML = '<div class="text-center text-muted">No published results available</div>';
+                    content.innerHTML = '<div class=" text-center   text-slate-500 ">No published results available</div>';
                     return;
                 }
 
@@ -174,7 +174,7 @@
             } catch (error) {
                 console.error('Failed to load results:', error);
                 document.getElementById('results-content').innerHTML =
-                    '<div class="text-center text-danger">Failed to load results</div>';
+                    '<div class=" text-center  text-danger">Failed to load results</div>';
             }
         }
 
@@ -186,7 +186,7 @@
                 const content = document.getElementById('attendance-content');
 
                 if (attendance.length === 0) {
-                    content.innerHTML = '<div class="text-center text-muted">No attendance records</div>';
+                    content.innerHTML = '<div class=" text-center   text-slate-500 ">No attendance records</div>';
                     return;
                 }
 
@@ -223,27 +223,27 @@
                 const content = document.getElementById('fees-content');
 
                 content.innerHTML = `
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <small class="text-muted">Total Invoiced</small>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4   mb-6  ">
+                <div class=" md:col-span-4 col-span-1 ">
+                    <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  bg-light">
+                        <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                            <small class=" text-slate-500 ">Total Invoiced</small>
                             <h5>$${parseFloat(data.summary.total_invoiced || 0).toFixed(2)}</h5>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <small class="text-muted">Total Paid</small>
+                <div class=" md:col-span-4 col-span-1 ">
+                    <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  bg-light">
+                        <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                            <small class=" text-slate-500 ">Total Paid</small>
                             <h5 class="text-success">$${parseFloat(data.summary.total_paid || 0).toFixed(2)}</h5>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <small class="text-muted">Pending</small>
+                <div class=" md:col-span-4 col-span-1 ">
+                    <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden  bg-light">
+                        <div class=" bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden -body">
+                            <small class=" text-slate-500 ">Pending</small>
                             <h5 class="text-warning">$${parseFloat(data.summary.pending || 0).toFixed(2)}</h5>
                         </div>
                     </div>

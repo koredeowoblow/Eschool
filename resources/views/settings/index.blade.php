@@ -4,19 +4,19 @@
 @section('header_title', 'Settings')
 
 @section('content')
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-4">
-            <div class="card-premium h-100 p-4">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Academic Structure</h6>
-                <p class="text-muted small mb-3">Configure grades, subjects, sections, sessions and terms.</p>
-                <button class="btn btn-sm btn-outline-primary" onclick="openSettingsPanel('academic')">Manage</button>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-6 ">
+        <div class=" md:col-span-6 col-span-1   lg:col-span-4 col-span-1 ">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-100 p-4">
+                <h6 class="text-gray-500 text-uppercase small font-bold  mb-6 ">Academic Structure</h6>
+                <p class="text-gray-500 small  mb-6 ">Configure grades, subjects, sections, sessions and terms.</p>
+                <button class="btn px-3 py-1.5 text-sm btn-outline-primary" onclick="openSettingsPanel('academic')">Manage</button>
             </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-            <div class="card-premium h-100 p-4">
-                <h6 class="text-muted text-uppercase small fw-bold mb-2">Fees & Billing</h6>
-                <p class="text-muted small mb-3">Manage fee types and invoice item templates.</p>
-                <button class="btn btn-sm btn-outline-primary" onclick="openSettingsPanel('fees')">Manage</button>
+        <div class=" md:col-span-6 col-span-1   lg:col-span-4 col-span-1 ">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-100 p-4">
+                <h6 class="text-gray-500 text-uppercase small font-bold  mb-6 ">Fees & Billing</h6>
+                <p class="text-gray-500 small  mb-6 ">Manage fee types and invoice item templates.</p>
+                <button class="btn px-3 py-1.5 text-sm btn-outline-primary" onclick="openSettingsPanel('fees')">Manage</button>
             </div>
         </div>
     </div>
@@ -33,18 +33,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'createGradeModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Grade</h5>
+                        <h5 class="modal-title font-bold">New Grade</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -58,18 +58,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'grade', 'editGradeModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Grade</h5>
+                        <h5 class="modal-title font-bold">Edit Grade</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -84,18 +84,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'createSectionModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Section</h5>
+                        <h5 class="modal-title font-bold">New Section</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -109,18 +109,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'section', 'editSectionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Section</h5>
+                        <h5 class="modal-title font-bold">Edit Section</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -135,18 +135,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'createSessionModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Session</h5>
+                        <h5 class="modal-title font-bold">New Session</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -160,18 +160,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'session', 'editSessionModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Session</h5>
+                        <h5 class="modal-title font-bold">Edit Session</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -186,18 +186,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'createTermModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Term</h5>
+                        <h5 class="modal-title font-bold">New Term</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -211,18 +211,18 @@
                     onsubmit="App.submitForm(event, renderAcademicTables, 'term', 'editTermModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Term</h5>
+                        <h5 class="modal-title font-bold">Edit Term</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -237,18 +237,18 @@
                     onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'createFeeTypeModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Fee Type</h5>
+                        <h5 class="modal-title font-bold">New Fee Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -262,18 +262,18 @@
                     onsubmit="App.submitForm(event, renderFeeSettings, 'feeType', 'editFeeTypeModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Fee Type</h5>
+                        <h5 class="modal-title font-bold">Edit Fee Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Name</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -288,18 +288,18 @@
                     onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'createInvoiceItemModal')">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">New Invoice Item</h5>
+                        <h5 class="modal-title font-bold">New Invoice Item</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                            <input type="text" name="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Save</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save</button>
                     </div>
                 </form>
             </div>
@@ -313,18 +313,18 @@
                     onsubmit="App.submitForm(event, renderFeeSettings, 'invoiceItem', 'editInvoiceItemModal')">
                     @csrf @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Edit Invoice Item</h5>
+                        <h5 class="modal-title font-bold">Edit Invoice Item</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" class="form-control" required>
+                        <div class=" mb-6 ">
+                            <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                            <input type="text" name="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium">Update</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Update</button>
                     </div>
                 </form>
             </div>
@@ -345,69 +345,69 @@
         function renderAcademicTables() {
             const container = document.getElementById('settingsDetail');
             container.innerHTML = `
-            <div class="card-premium">
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-                    <h6 class="mb-0 fw-bold">Grades</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createGradeModal">New Grade</button>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  gap-2">
+                    <h6 class=" mb-6  font-bold">Grades</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createGradeModal">New Grade</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="gradesTableBody"></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
-                    <h6 class="mb-0 fw-bold">Sections</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSectionModal">New Section</button>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  border-top gap-2">
+                    <h6 class=" mb-6  font-bold">Sections</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSectionModal">New Section</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="sectionsTableBody"></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
-                    <h6 class="mb-0 fw-bold">Sessions</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSessionModal">New Session</button>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  border-top gap-2">
+                    <h6 class=" mb-6  font-bold">Sessions</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createSessionModal">New Session</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="sessionsTableBody"></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
-                    <h6 class="mb-0 fw-bold">Terms</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createTermModal">New Term</button>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  border-top gap-2">
+                    <h6 class=" mb-6  font-bold">Terms</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createTermModal">New Term</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="termsTableBody"></tbody>
@@ -425,35 +425,35 @@
         function renderFeeSettings() {
             const container = document.getElementById('settingsDetail');
             container.innerHTML = `
-            <div class="card-premium">
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-                    <h6 class="mb-0 fw-bold">Fee Types</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createFeeTypeModal">New Fee Type</button>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  gap-2">
+                    <h6 class=" mb-6  font-bold">Fee Types</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createFeeTypeModal">New Fee Type</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="feeTypesTableBody"></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center border-top gap-2">
-                    <h6 class="mb-0 fw-bold">Invoice Items</h6>
-                    <button class="btn btn-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createInvoiceItemModal">New Invoice Item</button>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header flex flex-col md:flex-row  justify-between   items-center  border-top gap-2">
+                    <h6 class=" mb-6  font-bold">Invoice Items</h6>
+                    <button class="btn px-3 py-1.5 text-sm btn-primary-premium w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#createInvoiceItemModal">New Invoice Item</button>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium mb-0">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table table-premium  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>Description</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="invoiceItemsTableBody"></tbody>

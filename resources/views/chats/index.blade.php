@@ -9,11 +9,12 @@
         <!-- Left Panel: Conversations List -->
         <div class="conversations-panel">
             <div class="conversations-header">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="flex justify-between items-center">
                     <h5>Messages</h5>
-                    <button type="button" class="btn btn-sm btn-primary-premium" data-bs-toggle="modal"
-                        data-bs-target="#newMessageModal">
-                        <i class="bi bi-plus-lg"></i>
+                    <button type="button" class="btn px-3 py-1.5 text-sm btn-primary-premium" data-bs-toggle="modal"
+                        data-bs-target="#newMessageModal"
+                        aria-label="New message">{{-- H-3: icon-only button needs accessible label --}}
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -40,24 +41,25 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">New Message</h5>
+                    <h5 class="modal-title font-bold">New Message</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">To</label>
-                        <select id="newMessageRecipient" class="form-select" required>
+                    <div class=" mb-6 ">
+                        {{-- C-2: for/id on modal label --}}
+                        <label for="newMessageRecipient" class="block text-sm font-medium text-gray-700  mb-6 ">To</label>
+                        <select id="newMessageRecipient" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                             <option value="">Select recipient...</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Message</label>
-                        <textarea id="newMessageText" class="form-control" rows="4" required placeholder="Type your message..."></textarea>
+                    <div class=" mb-6 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6 ">Message</label>
+                        <textarea id="newMessageText" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" rows="4" required placeholder="Type your message..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary-premium" onclick="sendNewMessage()">Send</button>
+                    <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="sendNewMessage()">Send</button>
                 </div>
             </div>
         </div>
@@ -285,12 +287,12 @@
                 </div>
             </div>
             <div class="messages-body" id="messagesBody">
-                <div class="text-center py-5">
+                <div class=" text-center  py-5">
                     <div class="spinner-border text-primary" role="status"></div>
                 </div>
             </div>
             <div class="messages-footer">
-                <textarea id="messageInput" rows="1" class="form-control" placeholder="Type a message..." onkeypress="handleMessageKeyPress(event)"></textarea>
+                <textarea id="messageInput" rows="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Type a message..." onkeypress="handleMessageKeyPress(event)"></textarea>
                 <button onclick="sendMessage()"><i class="bi bi-send-fill"></i></button>
             </div>
         `;

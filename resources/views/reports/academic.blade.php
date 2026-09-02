@@ -4,33 +4,33 @@
 @section('header_title', 'Academic Performance & Collation')
 
 @section('content')
-    <div class="row g-4">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-6 ">
         <!-- Selection Sidebar -->
-        <div class="col-md-4">
-            <div class="card-premium p-4">
-                <h5 class="mb-3">Report Scope</h5>
+        <div class=" md:col-span-4 col-span-1 ">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4">
+                <h5 class=" mb-6 ">Report Scope</h5>
                 <form id="reportScopeForm">
-                    <div class="mb-3">
-                        <label class="form-label">Academic Session</label>
-                        <select class="form-select" name="session_id" id="sessionSelect" required>
+                    <div class=" mb-6 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6 ">Academic Session</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" name="session_id" id="sessionSelect" required>
                             <option value="">Select Session</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Term</label>
-                        <select class="form-select" name="term_id" id="termSelect" required>
+                    <div class=" mb-6 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6 ">Term</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" name="term_id" id="termSelect" required>
                             <option value="">Select Term</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Class</label>
-                        <select class="form-select" name="class_id" id="classSelect" required>
+                    <div class=" mb-6 ">
+                        <label class="block text-sm font-medium text-gray-700  mb-6 ">Class</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" name="class_id" id="classSelect" required>
                             <option value="">Select Class</option>
                         </select>
                     </div>
                     <hr>
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary" id="btnViewBroadsheet">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" id="btnViewBroadsheet">
                             <i class="bi bi-table me-2"></i>View Broadsheet
                         </button>
                         <button type="button" class="btn btn-soft-info" id="btnCollate">
@@ -41,13 +41,13 @@
             </div>
 
             <!-- Missing Marks Alert Panel -->
-            <div id="missingMarksPanel" class="mt-4 d-none">
+            <div id="missingMarksPanel" class="mt-4  hidden ">
                 <div class="alert alert-warning border-0 shadow-sm">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class=" flex   items-center   mb-6 ">
                         <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>
-                        <h6 class="mb-0">Missing Subject Results</h6>
+                        <h6 class=" mb-6 ">Missing Subject Results</h6>
                     </div>
-                    <p class="small mb-2">The following students are missing approved marks for certain subjects:</p>
+                    <p class="small  mb-6 ">The following students are missing approved marks for certain subjects:</p>
                     <div id="missingMarksList" class="small" style="max-height: 200px; overflow-y: auto;">
                         <!-- List populated via JS -->
                     </div>
@@ -57,25 +57,25 @@
 
         <!-- Results Display Area -->
         <div class="col-md-8">
-            <div class="card-premium p-4 h-100 min-vh-50 d-flex align-items-center justify-content-center" id="emptyState">
-                <div class="text-center text-muted">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4 h-100 min-vh-50  flex   items-center   justify-center " id="emptyState">
+                <div class=" text-center  text-gray-500">
                     <i class="bi bi-file-earmark-spreadsheet display-1 opacity-25"></i>
-                    <p class="mt-3">Select a class, session, and term to view academic results.</p>
+                    <p class="mt-4">Select a class, session, and term to view academic results.</p>
                 </div>
             </div>
 
-            <div class="card-premium p-4 d-none" id="broadsheetPanel">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-                    <h5 class="mb-0" id="broadsheetTitle">Academic Broadsheet</h5>
-                    <div class="d-flex gap-2 w-100 w-md-auto">
-                        <button class="btn btn-sm btn-soft-primary w-100 w-md-auto" onclick="window.print()">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4  hidden " id="broadsheetPanel">
+                <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+                    <h5 class=" mb-6 " id="broadsheetTitle">Academic Broadsheet</h5>
+                    <div class=" flex  gap-2 w-100 w-md-auto">
+                        <button class="btn px-3 py-1.5 text-sm btn-soft-primary w-100 w-md-auto" onclick="window.print()">
                             <i class="bi bi-printer me-2"></i>Print
                         </button>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle custom-table" id="broadsheetTable">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle custom-table" id="broadsheetTable">
                         <thead class="bg-light">
                             <!-- Populated via JS -->
                         </thead>
@@ -188,7 +188,7 @@
 
                 if (results.length === 0) {
                     $tbody.append(
-                        '<tr><td colspan="100%" class="text-center p-5">No collated results found for this selection. Click "Collate" to generate.</td></tr>'
+                        '<tr><td colspan="100%" class=" text-center  p-5">No collated results found for this selection. Click "Collate" to generate.</td></tr>'
                     );
                     return;
                 }
@@ -209,10 +209,10 @@
                 // Header
                 let headerHtml = '<tr><th>Student Name</th>';
                 sortedSubjects.forEach(sub => {
-                    headerHtml += `<th class="text-center">${sub}</th>`;
+                    headerHtml += `<th class=" text-center ">${sub}</th>`;
                 });
                 headerHtml +=
-                    '<th class="text-center font-bold">Total</th><th class="text-center">Avg</th><th class="text-center">Status</th></tr>';
+                    '<th class=" text-center  font-bold">Total</th><th class=" text-center ">Avg</th><th class=" text-center ">Status</th></tr>';
                 $thead.append(headerHtml);
 
                 // Rows
@@ -226,15 +226,15 @@
                         const res = studentGroups[student][sub];
                         if (res) {
                             const score = parseFloat(res.total_score);
-                            rowHtml += `<td class="text-center">
+                            rowHtml += `<td class=" text-center ">
                                 <span class="d-block font-bold">${score}</span>
-                                <small class="text-muted">${res.grade}</small>
+                                <small class="text-gray-500">${res.grade}</small>
                             </td>`;
                             total += score;
                             count++;
                             if (res.status === 'Fail') hasFailed = true;
                         } else {
-                            rowHtml += '<td class="text-center text-muted">-</td>';
+                            rowHtml += '<td class=" text-center  text-gray-500">-</td>';
                         }
                     });
 
@@ -242,10 +242,10 @@
                     const statusClass = hasFailed ? 'bg-soft-danger text-danger' :
                         'bg-soft-success text-success';
 
-                    rowHtml += `<td class="text-center font-bold">${total}</td>`;
-                    rowHtml += `<td class="text-center">${avg}%</td>`;
+                    rowHtml += `<td class=" text-center  font-bold">${total}</td>`;
+                    rowHtml += `<td class=" text-center ">${avg}%</td>`;
                     rowHtml +=
-                        `<td class="text-center"><span class="badge ${statusClass}">${hasFailed ? 'Fail' : 'Pass'}</span></td></tr>`;
+                        `<td class=" text-center "><span class="badge ${statusClass}">${hasFailed ? 'Fail' : 'Pass'}</span></td></tr>`;
                     $tbody.append(rowHtml);
                 });
             }
@@ -262,7 +262,7 @@
                         const $list = $('#missingMarksList').empty();
                         res.data.forEach(item => {
                             $list.append(
-                                `<div class="mb-1">• ${item.student} (${item.subject})</div>`);
+                                `<div class=" mb-6 ">• ${item.student} (${item.subject})</div>`);
                         });
                     } else {
                         $('#missingMarksPanel').addClass('d-none');

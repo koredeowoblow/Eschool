@@ -3,19 +3,19 @@
 @section('title', 'System Jobs')
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-                <h4 class="mb-0 fw-bold text-gradient">System Jobs</h4>
-                <button class="btn btn-primary-premium" onclick="retryAllJobs()">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div class=" col-span-1 md:col-span-12 ">
+            <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
+                <h4 class=" mb-6  font-bold text-gradient">System Jobs</h4>
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="retryAllJobs()">
                     <i class="bi bi-arrow-clockwise me-2"></i> Retry All
                 </button>
             </div>
 
-            <div class="card-premium">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-premium table-hover align-middle mb-0">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -23,7 +23,7 @@
                                     <th>Queue</th>
                                     <th>Failed At</th>
                                     <th>Exception</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="jobsTableBody">
@@ -31,8 +31,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="p-3 border-top text-center">
-                        <small class="text-muted">Displaying recent failed jobs.</small>
+                    <div class="p-3 border-top  text-center ">
+                        <small class="text-gray-500">Displaying recent failed jobs.</small>
                     </div>
                 </div>
             </div>
@@ -53,22 +53,22 @@
 
                 return App.safeHTML`
                     <tr>
-                        <td><span class="fw-bold text-dark">#${job.id}</span></td>
-                        <td><span class="badge bg-secondary-subtle text-secondary">${job.connection}</span></td>
-                        <td><span class="badge bg-info-subtle text-info">${job.queue}</span></td>
-                        <td><small class="text-muted">${failedAt}</small></td>
+                        <td><span class="font-bold text-dark">#${job.id}</span></td>
+                        <td><span class=" px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 -subtle text-secondary">${job.connection}</span></td>
+                        <td><span class=" px-2.5 py-1 text-xs font-semibold rounded-md bg-blue-100 text-blue-700 -subtle text-info">${job.queue}</span></td>
+                        <td><small class="text-gray-500">${failedAt}</small></td>
                         <td title="${job.exception}">
                             <div class="text-truncate" style="max-width: 300px;">
                                 <small class="text-danger">${exceptionShort}</small>
                             </div>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2">
-                                <button class="btn btn-light shadow-sm btn-sm"
+                        <td class="text-right">
+                            <div class=" flex   justify-end  gap-2">
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm"
                                     onclick="retryJob(${job.id})" title="Retry">
                                     <i class="bi bi-arrow-repeat text-primary"></i>
                                 </button>
-                                <button class="btn btn-light shadow-sm btn-sm"
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium shadow-sm px-3 py-1.5 text-sm"
                                     onclick="deleteJob(${job.id})" title="Delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </button>

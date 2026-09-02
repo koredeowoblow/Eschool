@@ -13,6 +13,14 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install NPM dependencies and build assets
+RUN npm install \
+    && npm run build
+
 # Do NOT create or migrate DB during build
 # DB must live on persistent disk at runtime
 

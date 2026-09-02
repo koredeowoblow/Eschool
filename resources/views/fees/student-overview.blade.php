@@ -5,54 +5,54 @@
 
 @section('content')
     <!-- Student Header -->
-    <div class="card-premium mb-4 overflow-hidden">
-        <div class="card-body p-0">
-            <div class="p-4 bg-primary-subtle border-bottom d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden  mb-6  overflow-hidden">
+        <div class="p-0">
+            <div class="p-4 bg-primary-subtle border-bottom  flex   items-center   justify-between ">
+                <div class="flex items-center gap-3">
                     <img id="studentAvatar" src="https://ui-avatars.com/api/?name=Student&background=random"
                         class="rounded-circle border border-3 border-white shadow-sm" width="80" height="80"
                         alt="">
                     <div>
-                        <h4 class="fw-bold mb-1" id="studentName">Loading...</h4>
-                        <div class="d-flex gap-3 small">
+                        <h4 class="font-bold  mb-6 " id="studentName">Loading...</h4>
+                        <div class=" flex  gap-3 small">
                             <span><i class="bi bi-person-badge me-1"></i> <span id="studentAdmission">...</span></span>
                             <span><i class="bi bi-building me-1"></i> <span id="studentClass">...</span></span>
                         </div>
                     </div>
                 </div>
-                <div class="text-end">
-                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill shadow-sm"
+                <div class="text-right">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 px-3 py-2 rounded-pill shadow-sm"
                         id="studentStatusBadge">Active</span>
                 </div>
             </div>
-            <div class="row g-0 text-center border-bottom">
-                <div class="col-md-4 p-4 border-end">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Total Fees</small>
-                    <h2 class="fw-bold mb-0" id="statTotalFees">$0.00</h2>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 g-0  text-center  border-bottom">
+                <div class=" md:col-span-4 col-span-1  p-4 border-end">
+                    <small class="text-gray-500 text-uppercase font-bold d-block  mb-6 ">Total Fees</small>
+                    <h2 class="font-bold  mb-6 " id="statTotalFees">$0.00</h2>
                 </div>
-                <div class="col-md-4 p-4 border-end">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Total Paid</small>
-                    <h2 class="fw-bold text-success mb-0" id="statTotalPaid">$0.00</h2>
+                <div class=" md:col-span-4 col-span-1  p-4 border-end">
+                    <small class="text-gray-500 text-uppercase font-bold d-block  mb-6 ">Total Paid</small>
+                    <h2 class="font-bold text-success  mb-6 " id="statTotalPaid">$0.00</h2>
                 </div>
-                <div class="col-md-4 p-4">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Outstanding Balance</small>
-                    <h2 class="fw-bold text-danger mb-0" id="statBalance">$0.00</h2>
+                <div class=" md:col-span-4 col-span-1  p-4">
+                    <small class="text-gray-500 text-uppercase font-bold d-block  mb-6 ">Outstanding Balance</small>
+                    <h2 class="font-bold text-danger  mb-6 " id="statBalance">$0.00</h2>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Fee Items -->
-    <div class="card-premium">
-        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0"><i class="bi bi-receipt me-2"></i>Assigned Fee Items</h5>
-            <button class="btn btn-sm btn-outline-primary" onclick="syncFees()">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden-header bg-white py-3 flex justify-between items-center">
+            <h5 class="font-bold  mb-6 "><i class="bi bi-receipt me-2"></i>Assigned Fee Items</h5>
+            <button class="btn px-3 py-1.5 text-sm btn-outline-primary" onclick="syncFees()">
                 <i class="bi bi-arrow-repeat me-1"></i> Sync Mandatory Fees
             </button>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-premium table-hover align-middle mb-0">
+        <div class="p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle  mb-6 ">
                     <thead>
                         <tr>
                             <th>Fee Title</th>
@@ -61,7 +61,7 @@
                             <th>Paid</th>
                             <th>Balance</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="studentFeesTableBody">
@@ -83,57 +83,57 @@
                     <input type="hidden" name="fee_id" id="paymentFeeId">
 
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Process Payment</h5>
+                        <h5 class="modal-title font-bold">Process Payment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="vstack gap-3">
                             <div class="p-3 bg-light rounded-3 border">
-                                <label class="small text-muted mb-1">Fee Item</label>
-                                <div class="fw-bold" id="paymentFeeTitle">...</div>
-                                <div class="row mt-2 small">
+                                <label class="small text-gray-500  mb-6 ">Fee Item</label>
+                                <div class="font-bold" id="paymentFeeTitle">...</div>
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4 small">
                                     <div class="col-6">Amount: <span id="paymentTotalAmount">$0.00</span></div>
-                                    <div class="col-6 text-danger fw-bold">Balance: <span id="paymentBalance">$0.00</span>
+                                    <div class="col-6 text-danger font-bold">Balance: <span id="paymentBalance">$0.00</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <label class="form-label">Payment Amount *</label>
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Payment Amount *</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" name="amount_paid" id="paymentAmountInput"
-                                        class="form-control form-control-lg fw-bold text-success" step="0.01" required>
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all-lg font-bold text-success" step="0.01" required>
                                 </div>
-                                <small class="text-muted mt-1 d-block" id="fullPaymentHint">Click to pay balance</small>
+                                <small class="text-gray-500 mt-4 d-block" id="fullPaymentHint">Click to pay balance</small>
                             </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Payment Method *</label>
-                                    <select name="payment_method" class="form-select" required>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Payment Method *</label>
+                                    <select name="payment_method" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white" required>
                                         <option value="cash">Cash</option>
                                         <option value="bank_transfer">Bank Transfer</option>
                                         <option value="pos">POS</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Reference (Optional)</label>
-                                    <input type="text" name="reference_number" class="form-control"
+                                <div class=" md:col-span-6 col-span-1 ">
+                                    <label class="block text-sm font-medium text-gray-700  mb-6 ">Reference (Optional)</label>
+                                    <input type="text" name="reference_number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                         placeholder="TXN-123...">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="form-label">Payment Date</label>
-                                <input type="date" name="payment_date" class="form-control"
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Payment Date</label>
+                                <input type="date" name="payment_date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                     value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary-premium px-4">Confirm Payment</button>
+                        <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all inline-flex items-center gap-2 font-medium" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium px-4">Confirm Payment</button>
                     </div>
                 </form>
             </div>
@@ -185,7 +185,7 @@
 
                 if (fees.length === 0) {
                     tbody.innerHTML =
-                        '<tr><td colspan="7" class="text-center py-4 text-muted">No fees assigned to this student.</td></tr>';
+                        '<tr><td colspan="7" class=" text-center  py-4 text-gray-500">No fees assigned to this student.</td></tr>';
                 }
 
                 fees.forEach(item => {
@@ -199,22 +199,22 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>
-                            <div class="fw-bold">${fee.title}</div>
-                            <small class="text-muted uppercase small">${fee.fee_type}</small>
+                            <div class="font-bold">${fee.title}</div>
+                            <small class="text-gray-500 uppercase small">${fee.fee_type}</small>
                         </td>
                         <td>
                             <div class="small">${fee.term?.name || 'N/A'}</div>
-                            <div class="extra-small text-muted">${fee.session?.name || 'N/A'}</div>
+                            <div class="extra-small text-gray-500">${fee.session?.name || 'N/A'}</div>
                         </td>
                         <td>${App.formatCurrency(fee.amount)}</td>
                         <td class="text-success">${App.formatCurrency(parseFloat(fee.amount) - parseFloat(item.balance))}</td>
-                        <td class="fw-bold ${parseFloat(item.balance) > 0 ? 'text-danger' : 'text-success'}">${App.formatCurrency(item.balance)}</td>
+                        <td class="font-bold ${parseFloat(item.balance) > 0 ? 'text-danger' : 'text-success'}">${App.formatCurrency(item.balance)}</td>
                         <td>
                             <span class="badge bg-${statusClass}-subtle text-${statusClass} text-capitalize px-3">${item.status}</span>
                         </td>
-                        <td class="text-end">
+                        <td class="text-right">
                             ${parseFloat(item.balance) > 0 ? `
-                                    <button class="btn btn-primary-premium btn-sm" onclick="openPaymentModal('${fee.id}', '${fee.title.replace(/'/g, "\\'")}', ${fee.amount}, ${item.balance})">
+                                    <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium px-3 py-1.5 text-sm" onclick="openPaymentModal('${fee.id}', '${fee.title.replace(/'/g, "\\'")}', ${fee.amount}, ${item.balance})">
                                         <i class="bi bi-wallet2 me-1"></i> Pay
                                     </button>
                                 ` : `

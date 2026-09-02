@@ -4,20 +4,20 @@
 @section('header_title', 'Membership Plans Management')
 
 @section('content')
-    <div class="card-premium p-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-4">
+        <div class="flex flex-col md:flex-row  justify-between   items-center   mb-6  gap-3">
             <div class="input-group w-100 w-md-50">
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                <input type="text" id="planSearch" class="form-control border-start-0 ps-0" placeholder="Search plans..."
+                <input type="text" id="planSearch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all " placeholder="Search plans..."
                     oninput="loadPlans()">
             </div>
-            <button class="btn btn-primary-premium" onclick="openCreateModal()">
+            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium" onclick="openCreateModal()">
                 <i class="bi bi-plus-lg me-2"></i>Create New Plan
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-premium table-hover align-middle">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left divide-y divide-gray-200 align-middle">
                 <thead>
                     <tr>
                         <th class="sortable-header" data-sort="name">Name</th>
@@ -26,14 +26,14 @@
                         <th class="sortable-header" data-sort="no_of_teachers">Teachers Limit</th>
                         <th class="sortable-header" data-sort="no_of_guardians">Guardians Limit</th>
                         <th class="sortable-header" data-sort="no_of_staff">Staff Limit</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="plans-table-body">
                     <tr>
-                        <td colspan="7" class="text-center py-4">
+                        <td colspan="7" class=" text-center  py-4">
                             <div class="spinner-border text-primary" role="status"></div>
-                            <p class="text-muted small mt-2">Loading plans...</p>
+                            <p class="text-gray-500 small mt-4">Loading plans...</p>
                         </td>
                     </tr>
                 </tbody>
@@ -55,43 +55,43 @@
 
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Plan Name *</label>
-                                <input type="text" class="form-control" name="name" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Plan Name *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="name" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Price *</label>
-                                <input type="number" step="0.01" class="form-control" name="price" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Price *</label>
+                                <input type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="price" required>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" name="description" rows="2"></textarea>
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="description" rows="2"></textarea>
                             </div>
 
-                            <h6 class="mt-4 mb-2">Limits</h6>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Students *</label>
-                                <input type="number" class="form-control" name="no_of_students" required>
+                            <h6 class="mt-4  mb-6 ">Limits</h6>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Students *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="no_of_students" required>
                                 <div class="form-text">Enter 0 for unlimited (if logic supports) or high number</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Teachers *</label>
-                                <input type="number" class="form-control" name="no_of_teachers" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Teachers *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="no_of_teachers" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Guardians *</label>
-                                <input type="number" class="form-control" name="no_of_guardians" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Guardians *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="no_of_guardians" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Staff *</label>
-                                <input type="number" class="form-control" name="no_of_staff" required>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Staff *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" name="no_of_staff" required>
                             </div>
                         </div>
 
-                        <div class="modal-footer mt-3">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary-premium">Create Plan</button>
+                        <div class="modal-footer mt-4">
+                            <button type="button" class=" px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium " data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Create Plan</button>
                         </div>
                     </form>
                 </div>
@@ -112,47 +112,47 @@
                         onsubmit="App.submitForm(event, loadPlans, 'edit-plan', 'editPlanModal')">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Plan Name *</label>
-                                <input type="text" class="form-control" id="edit_name" name="name" required>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4  gap-4 ">
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Plan Name *</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_name" name="name" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Price *</label>
-                                <input type="number" step="0.01" class="form-control" id="edit_price"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Price *</label>
+                                <input type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_price"
                                     name="price" required>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" id="edit_description" name="description" rows="2"></textarea>
+                            <div class=" md:col-span-12 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Description</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_description" name="description" rows="2"></textarea>
                             </div>
 
-                            <h6 class="mt-4 mb-2">Limits</h6>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Students *</label>
-                                <input type="number" class="form-control" id="edit_no_of_students"
+                            <h6 class="mt-4  mb-6 ">Limits</h6>
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Students *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_no_of_students"
                                     name="no_of_students" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Teachers *</label>
-                                <input type="number" class="form-control" id="edit_no_of_teachers"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Teachers *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_no_of_teachers"
                                     name="no_of_teachers" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Guardians *</label>
-                                <input type="number" class="form-control" id="edit_no_of_guardians"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Guardians *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_no_of_guardians"
                                     name="no_of_guardians" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Max Staff *</label>
-                                <input type="number" class="form-control" id="edit_no_of_staff" name="no_of_staff"
+                            <div class=" md:col-span-6 col-span-1 ">
+                                <label class="block text-sm font-medium text-gray-700  mb-6 ">Max Staff *</label>
+                                <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" id="edit_no_of_staff" name="no_of_staff"
                                     required>
                             </div>
                         </div>
 
-                        <div class="modal-footer mt-3">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary-premium">Save Changes</button>
+                        <div class="modal-footer mt-4">
+                            <button type="button" class=" px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium " data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all inline-flex items-center gap-2 font-medium">Save Changes</button>
                         </div>
                     </form>
                 </div>

@@ -36,6 +36,23 @@ class Student extends Model
         'medical_conditions' => 'array',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($student) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard:student-stats:user-{$student->user_id}");
+        });
+
+        static::created(function ($student) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard:student-stats:user-{$student->user_id}");
+        });
+
+        static::deleted(function ($student) {
+            \Illuminate\Support\Facades\Cache::forget("dashboard:student-stats:user-{$student->user_id}");
+        });
+    }
+
     /**
      * Get the student's full name from the related user.
      *
