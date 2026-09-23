@@ -12,7 +12,7 @@ class CreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->hasAnyRole(['teacher', 'school_admin', 'super_admin']);
+        return auth()->check() && auth()->user()->hasAnyRole(['teacher', 'School Admin', 'super_admin']);
     }
 
     /**

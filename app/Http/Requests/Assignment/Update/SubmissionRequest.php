@@ -16,7 +16,7 @@ class SubmissionRequest extends FormRequest
         $user = auth()->user();
 
         $rules = [
-           'assignment_id' => 'required|integer|exists:assignments,id',
+            'assignment_id' => 'required|integer|exists:assignments,id',
             'answer' => 'nullable|string',
             'file_path' => 'nullable|string',
             'submitted_at' => 'nullable|date',
@@ -42,7 +42,7 @@ class SubmissionRequest extends FormRequest
 
         if ($user->hasRole(roles: 'student')) {
             $Student_id = $user->id ?? null;
-            if (!$Student_id) {
+            if (! $Student_id) {
                 abort(403, message: 'Student profile not found.');
             }
             $data['student_id'] = $Student_id;

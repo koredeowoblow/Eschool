@@ -16,7 +16,7 @@ class RolesSeeder extends Seeder
     {
         $roles = [
             'super_admin' => 'Owner of the application',
-            'school_admin'       => 'School administrator',
+            'School Admin'       => 'School administrator',
             'teacher'     => 'Teacher user',
             'student'     => 'Student user',
             'guardian'    => 'Parent or guardian',

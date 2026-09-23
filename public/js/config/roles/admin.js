@@ -8,21 +8,21 @@ export default [
         key: 'students',
         label: 'Students',
         icon: 'bi bi-people',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         type: 'link',
         key: 'teachers',
         label: 'Teachers',
         icon: 'bi bi-person-badge',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         type: 'link',
         key: 'classes',
         label: 'Classes',
         icon: 'bi bi-grid',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         type: 'header',
@@ -33,7 +33,7 @@ export default [
         key: 'payments',
         label: 'Payments',
         icon: 'bi bi-credit-card',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         type: 'link',

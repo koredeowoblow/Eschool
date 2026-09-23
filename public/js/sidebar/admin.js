@@ -8,37 +8,37 @@ export default [
                 key: 'sessions',
                 label: 'Sessions',
                 icon: 'bi bi-calendar-range',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'terms',
                 label: 'Terms',
                 icon: 'bi bi-calendar3',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
 
             {
                 key: 'sections',
                 label: 'Sections',
                 icon: 'bi bi-collection',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             }, {
                 key: 'classes',
                 label: 'Classes',
                 icon: 'bi bi-grid',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'subjects',
                 label: 'Subjects',
                 icon: 'bi bi-book-half',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'subject-assignments',
                 label: 'Assign Subjects',
                 icon: 'bi bi-link-45deg',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             }
         ]
     },
@@ -46,13 +46,13 @@ export default [
         key: 'teachers',
         label: 'Teachers',
         icon: 'bi bi-person-badge',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         key: 'staff',
         label: 'Staff Management',
         icon: 'bi bi-person-gear',
-        roles: ['super_admin', 'school_admin']
+        roles: ['super_admin', 'School Admin']
     },
     {
         key: 'students',
@@ -63,19 +63,19 @@ export default [
                 key: 'students',
                 label: 'Students',
                 icon: 'bi bi-person',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'guardians',
                 label: 'Guardians',
                 icon: 'bi bi-person-heart',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'promotions',
                 label: 'Student Promotions',
                 icon: 'bi bi-arrow-up-circle',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             }
         ]
     },
@@ -89,31 +89,31 @@ export default [
                 key: 'assignments',
                 label: 'Assignments',
                 icon: 'bi bi-journal-text',
-                roles: ['super_admin', 'school_admin', 'teacher', 'student']
+                roles: ['super_admin', 'School Admin', 'teacher', 'student']
             },
             {
                 key: 'assignment-submissions',
                 label: 'Submissions',
                 icon: 'bi bi-file-earmark-text',
-                roles: ['super_admin', 'school_admin', 'teacher']
+                roles: ['super_admin', 'School Admin', 'teacher']
             },
             {
                 key: 'assessments',
                 label: 'Assessments',
                 icon: 'bi bi-pencil-square',
-                roles: ['super_admin', 'school_admin', 'teacher', 'student']
+                roles: ['super_admin', 'School Admin', 'teacher', 'student']
             },
             {
                 key: 'results',
                 label: 'Results',
                 icon: 'bi bi-trophy',
-                roles: ['super_admin', 'school_admin', 'teacher', 'student']
+                roles: ['super_admin', 'School Admin', 'teacher', 'student']
             },
             {
                 key: 'reports/academic',
                 label: 'Academic Reports',
                 icon: 'bi bi-file-earmark-bar-graph',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             }
         ]
     },
@@ -126,37 +126,37 @@ export default [
                 key: 'fees',
                 label: 'Fees List',
                 icon: 'bi bi-list-check',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             },
             {
                 key: 'fees/assign',
                 label: 'Assign Fees',
                 icon: 'bi bi-person-plus',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             },
             {
                 key: 'fees/payments',
                 label: 'Payment History',
                 icon: 'bi bi-clock-history',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             },
             {
                 key: 'payments',
                 label: 'General Payments',
                 icon: 'bi bi-credit-card',
-                roles: ['super_admin', 'school_admin', 'student']
+                roles: ['super_admin', 'School Admin', 'student']
             },
             {
                 key: 'invoices',
                 label: 'Invoices',
                 icon: 'bi bi-receipt',
-                roles: ['super_admin', 'school_admin', 'student']
+                roles: ['super_admin', 'School Admin', 'student']
             },
             {
                 key: 'fee-types',
                 label: 'Fee Categories',
                 icon: 'bi bi-tag',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             }
         ]
     },
@@ -169,14 +169,14 @@ export default [
                 key: 'profile',
                 label: 'School Profile',
                 icon: 'bi bi-building',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             },
             {
                 key: 'grading-scales',
                 label: 'Grading System',
                 icon: 'bi bi-percent',
                 path: '/grading-scales',
-                roles: ['super_admin', 'school_admin']
+                roles: ['super_admin', 'School Admin']
             }
 
         ]

@@ -41,7 +41,7 @@ class SchoolAdminCreated extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.school_admin_created',
+            view: 'emails.School Admin_created',
         );
     }
 

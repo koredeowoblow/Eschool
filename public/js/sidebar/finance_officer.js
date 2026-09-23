@@ -13,21 +13,21 @@ export default [
                 label: 'Fees List',
                 icon: 'bi bi-card-checklist',
                 path: '/fees',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             },
             {
                 key: 'fees-assign',
                 label: 'Assign Fees',
                 icon: 'bi bi-person-plus',
                 path: '/fees/assign',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             },
             {
                 key: 'fee-types',
                 label: 'Fee Categories',
                 icon: 'bi bi-tags',
                 path: '/fee-types',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             }
         ]
     },
@@ -41,21 +41,21 @@ export default [
                 label: 'Invoices',
                 icon: 'bi bi-receipt',
                 path: '/invoices',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             },
             {
                 key: 'payments',
                 label: 'Record Payment',
                 icon: 'bi bi-credit-card',
                 path: '/payments',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             },
             {
                 key: 'payment-history',
                 label: 'Payment History',
                 icon: 'bi bi-clock-history',
                 path: '/fees/payments',
-                roles: ['finance_officer', 'super_admin', 'school_admin']
+                roles: ['finance_officer', 'super_admin', 'School Admin']
             }
         ]
     },
@@ -64,6 +64,6 @@ export default [
         label: 'Financial Reports',
         icon: 'bi bi-graph-up-arrow',
         path: '/reports/finance',
-        roles: ['finance_officer', 'super_admin', 'school_admin']
+        roles: ['finance_officer', 'super_admin', 'School Admin']
     }
 ];

@@ -59,7 +59,7 @@ export class SidebarManager {
                 items.push(...superAdmin.default);
             }
 
-            if (roles.includes('school_admin') || isSuperAdmin) {
+            if (roles.includes('School Admin') || isSuperAdmin) {
                 const admin = await import('../sidebar/admin.js');
                 items.push(...admin.default);
             }

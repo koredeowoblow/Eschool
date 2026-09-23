@@ -11,7 +11,7 @@ class ClassIndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->hasRole(['super_admin', 'school_admin', 'teacher']);
+        return $this->user()->hasRole(['super_admin', 'School Admin', 'teacher']);
     }
 
     /**

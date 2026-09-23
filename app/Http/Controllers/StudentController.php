@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Students\StudentService;
-use App\Http\Requests\Student\StoreStudentRequest;
-use App\Http\Requests\Student\UpdateStudentRequest;
-
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Student\StudentIndexRequest;
 use App\Http\Requests\User\UserRequest;
+use App\Http\Resources\StudentResource;
+use App\Services\Students\StudentService;
 
 class StudentController extends Controller
 {
@@ -15,7 +14,7 @@ class StudentController extends Controller
     {
         // Apply role-based authorization middleware
         $this->middleware('auth:sanctum');
-        $this->middleware('role:super_admin|School Admin')->only(['store', 'update', 'destroy']);
+        $this->middleware('role:super_admin|School Admin')->only(['update', 'destroy']);
         $this->middleware('role:super_admin|School Admin|Teacher')->only(['index', 'show']);
 
         // Rate limiting: 60 requests per minute for create operations
@@ -25,11 +24,12 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(\App\Http\Requests\Student\StudentIndexRequest $request)
+    public function index(StudentIndexRequest $request)
     {
         $students = $this->studentService->getAllStudents($request->validated());
+
         return ResponseHelper::success(
-            \App\Http\Resources\StudentResource::collection($students->items()),
+            StudentResource::collection($students->items()),
             'Students retrieved successfully.',
             200,
             [
@@ -46,7 +46,8 @@ class StudentController extends Controller
     public function store(UserRequest $request)
     {
         $student = $this->studentService->createStudent($request->validated());
-        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student created successfully.', 201);
+
+        return ResponseHelper::success(new StudentResource($student), 'Student created successfully.', 201);
     }
 
     /**
@@ -55,7 +56,8 @@ class StudentController extends Controller
     public function show($id)
     {
         $student = $this->studentService->getStudentById($id);
-        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student retrieved successfully.');
+
+        return ResponseHelper::success(new StudentResource($student), 'Student retrieved successfully.');
     }
 
     /**
@@ -64,7 +66,8 @@ class StudentController extends Controller
     public function update(UserRequest $request, $id)
     {
         $student = $this->studentService->updateStudent($id, $request->validated());
-        return ResponseHelper::success(new \App\Http\Resources\StudentResource($student), 'Student updated successfully.');
+
+        return ResponseHelper::success(new StudentResource($student), 'Student updated successfully.');
     }
 
     /**
@@ -73,6 +76,7 @@ class StudentController extends Controller
     public function destroy($id)
     {
         $this->studentService->deleteStudent($id);
+
         return ResponseHelper::success(null, 'Student deleted successfully.');
     }
 }

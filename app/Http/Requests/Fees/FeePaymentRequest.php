@@ -11,7 +11,7 @@ class FeePaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->hasRole(['super_admin', 'school_admin']);
+        return $this->user()->hasRole(['super_admin', 'School Admin']);
     }
 
     /**

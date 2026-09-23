@@ -66,7 +66,7 @@
                     $user = auth()->user();
                     $roles = $user ? $user->roles->pluck('name')->map(fn($r) => strtolower(str_replace(' ', '_', $r)))->toArray() : [];
                     $isSuperAdmin = in_array('super_admin', $roles);
-                    $isSchoolAdmin = in_array('school_admin', $roles) || in_array('admin', $roles);
+                    $isSchoolAdmin = in_array('School Admin', $roles) || in_array('admin', $roles);
                 @endphp
                 
                 @php
