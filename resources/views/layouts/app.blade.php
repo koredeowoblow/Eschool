@@ -64,9 +64,9 @@
             <div class="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-1" id="sidebar-root">
                 @php
                     $user = auth()->user();
-                    $roles = $user ? $user->roles->pluck('name')->map(fn($r) => strtolower(str_replace(' ', '_', $r)))->toArray() : [];
+                    $roles = $user ? $user->roles->pluck('name')->toArray() : [];
                     $isSuperAdmin = in_array('super_admin', $roles);
-                    $isSchoolAdmin = in_array('School Admin', $roles) || in_array('admin', $roles);
+                    $isSchoolAdmin = in_array('School Admin', $roles) || in_array('school_admin', $roles) || in_array('admin', $roles);
                 @endphp
                 
                 @php
